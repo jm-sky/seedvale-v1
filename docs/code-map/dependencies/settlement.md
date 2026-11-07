@@ -37,6 +37,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `fauna/AnimalAgent.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/createSettlement.ts`
 - `settlement/settlementPlanCache.ts`
@@ -1552,6 +1553,15 @@ Generated from TypeScript imports.
 - `settlement/npcState.ts`
 - `world/transportTravelArrival.ts`
 
+## `settlement/merchantStage4Sources.test.ts`
+
+**Imports**
+
+- `items/Inventory.ts`
+- `items/itemInstances.ts`
+- `items/tradeCatalog.ts`
+- `settlement/merchantTrade.ts`
+
 ## `settlement/merchantTrade.test.ts`
 
 **Imports**
@@ -1587,6 +1597,7 @@ Generated from TypeScript imports.
 - `items/trade.test.ts`
 - `settlement/createSettlement.ts`
 - `settlement/layeredArmorSources.test.ts`
+- `settlement/merchantStage4Sources.test.ts`
 - `settlement/merchantTrade.test.ts`
 
 ## `settlement/merchantWagon.test.ts`

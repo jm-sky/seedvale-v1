@@ -638,11 +638,11 @@ Generated from exported TypeScript symbols.
   - domain: settlements-npcs
 - `NpcTradeOwnerSource` — type — line 15
   - domain: settlements-npcs
-- `npcTradeQuantityAvailable` — function — line 189
+- `npcTradeQuantityAvailable` — function — line 196
   - domain: settlements-npcs
-- `npcTradeSourceInventory` — function — line 208
+- `npcTradeSourceInventory` — function — line 215
   - domain: settlements-npcs
-- `resolveNpcTradeOffers` — function — line 224
+- `resolveNpcTradeOffers` — function — line 231
   - domain: settlements-npcs
 - `TradeReserveNpc` — type — line 34
 

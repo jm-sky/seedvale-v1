@@ -246,7 +246,7 @@ Generated from exported TypeScript symbols.
   - uses: GameLoop
   - lifecycle: frame-scheduling
 - `AppRenderLoopDeps` — type — line 32
-- `createAppRenderLoop` — function — line 46
+- `createAppRenderLoop` — function — line 48
 
 ## `app/busyAction.ts`
 

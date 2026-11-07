@@ -241,83 +241,83 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
   🟡 `M` · **Score:**  33  
    → **unlocks:** 1/1
 
-38. `npc-068` — **NPC layered armor use, restrictions continuity and guard provisioning**  
+38. `world-041` — **Landmarks in the location catalog and NPC rumour leads**  
+  🟡 `L` · **Score:**  32  
+   → **unlocks:** 1/1
+
+39. `npc-068` — **NPC layered armor use, restrictions continuity and guard provisioning**  
   🟡 `M` · **Score:**  31  
    → **unlocks:** 0/0
 
-39. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
+40. `npc-054` — **NPC desired gifts, gift acceptance and relationship rewards**  
   🔴 `L` · **Score:**  30  
    → **unlocks:** 0/0
 
-40. `settlements-022` — **Founded settlement live runtime and streaming**  
+41. `settlements-022` — **Founded settlement live runtime and streaming**  
   🔴 `L` · **Score:**  28  
    → **unlocks:** 0/0
 
-41. `settlements-024` — **Jumpable low campfire collision**  
+42. `settlements-024` — **Jumpable low campfire collision**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-42. `settlements-npcs-058` — **Simulation scaling — retained-NPC scan, crowd pairs, skip-end catch-up, fauna bookkeeping**  
+43. `settlements-npcs-058` — **Simulation scaling — retained-NPC scan, crowd pairs, skip-end catch-up, fauna bookkeeping**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-43. `world-terrain-039` — **N8AO / post-process cost budget**  
+44. `world-terrain-039` — **N8AO / post-process cost budget**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-44. `world-terrain-068` — **Actor presentation correctness — animated bounds, garment morphs, actor retirement**  
+45. `world-terrain-068` — **Actor presentation correctness — animated bounds, garment morphs, actor retirement**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-45. `world-terrain-069` — **Renderer GPU validity — elevated shadow coverage, pass disposal, capability and context-restore contracts**  
+46. `world-terrain-069` — **Renderer GPU validity — elevated shadow coverage, pass disposal, capability and context-restore contracts**  
   🔴 `M` · **Score:**  27  
    → **unlocks:** 0/0
 
-46. `ui-input-025` — **Road travel autopilot for player and mounts**  
+47. `ui-input-025` — **Road travel autopilot for player and mounts**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-47. `world-terrain-070` — **Streaming and actor publication — worker occupancy, grass identity, measured ready-publication bounds**  
+48. `world-terrain-070` — **Streaming and actor publication — worker occupancy, grass identity, measured ready-publication bounds**  
   🔴 `L` · **Score:**  26  
    → **unlocks:** 0/0
 
-48. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
+49. `world-036` — **Lightweight unloaded shipwreck and tower lookup**  
   🟡 `M` · **Score:**  25  
    → **unlocks:** 0/0
 
-49. `fauna-051` — **Predator-human encounter correctness and retaliation**  
+50. `fauna-051` — **Predator-human encounter correctness and retaliation**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-50. `items-player-067` — **Melee weapon reach and damage balance**  
+51. `items-player-067` — **Melee weapon reach and damage balance**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-51. `world-terrain-067` — **Procedural rock grounding and prepared-template transforms**  
+52. `world-terrain-067` — **Procedural rock grounding and prepared-template transforms**  
   🔴 `L` · **Score:**  24  
    → **unlocks:** 0/0
 
-52. `world-terrain-059` — **World scale, travel time and sparse settlements**  
+53. `world-terrain-059` — **World scale, travel time and sparse settlements**  
   🔴 `XL` · **Score:**  22  
    → **unlocks:** 0/0
 
-53. `tools-019` — **Debug tooling lifecycle ownership**  
+54. `tools-019` — **Debug tooling lifecycle ownership**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-54. `tools-021` — **Align debug OBB overlays with physical colliders**  
+55. `tools-021` — **Align debug OBB overlays with physical colliders**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-55. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
+56. `world-terrain-055` — **Optional shadow frustum and refresh trims (settlement shadow pass)**  
   🟡 `S` · **Score:**  19  
    → **unlocks:** 0/0
 
-56. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
-  🟡 `L` · **Score:**  18  
-   → **unlocks:** 0/0
-
-57. `world-041` — **Landmarks in the location catalog and NPC rumour leads**  
+57. `quests-progression-070` — **Boar at the medicinal meadow — systemic settlement problem**  
   🟡 `L` · **Score:**  18  
    → **unlocks:** 0/0
 
@@ -360,9 +360,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`items-player-032-npc-player-storage-resource-and-context-rules.md`](items-player-032-npc-player-storage-resource-and-context-rules.md)  
   is blocked by:
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
-- [`items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md`](items-player-064-stage-4-living-world-sources-and-npc-weapon-use.md)  
-  is blocked by:
-  - [`items-player-063-upper-tier-singleton-issuance-ledger.md`](items-player-063-upper-tier-singleton-issuance-ledger.md)
 - [`npc-032-expedition-needs-and-survival.md`](npc-032-expedition-needs-and-survival.md)  
   is blocked by:
   - [`items-player-028-npc-player-storage-access-policies.md`](items-player-028-npc-player-storage-access-policies.md)
@@ -949,6 +946,7 @@ graph TD
   world_040["world-040 — Underground Locations & Portals"]
   world_041["world-041 — Landmarks in the location catalog and NPC rumour leads"]
   world_042["world-042 — Gameplay visibility — character line of sight, concealment and last-known contacts"]
+  world_043["world-043 — Natural landmark gameplay content and quest integration"]
   world_terrain_001["world-terrain-001 — Cloud System"]
   world_terrain_002["world-terrain-002 — Terrain Modification & Land Preparation"]
   world_terrain_003["world-terrain-003 — Weather puddles V2 — stronger shader surface effect"]
@@ -1662,6 +1660,7 @@ graph TD
   world_033 --> world_039
   world_035 --> settlements_npcs_051
   world_035 --> ui_input_025
+  world_041 --> world_043
   world_terrain_001 --> world_terrain_014
   world_terrain_004 --> world_terrain_005
   world_terrain_010 --> world_terrain_011

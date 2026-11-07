@@ -16,32 +16,32 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalAgent.ts`
 
-- `AnimalAgent` — class — line 1272
+- `AnimalAgent` — class — line 1281
   - domain: fauna
   - system: animal-agent
   - role: Central per-animal behaviour integration point: predator/prey AI, needs, health, production (livestock) and riding (mounts).
   - uses: HealthState, StaminaState
   - simulation: tick
-- `AnimalAgentDebugInfo` — type — line 666
-- `AnimalAgentDeps` — type — line 1038
-- `AnimalSaveState` — type — line 801
-- `AnimalUpdateContext` — type — line 1119
-- `BURY_DURATION_SEC` — const — line 459
-- `canPredatorPursueIntoVillage` — function — line 885
-- `FAUNA_SHADOW_DISTANCE` — const — line 428
-- `FaunaAiBranch` — type — line 587
-- `FaunaNavRescueDebugInfo` — type — line 634
-- `FaunaWaterCrossingDebugInfo` — type — line 648
-- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 522
-- `FrenzyWolfCandidate` — type — line 973
-- `HARVEST_MEAT_DURATION_SEC` — const — line 462
-- `isWithinVillageRadius` — function — line 866
-- `NearbyNpcCandidate` — type — line 968
-- `pickNearestEligibleWolf` — function — line 982
-- `pickRabidTarget` — function — line 1007
-- `RABIES_BITE_INFECTION_CHANCE` — const — line 446
-- `villageFleeBiasFalloff` — function — line 893
-- `VillageInfo` — type — line 860
+- `AnimalAgentDebugInfo` — type — line 667
+- `AnimalAgentDeps` — type — line 1045
+- `AnimalSaveState` — type — line 802
+- `AnimalUpdateContext` — type — line 1128
+- `BURY_DURATION_SEC` — const — line 460
+- `canPredatorPursueIntoVillage` — function — line 892
+- `FAUNA_SHADOW_DISTANCE` — const — line 429
+- `FaunaAiBranch` — type — line 588
+- `FaunaNavRescueDebugInfo` — type — line 635
+- `FaunaWaterCrossingDebugInfo` — type — line 649
+- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 523
+- `FrenzyWolfCandidate` — type — line 980
+- `HARVEST_MEAT_DURATION_SEC` — const — line 463
+- `isWithinVillageRadius` — function — line 873
+- `NearbyNpcCandidate` — type — line 975
+- `pickNearestEligibleWolf` — function — line 989
+- `pickRabidTarget` — function — line 1014
+- `RABIES_BITE_INFECTION_CHANCE` — const — line 447
+- `villageFleeBiasFalloff` — function — line 900
+- `VillageInfo` — type — line 867
 
 ## `fauna/animalAreaBound.ts`
 
@@ -145,30 +145,31 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/animalDefs.ts`
 
-- `ANIMAL_DEFS` — const — line 458
-- `ANIMAL_LABELS` — const — line 73
-- `ANIMAL_SIGHT_BODY_CLASS` — const — line 54
-- `AnimalActivityConfig` — type — line 260
-- `AnimalAffinityConfig` — type — line 273
-- `AnimalDef` — type — line 92
-- `AnimalDietConfig` — type — line 303
-- `AnimalKind` — type — line 29
+- `ANIMAL_DEFS` — const — line 460
+- `ANIMAL_LABELS` — const — line 75
+- `ANIMAL_SIGHT_BODY_CLASS` — const — line 56
+- `AnimalActivityConfig` — type — line 262
+- `AnimalAffinityConfig` — type — line 275
+- `AnimalDef` — type — line 94
+- `AnimalDietConfig` — type — line 305
+- `AnimalKind` — type — line 31
 - `AnimalLifeStage` — type — line 24
 - `AnimalRole` — type — line 16
   - domain: fauna
   - role: Species taxonomy and per-kind tuning data for `AnimalAgent` — no runtime/agent state, no Three.js. Moved out of `AnimalAgent.ts` (plan fauna-017 step 1): 31% of that file was this module's data sitting above the class. Re-exported wholesale from `AnimalAgent.ts` via `export *`, so every existing importer of species types/`ANIMAL_DEFS` is unaffected.
-- `AnimalSightBodyClass` — type — line 52
+- `AnimalSightBodyClass` — type — line 54
 - `AnimalSociability` — type — line 20
-- `dietAcceptsItem` — function — line 436
-- `DraftConfig` — type — line 334
-- `HumanDangerConfig` — type — line 234
-- `LeadConfig` — type — line 328
-- `LivestockProductionConfig` — type — line 363
-- `LivestockProductKind` — type — line 350
-- `MountPointConfig` — type — line 341
-- `PackConfig` — type — line 250
-- `ScavengingConfig` — type — line 314
-- `WaterTripConfig` — type — line 282
+- `dietAcceptsItem` — function — line 438
+- `DraftConfig` — type — line 336
+- `HumanDangerConfig` — type — line 236
+- `LeadConfig` — type — line 330
+- `LivestockProductionConfig` — type — line 365
+- `LivestockProductKind` — type — line 352
+- `MountPointConfig` — type — line 343
+- `PackConfig` — type — line 252
+- `ScavengingConfig` — type — line 316
+- `WaterTripConfig` — type — line 284
+- `WildAnimalSex` — type — line 26
 
 ## `fauna/animalDialogue.ts`
 
@@ -360,33 +361,33 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalSpawner.ts`
 
-- `canUseDepletedNaturalRecovery` — function — line 232
-- `countBoundForSpawner` — function — line 152
-- `defaultSpawnPointScenarioFields` — function — line 373
+- `canUseDepletedNaturalRecovery` — function — line 236
+- `countBoundForSpawner` — function — line 156
+- `defaultSpawnPointScenarioFields` — function — line 389
 - `DEPLETED_NATURAL_RECOVERY_DAYS` — const — line 54
 - `DEPLETED_RECOLONIZATION_DAYS` — const — line 57
-- `depletedRecoveryIntervalDays` — function — line 224
-- `depletionThreshold` — function — line 133
+- `depletedRecoveryIntervalDays` — function — line 228
+- `depletionThreshold` — function — line 137
 - `DESTROY_SPAWNER_DURATION_SEC` — const — line 63
 - `EMPTY_HABITAT_RESPAWN_MULTIPLIER` — const — line 67
 - `MIN_RECOVERY_POPULATION` — const — line 51
 - `PreySpawner` — type — line 69
 - `RECOVERY_DAYS` — const — line 48
-- `respawnIntervalDaysFor` — function — line 145
-- `restoreSpawnPointState` — function — line 358
-- `SavedSpawnPointState` — type — line 328
-- `shouldDeplete` — function — line 139
-- `snapshotSpawnPointState` — function — line 341
+- `respawnIntervalDaysFor` — function — line 149
+- `restoreSpawnPointState` — function — line 371
+- `SavedSpawnPointState` — type — line 332
+- `shouldDeplete` — function — line 143
+- `snapshotSpawnPointState` — function — line 351
 - `SPAWNER_DESTROY_BRANCH_COST` — const — line 61
-- `SPAWNER_RADIUS` — const — line 121
-- `SpawnerBoundCount` — type — line 163
-- `SpawnerBoundLiveAnimal` — type — line 124
+- `SPAWNER_RADIUS` — const — line 125
+- `SpawnerBoundCount` — type — line 167
+- `SpawnerBoundLiveAnimal` — type — line 128
 - `SpawnerType` — type — line 20
 - `SpawnPointState` — type — line 43
-- `tickSpawnPointRecovery` — function — line 305
-- `updateDepletedSpawnerRecovery` — function — line 258
+- `tickSpawnPointRecovery` — function — line 309
+- `updateDepletedSpawnerRecovery` — function — line 262
   - domain: fauna
-- `updateSpawners` — function — line 185
+- `updateSpawners` — function — line 189
 - `WOLF_DEN_ID` — const — line 26
 
 ## `fauna/animalSteering.ts`
@@ -554,21 +555,21 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/createFauna.ts`
 
-- `clearsRiverChannel` — function — line 307
-- `createFauna` — function — line 529
-- `Fauna` — type — line 153
-- `FAUNA_URLS` — const — line 430
-- `faunaGltfUrls` — function — line 445
-- `findHomeCaveSpawner` — function — line 389
-- `isDeerEdgeHabitat` — function — line 361
-- `isNearRoadCorridor` — function — line 342
-- `isValidWildFaunaSpawnSite` — function — line 317
-- `resolveWildFaunaSpawnPosition` — function — line 328
-- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 406
-- `SPAWNER_DESTROYING_GENITIVE` — const — line 414
-- `SPAWNER_LABELS` — const — line 398
-- `spawnerDestroyBusyLabel` — function — line 425
-- `spawnerDestroyPromptLabel` — function — line 421
+- `clearsRiverChannel` — function — line 328
+- `createFauna` — function — line 550
+- `Fauna` — type — line 174
+- `FAUNA_URLS` — const — line 451
+- `faunaGltfUrls` — function — line 466
+- `findHomeCaveSpawner` — function — line 410
+- `isDeerEdgeHabitat` — function — line 382
+- `isNearRoadCorridor` — function — line 363
+- `isValidWildFaunaSpawnSite` — function — line 338
+- `resolveWildFaunaSpawnPosition` — function — line 349
+- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 427
+- `SPAWNER_DESTROYING_GENITIVE` — const — line 435
+- `SPAWNER_LABELS` — const — line 419
+- `spawnerDestroyBusyLabel` — function — line 446
+- `spawnerDestroyPromptLabel` — function — line 442
 
 ## `fauna/destinationThreatHooks.ts`
 
@@ -791,20 +792,20 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/persistentOccupants.ts`
 
-- `createPersistentOccupantRegistry` — function — line 90
-- `EMPTY_PERSISTENT_OCCUPANT_SNAPSHOT` — const — line 31
-- `ordinaryHabitatCapacity` — function — line 50
-- `persistentAnimalId` — function — line 45
-- `PersistentOccupantDecl` — type — line 12
+- `createPersistentOccupantRegistry` — function — line 94
+- `EMPTY_PERSISTENT_OCCUPANT_SNAPSHOT` — const — line 35
+- `ordinaryHabitatCapacity` — function — line 54
+- `persistentAnimalId` — function — line 49
+- `PersistentOccupantDecl` — type — line 13
   - domain: fauna
   - system: persistent-habitat-occupants
   - role: Sparse fauna-owned identity/persistence for wild animals bound to a stable habitat slot (plan fauna-018) — serializable types, stable keys, and registry operations. Not a simulation manager: real `AnimalAgent` instances still come from `createFauna()`.
-- `PersistentOccupantRegistry` — type — line 78
-- `persistentOccupantRestoreAction` — function — line 64
-- `PersistentOccupantRestoreAction` — type — line 54
-- `PersistentOccupantSaveRecord` — type — line 18
-- `persistentOccupantSlotKey` — function — line 37
-- `PersistentOccupantSnapshot` — type — line 26
+- `PersistentOccupantRegistry` — type — line 82
+- `persistentOccupantRestoreAction` — function — line 68
+- `PersistentOccupantRestoreAction` — type — line 58
+- `PersistentOccupantSaveRecord` — type — line 19
+- `persistentOccupantSlotKey` — function — line 41
+- `PersistentOccupantSnapshot` — type — line 27
 
 ## `fauna/playerAwareness.ts`
 
@@ -953,6 +954,23 @@ Generated from exported TypeScript symbols.
   - domain: fauna
   - system: water-traversal
   - role: Pure fauna-side water traversal policy (plan fauna-015) — answers "what can this species do with these physical water conditions", built on `terrain/waterSample.ts`'s species-agnostic physical answer. No Three.js/`AnimalAgent` import so the classification rules are directly unit-testable. Shared by autonomous and mounted movement alike (both read it through `AnimalAgent.isWalkable()`), so physical traversability can never diverge between the two (plan fauna-015 §8).
+
+## `fauna/wildFaunaRecords.ts`
+
+- `birthAnimalId` — function — line 50
+- `EMPTY_WILD_FAUNA_SNAPSHOT` — const — line 42
+- `ringAnimalId` — function — line 45
+- `ringHabitatId` — function — line 55
+- `WildFaunaGroupRow` — type — line 32
+- `WildFaunaRecord` — type — line 20
+- `WildFaunaRegistry` — class — line 70
+- `WildFaunaSnapshot` — type — line 37
+- `wildRecordFrom` — function — line 142
+- `WildRecordOrigin` — type — line 17
+  - domain: fauna
+  - system: wild-fauna-records
+  - role: Durable identity + persistence shape of generated wild individuals (plan fauna-050 C1/C2). Pure data and registry operations — no Three.js, no agents. `createFauna` owns the live projection (an `AnimalAgent` is the projection of exactly one record); this module owns ids, the record shape, the "group initialised" markers and the sorted save snapshot.
+- `wildSexFromRoll` — function — line 60
 
 ## `fauna/wolfDenScenario.ts`
 

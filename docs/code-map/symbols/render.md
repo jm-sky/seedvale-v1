@@ -53,9 +53,9 @@ Generated from exported TypeScript symbols.
 
 ## `render/createPostProcessing.ts`
 
-- `createPostProcessing` — function — line 62
-- `PostPassId` — type — line 16
-- `PostProcessing` — type — line 18
+- `createPostProcessing` — function — line 63
+- `PostPassId` — type — line 17
+- `PostProcessing` — type — line 19
 
 ## `render/createRenderer.ts`
 
@@ -89,6 +89,11 @@ Generated from exported TypeScript symbols.
   - system: sight
   - role: World-042 Stage 1 — pooled grey-silhouette sprites marking where the player last saw a now-concealed actor. Presentation only; reads the contact list from `playerSightContacts`.
 
+## `render/n8aoDispose.ts`
+
+- `disposeN8aoPass` — function — line 43
+- `N8AO_DISPOSABLE_FIELDS` — const — line 18
+
 ## `render/programPrewarm.ts`
 
 - `buildProgramPrewarmStaging` — function — line 151
@@ -100,6 +105,7 @@ Generated from exported TypeScript symbols.
 ## `render/rendererResize.ts`
 
 - `MIN_RENDERER_SIZE` — const — line 4
+- `nextPixelRatio` — function — line 25
 - `shouldApplyRendererResize` — function — line 9
 
 ## `render/shadowBudget.ts`

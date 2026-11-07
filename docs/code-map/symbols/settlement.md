@@ -442,18 +442,18 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/householdProfessionStock.ts`
 
-- `applyProfessionTradeStock` — function — line 377
+- `applyProfessionTradeStock` — function — line 386
   - domain: settlements-npcs
 - `BLACKSMITH_TRADE_PAULDRON_COUNT` — const — line 32
 - `BLACKSMITH_TRADE_SWORD_COUNT` — const — line 31
 - `FARMER_TRADE_TOOL_COUNT` — const — line 30
-- `householdStartingContextFromFamily` — function — line 337
+- `householdStartingContextFromFamily` — function — line 346
   - domain: settlements-npcs
 - `HUNTER_STARTER_DRIED_MEAT` — const — line 36
 - `HUNTER_STARTER_HERB` — const — line 37
 - `HUNTER_STARTER_TRADE_ARROWS` — const — line 35
 - `HUNTER_STARTER_TRADE_SHORT_BOWS` — const — line 29
-- `resolveProfessionStarterGrants` — function — line 315
+- `resolveProfessionStarterGrants` — function — line 324
   - domain: settlements-npcs
 - `StarterGrant` — type — line 39
 - `WOODCUTTER_TRADE_AXE_COUNT` — const — line 28
@@ -690,30 +690,36 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/merchantTrade.ts`
 
-- `generateMerchantAssortment` — function — line 484
-- `HOME_STARTER_MERCHANT_KINDS` — const — line 96
-- `horseVendorNpcId` — function — line 265
-- `isPremiumMerchantGood` — function — line 196
-- `MERCHANT_ARMOR_QUALITY_WEIGHTS` — const — line 579
+- `generateMerchantAssortment` — function — line 551
+- `HOME_STARTER_MERCHANT_KINDS` — const — line 102
+- `horseVendorNpcId` — function — line 319
+- `isPremiumMerchantGood` — function — line 250
+- `MERCHANT_ARMOR_QUALITY_WEIGHTS` — const — line 646
 - `MERCHANT_SPECIALIZATIONS` — const — line 42
-- `MerchantArmorQualityContext` — type — line 589
+- `MerchantArmorQualityContext` — type — line 656
 - `MerchantAssortmentContext` — type — line 56
 - `MerchantProfile` — type — line 50
-- `merchantProfileFor` — function — line 256
+- `merchantProfileFor` — function — line 310
 - `MerchantSpecialization` — type — line 35
   - domain: settlements
-- `merchantStockQuantity` — function — line 574
+- `merchantStockQuantity` — function — line 641
 - `PREMIUM_MERCHANT_KINDS` — const — line 69
-- `premiumAvailabilityChance` — function — line 201
-- `resolveMerchantArmorQuality` — function — line 624
+- `premiumAvailabilityChance` — function — line 255
+- `resolveMerchantArmorQuality` — function — line 691
   - domain: settlements
-- `resolveMerchantProfiles` — function — line 237
+- `resolveMerchantProfiles` — function — line 291
   - domain: settlements
-- `resolvePremiumMerchantAssignment` — function — line 410
+- `resolvePremiumMerchantAssignment` — function — line 477
   - domain: settlements
-- `seedMerchantStockIfNeeded` — function — line 648
-- `settlementHasPremiumOffer` — function — line 398
-- `specializationAffinity` — function — line 301
+- `seedMerchantStockIfNeeded` — function — line 715
+- `settlementHasPremiumOffer` — function — line 465
+- `specializationAffinity` — function — line 355
+- `STAGE4_AMMO_KINDS` — const — line 155
+  - domain: items-player
+- `STAGE4_ORDINARY_WEAPON_KINDS` — const — line 138
+  - domain: items-player
+- `STAGE4_SHIELD_KINDS` — const — line 164
+  - domain: items-player
 
 ## `settlement/merchantWagon.ts`
 
@@ -1137,22 +1143,22 @@ Generated from exported TypeScript symbols.
   - system: worldgen-cache
 - `attachRoadRoutePersistence` — function — line 133
   - domain: world-terrain
-- `bridgesNear` — function — line 1351
+- `bridgesNear` — function — line 1445
   - domain: world-terrain
-- `bridgeSpecOf` — function — line 1310
+- `bridgeSpecOf` — function — line 1404
 - `clearRoadNetworkCaches` — function — line 203
 - `clearRoadNetworkMemoryCaches` — function — line 190
   - domain: world-terrain
 - `entranceToward` — function — line 229
 - `findRoute` — function — line 354
   - domain: world-terrain
-- `fordsNear` — function — line 1243
+- `fordsNear` — function — line 1337
   - domain: world-terrain
 - `ingestHydratedRoadRoute` — function — line 123
   - domain: world-terrain
-- `meanderRoute` — function — line 721
-- `MidpointSignpost` — type — line 1034
-- `midpointSignpostsFor` — function — line 1048
+- `meanderRoute` — function — line 806
+- `MidpointSignpost` — type — line 1128
+- `midpointSignpostsFor` — function — line 1142
 - `neighborsFor` — function — line 258
 - `peekRoadRouteCache` — function — line 154
 - `RoadNetworkContext` — type — line 70
@@ -1163,18 +1169,18 @@ Generated from exported TypeScript symbols.
 - `roadRoutePairKey` — function — line 165
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutesForSettlement` — function — line 962
+- `roadRoutesForSettlement` — function — line 1056
 - `roadRouteWorldgenCacheReady` — function — line 149
 - `RoadSegment` — type — line 60
 - `RoadSegmentKind` — type — line 58
 - `RoutePoint` — type — line 48
 - `RouteSearchOptions` — type — line 315
-- `routeToMinorLocation` — function — line 1099
-- `segmentsNear` — function — line 1168
-- `SettlementSignpost` — type — line 999
-- `signpostsForSettlement` — function — line 1011
-- `VillageSegments` — type — line 1380
-- `villageSegmentsNear` — function — line 1404
+- `routeToMinorLocation` — function — line 1193
+- `segmentsNear` — function — line 1262
+- `SettlementSignpost` — type — line 1093
+- `signpostsForSettlement` — function — line 1105
+- `VillageSegments` — type — line 1474
+- `villageSegmentsNear` — function — line 1498
 
 ## `settlement/roadRiverCrossing.ts`
 
@@ -1296,19 +1302,21 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/settlementLayout.ts`
 
-- `computeSettlementLayout` — function — line 264
+- `computeSettlementLayout` — function — line 354
   - domain: settlements
-- `LayoutSite` — type — line 111
-- `setSettlementLayoutOverrides` — function — line 107
+- `LayoutSite` — type — line 109
+- `MAINLAND_SEARCH_MAX_CELLS` — const — line 196
+- `MainlandFilterStats` — type — line 199
+- `setSettlementLayoutOverrides` — function — line 105
 - `SETTLEMENT_BAND_MAX_EDGE_M` — const — line 50
 - `SETTLEMENT_MAX_EDGE_M` — const — line 47
 - `SETTLEMENT_MIN_DISTANCE_M` — const — line 38
 - `SETTLEMENT_SPACING_M` — const — line 41
 - `SETTLEMENT_TARGET_COUNT` — const — line 45
-- `SettlementLayout` — type — line 117
-- `SettlementLayoutInput` — type — line 75
-- `SettlementLayoutOverrides` — type — line 91
-- `SettlementSuitabilityWeight` — type — line 72
+- `SettlementLayout` — type — line 115
+- `SettlementLayoutInput` — type — line 73
+- `SettlementLayoutOverrides` — type — line 89
+- `SettlementSuitabilityWeight` — type — line 70
 
 ## `settlement/settlementNameUniqueness.ts`
 
@@ -1435,14 +1443,14 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/SettlementsManager.ts`
 
-- `createSettlementsManager` — function — line 459
+- `createSettlementsManager` — function — line 460
   - domain: settlements
   - system: settlements-manager
   - role: Owns settlement generation, streaming and per-settlement economy/household/NPC-state registries.
   - owns: SettlementEconomy, Household
   - lifecycle: streaming
-- `SettlementsManager` — type — line 204
-- `shouldAcceptSettlementResidency` — function — line 179
+- `SettlementsManager` — type — line 205
+- `shouldAcceptSettlementResidency` — function — line 180
   - domain: settlements
 
 ## `settlement/settlementStructures.ts`

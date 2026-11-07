@@ -131,6 +131,7 @@ Generated from TypeScript imports.
 - `perf/flags.ts`
 - `render/godRaysShader.ts`
 - `render/gradedOutputPass.ts`
+- `render/n8aoDispose.ts`
 
 **Imported by**
 
@@ -225,6 +226,19 @@ Generated from TypeScript imports.
 
 - `app/playerSight.ts`
 - `render/lastKnownBillboards.test.ts`
+
+## `render/n8aoDispose.test.ts`
+
+**Imports**
+
+- `render/n8aoDispose.ts`
+
+## `render/n8aoDispose.ts`
+
+**Imported by**
+
+- `render/createPostProcessing.ts`
+- `render/n8aoDispose.test.ts`
 
 ## `render/programPrewarm.test.ts`
 

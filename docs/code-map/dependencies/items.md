@@ -245,6 +245,7 @@ Generated from TypeScript imports.
 - `settlement/landPurchase.test.ts`
 - `settlement/landPurchase.ts`
 - `settlement/layeredArmorSources.test.ts`
+- `settlement/merchantStage4Sources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcPostDeath.test.ts`
@@ -1348,6 +1349,7 @@ Generated from TypeScript imports.
 - `settlement/householdProfessionStock.test.ts`
 - `settlement/householdProfessionStock.ts`
 - `settlement/layeredArmorSources.test.ts`
+- `settlement/merchantStage4Sources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `settlement/npcState.ts`
@@ -2027,6 +2029,7 @@ Generated from TypeScript imports.
 - `quests/guardRewards.ts`
 - `settlement/artisanCraft.ts`
 - `settlement/layeredArmorSources.test.ts`
+- `settlement/merchantStage4Sources.test.ts`
 - `settlement/merchantTrade.test.ts`
 - `settlement/merchantTrade.ts`
 - `ui-vue/components/items/buildInventoryDetailStatRows.ts`

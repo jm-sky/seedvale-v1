@@ -178,6 +178,8 @@ Generated from TypeScript imports.
 - `fauna/rabies.test.ts`
 - `fauna/settlementFaunaHabitats.ts`
 - `fauna/villageAvoidance.test.ts`
+- `fauna/wildFaunaRecords.test.ts`
+- `fauna/wildFaunaRecords.ts`
 - `interaction/Interactable.ts`
 - `interaction/resolveInteraction.ts`
 - `items/foreignProperty.test.ts`
@@ -188,6 +190,7 @@ Generated from TypeScript imports.
 - `player/playerCombat.ts`
 - `quests/QuestManager.ts`
 - `quests/quests.ts`
+- `settlement/SettlementsManager.lifecycle.test.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/animalCorpseSanitation.ts`
 - `settlement/createSettlement.ts`
@@ -263,6 +266,7 @@ Generated from TypeScript imports.
 - `fauna/animalTerritory.ts`
 - `fauna/closedPredatorPressure.ts`
 - `fauna/createFauna.groups.test.ts`
+- `fauna/createFauna.records.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/faunaGroupLifecycle.test.ts`
 - `fauna/faunaGroupLifecycle.ts`
@@ -452,6 +456,7 @@ Generated from TypeScript imports.
 - `fauna/animalWalkSpeed.ts`
 - `fauna/closedPredatorPressure.ts`
 - `fauna/corpseDecay.test.ts`
+- `fauna/createFauna.ts`
 - `fauna/destinationThreatHooks.ts`
 - `fauna/dungeonResidents.test.ts`
 - `fauna/dungeonResidents.ts`
@@ -463,6 +468,7 @@ Generated from TypeScript imports.
 - `fauna/horseTraining.test.ts`
 - `fauna/persistentOccupants.test.ts`
 - `fauna/preyAlertPerception.ts`
+- `fauna/wildFaunaRecords.ts`
 - `reputation/animalDeeds.ts`
 - `settlement/horseAcquisition.test.ts`
 - `settlement/livestock.ts`
@@ -874,6 +880,7 @@ Generated from TypeScript imports.
 - `fauna/animalWalkSpeed.test.ts`
 - `fauna/createFauna.test.ts`
 - `fauna/createFauna.ts`
+- `fauna/wildFaunaRecords.ts`
 - `reputation/animalDeeds.ts`
 
 ## `fauna/animalWalkSpeed.test.ts`
@@ -948,6 +955,15 @@ Generated from TypeScript imports.
 - `fauna/createFauna.ts`
 - `terrain/waterSample.ts`
 
+## `fauna/createFauna.records.test.ts`
+
+**Imports**
+
+- `fauna/AnimalSpawner.ts`
+- `fauna/createFauna.ts`
+- `fauna/persistentOccupants.ts`
+- `terrain/waterSample.ts`
+
 ## `fauna/createFauna.test.ts`
 
 **Imports**
@@ -965,6 +981,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalAgent.ts`
 - `fauna/AnimalSpawner.ts`
 - `fauna/animalCaveHabitat.ts`
+- `fauna/animalDefs.ts`
 - `fauna/animalRoaming.ts`
 - `fauna/animalVariants.ts`
 - `fauna/closedPredatorPressure.ts`
@@ -975,6 +992,7 @@ Generated from TypeScript imports.
 - `fauna/playerAwareness.ts`
 - `fauna/proceduralAnimals.ts`
 - `fauna/settlementFaunaHabitats.ts`
+- `fauna/wildFaunaRecords.ts`
 - `fauna/wolfDenScenario.ts`
 - `math/segment.ts`
 - `perf/agentCpuDiag.ts`
@@ -999,6 +1017,7 @@ Generated from TypeScript imports.
 - `app/worldBundle.ts`
 - `assets/assetIndex.ts`
 - `fauna/createFauna.groups.test.ts`
+- `fauna/createFauna.records.test.ts`
 - `fauna/createFauna.test.ts`
 - `fauna/destinationThreatHooks.ts`
 - `fauna/huntingHooks.ts`
@@ -1408,16 +1427,19 @@ Generated from TypeScript imports.
 **Imports**
 
 - `fauna/AnimalAgent.ts`
+- `fauna/wildFaunaRecords.ts`
 
 **Imported by**
 
 - `app/worldBundle.ts`
 - `fauna/AnimalSpawner.ts`
+- `fauna/createFauna.records.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/dungeonResidents.ts`
 - `fauna/faunaGroupLifecycle.ts`
 - `fauna/habitatPressure.ts`
 - `fauna/persistentOccupants.test.ts`
+- `fauna/wildFaunaRecords.ts`
 - `persistence/saveData.ts`
 - `world/locations/treasureMapBearCave.ts`
 
@@ -1601,6 +1623,29 @@ Generated from TypeScript imports.
 - `fauna/animalDefs.ts`
 - `fauna/animalForaging.ts`
 - `fauna/waterTraversal.test.ts`
+
+## `fauna/wildFaunaRecords.test.ts`
+
+**Imports**
+
+- `fauna/AnimalAgent.ts`
+- `fauna/wildFaunaRecords.ts`
+
+## `fauna/wildFaunaRecords.ts`
+
+**Imports**
+
+- `fauna/AnimalAgent.ts`
+- `fauna/animalDefs.ts`
+- `fauna/animalVariants.ts`
+- `fauna/persistentOccupants.ts`
+
+**Imported by**
+
+- `fauna/createFauna.ts`
+- `fauna/persistentOccupants.ts`
+- `fauna/wildFaunaRecords.test.ts`
+- `persistence/saveData.ts`
 
 ## `fauna/wolfDenScenario.test.ts`
 

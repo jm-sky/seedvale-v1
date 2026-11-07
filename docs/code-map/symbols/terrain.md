@@ -223,27 +223,27 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkManager.ts`
 
-- `applyChunkWaterDayNight` — function — line 1202
-- `applyModificationToTile` — function — line 963
-- `ChunkManager` — type — line 571
+- `applyChunkWaterDayNight` — function — line 1205
+- `applyModificationToTile` — function — line 966
+- `ChunkManager` — type — line 574
 - `ChunkManagerConfig` — type — line 347
-- `createChunkManager` — function — line 1227
+- `createChunkManager` — function — line 1230
   - domain: world-terrain
   - system: chunk-manager
   - role: Owns terrain chunk streaming, sampling and environment-facing world queries.
   - simulation: on-demand
   - performance: nearby-only
-- `CropHarvestOutcome` — type — line 1216
-- `drainByBudget` — function — line 1177
+- `CropHarvestOutcome` — type — line 1219
+- `drainByBudget` — function — line 1180
 - `FinalizeStage` — type — line 467
-- `pickNearestQueuedKey` — function — line 1137
-- `pickNextFinalizeKey` — function — line 1155
-- `ResidentChunkSnapshot` — type — line 1042
-- `sampleResidentHeight` — function — line 1062
-- `sampleResidentLocalWater` — function — line 1110
-- `sampleResidentSurfaceGround` — function — line 1082
-- `TerrainModification` — type — line 920
-- `tickChunkWaterSurfaces` — function — line 1190
+- `pickNearestQueuedKey` — function — line 1140
+- `pickNextFinalizeKey` — function — line 1158
+- `ResidentChunkSnapshot` — type — line 1045
+- `sampleResidentHeight` — function — line 1065
+- `sampleResidentLocalWater` — function — line 1113
+- `sampleResidentSurfaceGround` — function — line 1085
+- `TerrainModification` — type — line 923
+- `tickChunkWaterSurfaces` — function — line 1193
 
 ## `terrain/chunkMeshCache.ts`
 
@@ -301,28 +301,28 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/chunkWorkerPool.ts`
 
-- `cancelChunkFarTile` — function — line 678
-- `cancelChunkGrass` — function — line 640
-- `cancelChunkMapTile` — function — line 670
-- `cancelChunkMesh` — function — line 651
-- `cancelChunkTile` — function — line 629
-- `cancelChunkWorldKnowledge` — function — line 662
+- `cancelChunkFarTile` — function — line 687
+- `cancelChunkGrass` — function — line 649
+- `cancelChunkMapTile` — function — line 679
+- `cancelChunkMesh` — function — line 660
+- `cancelChunkTile` — function — line 638
+- `cancelChunkWorldKnowledge` — function — line 671
 - `ChunkWorkerLike` — type — line 29
 - `ChunkWorkerPool` — type — line 45
 - `ChunkWorkerPoolOptions` — type — line 36
 - `createChunkWorkerPool` — function — line 204
 - `defaultChunkWorkerCount` — function — line 174
-- `disposeChunkWorkerPool` — function — line 695
+- `disposeChunkWorkerPool` — function — line 704
 - `HeightmapGenerationCancelledError` — class — line 17
-- `installChunkWorkerHydrology` — function — line 682
+- `installChunkWorkerHydrology` — function — line 691
 - `isChunkWorkerCancelledError` — function — line 24
-- `requestChunkFarTile` — function — line 674
-- `requestChunkGrass` — function — line 633
-- `requestChunkHydrologyRows` — function — line 686
-- `requestChunkMapTile` — function — line 666
-- `requestChunkMesh` — function — line 644
-- `requestChunkTile` — function — line 622
-- `requestChunkWorldKnowledge` — function — line 655
+- `requestChunkFarTile` — function — line 683
+- `requestChunkGrass` — function — line 642
+- `requestChunkHydrologyRows` — function — line 695
+- `requestChunkMapTile` — function — line 675
+- `requestChunkMesh` — function — line 653
+- `requestChunkTile` — function — line 631
+- `requestChunkWorldKnowledge` — function — line 664
 
 ## `terrain/chunkWorldItems.ts`
 
@@ -551,19 +551,19 @@ Generated from exported TypeScript symbols.
 
 - `buildLandformIndex` — function — line 65
 - `EMPTY_LANDFORM_INDEX` — const — line 56
-- `generateLandforms` — function — line 152
-- `insideCraterAt` — function — line 312
+- `generateLandforms` — function — line 199
+- `insideCraterAt` — function — line 366
 - `LANDFORM_BUCKET_SIZE_M` — const — line 39
 - `LANDFORM_MAX_PER_BUCKET` — const — line 43
 - `LANDFORM_MAX_RADIUS_M` — const — line 41
-- `landformCorrectionBypassAt` — function — line 297
+- `landformCorrectionBypassAt` — function — line 351
 - `LandformDescriptor` — type — line 25
 - `LandformGenContext` — type — line 98
-- `landformHeightDeltaAt` — function — line 242
+- `landformHeightDeltaAt` — function — line 298
 - `LandformIndex` — type — line 45
-- `landformIndexFor` — function — line 226
+- `landformIndexFor` — function — line 282
 - `LandformKind` — type — line 23
-- `landformRockAt` — function — line 277
+- `landformRockAt` — function — line 331
 
 ## `terrain/macroClimate.ts`
 

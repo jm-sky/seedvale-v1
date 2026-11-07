@@ -1967,6 +1967,7 @@ Generated from TypeScript imports.
 - `fauna/animalSteering.test.ts`
 - `fauna/animalVariants.test.ts`
 - `fauna/createFauna.groups.test.ts`
+- `fauna/createFauna.records.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/faunaProximity.test.ts`
 - `fauna/persistentOccupants.test.ts`

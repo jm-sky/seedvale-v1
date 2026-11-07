@@ -43,6 +43,7 @@ Generated from TypeScript imports.
 - `fauna/animalStray.ts`
 - `fauna/habitatPressure.ts`
 - `fauna/persistentOccupants.ts`
+- `fauna/wildFaunaRecords.ts`
 - `items/HeldTool.ts`
 - `items/Inventory.ts`
 - `items/container.ts`
