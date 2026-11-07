@@ -102,6 +102,8 @@ export function probeBestPointNear(
  *  search is centered on `home` (stable regardless of where the trip
  *  starts), not on the animal's current position. */
 export type TripDestinationContext = {
+  /** Probe randomness (fauna-050 C4). Absent = `Math.random`. */
+  random?: () => number
   home: { readonly x: number, readonly z: number }
   searchRadius: number
   sociability: AnimalSociability
@@ -164,6 +166,7 @@ export function findWaterTripDestination(ctx: TripDestinationContext): { x: numb
       const d = Math.hypot(x - ctx.home.x, z - ctx.home.z)
       return hits * 10 - d
     },
+    ctx.random,
   )
 }
 

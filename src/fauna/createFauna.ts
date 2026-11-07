@@ -69,6 +69,7 @@ import {
   type ClosedSettlementSite,
   resolveClosedPredatorPressure,
 } from './closedPredatorPressure'
+import { faunaEventRandom } from './faunaEventRandom'
 import {
   CarriedSpawnerStore,
   catchUpSpawnerLifecycle,
@@ -850,12 +851,13 @@ export async function createFauna(
     if (spawnPointId) animalToSpawner.set(animalId, spawnPointId)
     const boundSpawner = spawnPointId ? spawnerById.get(spawnPointId) : undefined
     const sex: WildAnimalSex | undefined = wild
-      ? (wild.sex ?? wildSexFromRoll(settlementFaunaSiteRandom(seed, `sex:${animalId}`)(), wild.forceFemale))
+      ? (wild.sex ?? wildSexFromRoll(faunaEventRandom(seed, `sex:${animalId}`)(), wild.forceFemale))
       : undefined
     if (wild) wildMeta.set(animalId, { habitatId: wild.habitatId, occupantKey: wild.occupantKey, origin: wild.origin })
     return new AnimalAgent({
       def: ANIMAL_DEFS[kind],
       animalId,
+      eventSeed: seed,
       sampleHeight: agentSampleHeight,
       sampleResidentSurfaceGround,
       waterLevel,
@@ -944,21 +946,17 @@ export async function createFauna(
   /** Spawner id -> owning group (C0): destination owner for den trips and the
    *  home-only wolf-den scenario guard. Absent = extra/closed-pressure site, treated as home. */
   const spawnerGroupById = new Map<string, HabitatGroupRecord>()
-  /** Site-owned placement streams for non-home spawners (C0): independent of
-   *  materialization order. Home keeps the shared `0xfa11` stream (bit-identical). */
-  const spawnerRngById = new Map<string, () => number>()
-  const rngForSpawner = (spawner: PreySpawner): (() => number) => {
-    if (spawnerGroupById.get(spawner.id)?.pinned ?? true) return random
-    let rng = spawnerRngById.get(spawner.id)
-    if (!rng) {
-      rng = settlementFaunaSiteRandom(seed, `spawner:${spawner.id}`)
-      spawnerRngById.set(spawner.id, rng)
-    }
-    return rng
+  /** Placement for the NEXT durable birth of `spawner` (fauna-050 C4): drawn from
+   *  `birth:<habitatId>:<seq>`, so it depends only on the durable birth id, never on
+   *  materialization order or frame partition. `build` = the home build phase,
+   *  which stays on the shared `0xfa11` stream (bit-identical). */
+  const findBirthSpot = (spawner: PreySpawner, minDist: number, maxDist: number, build = false) => {
+    const pinned = spawnerGroupById.get(spawner.id)?.pinned ?? true
+    const rng = build && pinned
+      ? random
+      : faunaEventRandom(seed, `birth:${spawner.id}:${spawner.nextBirthSeq ?? 0}`)
+    return findWalkableNear(spawner.x, spawner.z, minDist, maxDist, undefined, 24, rng)
   }
-  /** Walkable point near a spawner, drawn from that spawner's own stream. */
-  const findWalkableNearSpawner = (spawner: PreySpawner, minDist: number, maxDist: number) =>
-    findWalkableNear(spawner.x, spawner.z, minDist, maxDist, undefined, 24, rngForSpawner(spawner))
 
   /** Creates the planned ring individuals (planner hook, after the ring phase and
    *  before any spawner is placed/carved). */
@@ -1101,7 +1099,7 @@ export async function createFauna(
    *  re-materialization). Only the home build feeds the quest wolf-den tracker. */
   const spawnHabitatPopulation = (habitat: PreySpawner, count: number, trackDenWolves: boolean): void => {
     for (let i = 0; i < count; i++) {
-      const spot = findWalkableNearSpawner(habitat, 0, 4) ?? habitat
+      const spot = findBirthSpot(habitat, 0, 4, true) ?? habitat
       const variant = habitat.type === 'wolfDen' ? wolfDenInitialFillVariant(i) : undefined
       const agent = spawnBirth(habitat, spot.x, spot.z, 'fill', variant)
       scene.add(agent.mesh)
@@ -1177,7 +1175,7 @@ export async function createFauna(
       const target = materializedPopulation(habitat, virtual, occupantRegistry.slotCountFor(id))
       const alive = wildRegistry.forHabitat(id).filter((r) => !r.state.health.dead).length
       for (let i = alive; i < target; i++) {
-        const spot = findWalkableNearSpawner(habitat, 0, 4) ?? habitat
+        const spot = findBirthSpot(habitat, 0, 4) ?? habitat
         const agent = spawnBirth(habitat, spot.x, spot.z, 'birth')
         scene.add(agent.mesh)
         agents.push(agent)
@@ -1680,7 +1678,7 @@ export async function createFauna(
       }
       const materializeManagedSpawnerAnimal = (spawner: PreySpawner): boolean => {
         const pos = resolveWildFaunaSpawnPosition(
-          findWalkableNearSpawner(spawner, 0, 4),
+          findBirthSpot(spawner, 0, 4),
           spawner,
           drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
         )
@@ -1731,7 +1729,7 @@ export async function createFauna(
               }
               while (nearby < targetCap && spawner.state === 'active') {
                 const spot = resolveWildFaunaSpawnPosition(
-                  findWalkableNearSpawner(spawner, 0, 4),
+                  findBirthSpot(spawner, 0, 4),
                   spawner,
                   drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
                 )
@@ -1761,7 +1759,7 @@ export async function createFauna(
                   sampleHeight,
                   waterLevel,
                   (x, z) => sampleHeight(x, z) > waterLevel + 0.6,
-                  random,
+                  faunaEventRandom(seed, `trip:${spawner.id}:${dayIndex}`),
                 )
                 if (traveller && destination && traveller.startSettlementDirectedTrip(destination, SETTLEMENT_TRIP_STAY_SEC)) {
                   recordSettlementTripOpportunity(spawner, worldDays)

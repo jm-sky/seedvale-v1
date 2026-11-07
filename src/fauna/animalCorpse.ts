@@ -7,6 +7,7 @@ import { drainStamina, type StaminaState } from '../shared/StaminaState'
 import { gameHoursToGameDays } from '../world/timeConversion'
 import { createBloodSplat, disposeBloodSplat } from './bloodSplat'
 import { animateCorpseRotFx, createCorpseRotFx, disposeCorpseRotFx } from './corpseDecayFx'
+import { faunaEventRandom } from './faunaEventRandom'
 import {
   createHarvestedRemainsAsync,
   createNaturalRemainsAsync,
@@ -398,7 +399,7 @@ function applyRabiesCorpseExposure(state: AnimalCorpseState, host: CorpseHost, n
     )
     if (!isRabiesCorpseContact({ corpsePhase: state.phase, corpseInfected: true, distance })) continue
     state.exposedAnimalIds.add(other.animalId)
-    if (rollsRabiesInfection(RABIES_CORPSE_INFECTION_CHANCE, Math.random())) other.infectWithRabies()
+    if (rollsRabiesInfection(RABIES_CORPSE_INFECTION_CHANCE, faunaEventRandom(0, `rabies-corpse:${host.animalId}:${other.animalId}`)())) other.infectWithRabies()
   }
 }
 

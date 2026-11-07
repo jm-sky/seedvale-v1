@@ -307,6 +307,8 @@ export function sourceActionDuration(kind: SourceTargetKind): number {
  *  `foragingContext()` only while a need is actually elevated (plan
  *  fauna-017 step 6a), never cached across ticks. */
 export type ForagingContext = {
+  /** Probe randomness (fauna-050 C4: the agent's keyed wander stream). Absent = `Math.random`. */
+  random?: () => number
   x: number
   z: number
   home: { readonly x: number, readonly z: number }
@@ -501,6 +503,7 @@ export function findWaterTarget(ctx: ForagingContext): SourceTarget | null {
       const d = Math.hypot(x - ctx.x, z - ctx.z)
       return hits * 10 - d
     },
+    ctx.random,
   )
   return best ? { kind: 'water', x: best.x, z: best.z, waterSource: { kind: 'natural' } } : null
 }
@@ -525,6 +528,7 @@ export function findForageTarget(ctx: ForagingContext): SourceTarget | null {
       const d = Math.hypot(x - ctx.x, z - ctx.z)
       return suitability * 10 - d
     },
+    ctx.random,
   )
   return best ? { kind: 'forage', x: best.x, z: best.z } : null
 }

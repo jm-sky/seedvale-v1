@@ -63,7 +63,7 @@ Status: **implemented · technically verified** (type-check, lint, `pnpm vitest 
 - **F1 relabel:** extracted + synthetic golden verified. Still owed: WSL baseline and a home check on the real continent. Planner side effects (carving during planning) get a frozen-input contract for non-home groups in C0.
 - **F2 relabel:** streaming infrastructure (group map, cached plan, save union, toggle). The F2 "Stop if" (*catch-up cannot match continuous lifecycle without persisting individuals*) was in fact hit. The 15 + 9 tests prove timer parity and site identity, not individual or ecological continuity. The test "carry() keeps runtime data out of the persisted rows" asserts the R2 information loss. C2 rewrites it into a round-trip assertion.
 - **Not reachable in production yet:** no non-home group is materialized (F3 not wired), so R1/R2/R6 do not affect current play. Home keeps the already documented reload limitation (ordinary wild animals resurrect, quest bindings `invalidated`). Author Q035-d (a), 2026-11-06: C1/C2 also fix that at home.
-- **Next:** ~~C0~~ (done 2026-11-06, Q159) → ~~C1~~ (spec done 2026-11-07, Q160, § C1 below) → **C2 (S, ready, Q161)** → C4 → C3 → F3.
+- **Next:** ~~C0~~ (done 2026-11-06, Q159) → ~~C1~~ (spec done 2026-11-07, Q160, § C1 below) → ~~C2~~ (Q161) → ~~C4~~ (done 2026-11-07, Q163, § C4 result below) → **C3 (S)** → F3.
 
 ## C1 — durable wild record spec + C3 world-time contract (Opus, 2026-11-07, Q160)
 
@@ -169,6 +169,15 @@ Helper: `faunaEventRandom(seed, key) = settlementFaunaSiteRandom(seed, key)`. It
 The home **build-time** draws (ring, sites, initial fill placement) stay on the shared `0xfa11` stream: bit-identical.
 
 **Wander tolerance:** the trajectory after a promote or reload may differ from an uninterrupted run. Authoritative fields (identity, HP, needs, lifecycle, counts) must not.
+
+#### C4 result (Q163, Sonnet, 2026-11-07) — implemented
+
+- `src/fauna/faunaEventRandom.ts`: `faunaEventRandom(seed, key)` wraps `settlementFaunaSiteRandom`. `AnimalAgentDeps.eventSeed` (default 0) carries the world seed; `createFauna` passes `seed`.
+- Keyed: `life:<id>`, `sex:<id>` (now via the helper), `rabies:<attacker>:<target>:<floor(days*1440)>`, `prod:<id>` / `wool:<id>`, `trip:<spawnerId>:<dayIndex>` (den-trip destination), `birth:<habitatId>:<nextBirthSeq>` (post-build placement; replaces the C0 `spawner:<id>` stream, which is removed). Home build-time ring/sites/initial fill stay on `0xfa11` (existing bit-identical test passes). Non-home initial fill uses the birth key.
+- Per-agent `wander:<id>` stream (lazy, reset on `hydrate()`, cursor not persisted): wander/idle/side picks, corpse tip side, **and the water/forage/water-trip/water-exit probes** (`random` added to `ForagingContext` / `TripDestinationContext`). Not in the original key table, but needs differed between identical runs without it.
+- Deviations: livestock/rats are not passed the world seed (`eventSeed` 0; still deterministic per `animalId`). Rabies corpse-exposure roll keyed `rabies-corpse:<host>:<other>` with seed 0 (no seed in `animalCorpse.ts`). Audio-only vocalize cooldown still uses `Math.random` (not authoritative). There is no runtime "mother pick" in createFauna (mothers exist only in the ring plan), so nothing to key.
+- Tolerance confirmed by tests: with a different frame partition or a save inserted mid-run, wander trajectories differ, so combat HP and needs differ; ids, sex, alive/dead, lifecycle stage, mother links, spawner state and birth counters are equal. Under reversed group materialization order **everything incl. HP and needs** is equal.
+- Tests: `src/fauna/createFauna.keyedRandom.test.ts` (seeds 42 and 415424794; reversed group order, frame partitions 160 vs 640, save insertion; guard asserts post-build births occurred). No save version bump.
 
 ### C1.7 Persistence (implemented in C2) — v61 → v62
 

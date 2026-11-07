@@ -369,6 +369,7 @@ export * from './animalRoaming'
  *  type already is. */
 export * from './animalUpdateCadence'
 export type { AnimalVariant } from './animalVariants'
+import { faunaEventRandom } from './faunaEventRandom'
 import { HUMAN_BITE_RANGE } from './humanBite'
 
 /** One movement mode's stuck-watchdog + in-flight `findPath()` route (plan
@@ -1046,6 +1047,9 @@ type AnimalAnimClip = 'attack' | 'death' | 'gallop' | 'hurt' | 'idle' | 'walk'
 export type AnimalAgentDeps = {
   def: AnimalDef
   animalId: string
+  /** World seed for entity/event-keyed randomness (fauna-050 C4). Absent = 0
+   *  (still deterministic per `animalId`, e.g. livestock/rats/tests). */
+  eventSeed?: number
   sampleHeight: HeightSampler
   /** Resident/runtime movement-ground query (plan world-terrain-044) — `null`
    *  when the destination's owning chunk hasn't finished streaming. Used
@@ -1288,6 +1292,11 @@ export class AnimalAgent {
    *  `livestock.ts`). Lets a quest objective target one specific animal
    *  instead of scanning by kind (plan 093 Etap D). */
   readonly animalId: string
+  /** World seed for keyed fauna randomness (fauna-050 C4). */
+  private readonly eventSeed: number
+  /** Per-agent `wander:<animalId>` stream (cursor never persisted — stated tolerance). */
+  private wanderStream: (() => number) | null = null
+  private readonly wanderFn = (): number => this.wanderRandom()
   /** Authoritative ownership (plan fauna-020) — household, player, or none. */
   private _owner: AnimalOwner
   /** Optional given name — assigned to a horse on player ownership transfer. */
@@ -1812,6 +1821,7 @@ export class AnimalAgent {
     const {
       def,
       animalId,
+      eventSeed = 0,
       sampleHeight,
       sampleResidentSurfaceGround,
       waterLevel,
@@ -1845,6 +1855,7 @@ export class AnimalAgent {
     } = deps
     this.def = def
     this.animalId = animalId
+    this.eventSeed = eventSeed
     this.herdId = herdId
     this.lifeStage = lifeStage
     this.motherId = motherId
@@ -1877,7 +1888,7 @@ export class AnimalAgent {
     const trainingMods = this.trainingModifiers()
     this.health = createHealthState(MAX_HP[def.kind] * this.effective.healthMultiplier * trainingMods.maxHp)
     this.injuryRecovery = { health: this.health, physicalInjury: 0 }
-    this.life = createAnimalLifeState(Math.random(), {
+    this.life = createAnimalLifeState(faunaEventRandom(eventSeed, `life:${animalId}`)(), {
       ...def.metabolism,
       staminaCapacity: def.metabolism.staminaCapacity * trainingMods.staminaCapacity,
     })
@@ -3177,6 +3188,7 @@ export class AnimalAgent {
    *  from the restored `deathAtDays` — see `advanceAnimalCorpse()`. Never
    *  reports `onDeath` — that already fired, before this save was taken. */
   hydrate(state: AnimalSaveState): void {
+    this.wanderStream = null // re-seeded on hydrate (C4: cursor not persisted)
     this.hydrateLifeStage(state)
     this.mesh.position.x = state.x
     this.mesh.position.z = state.z
@@ -3426,7 +3438,7 @@ export class AnimalAgent {
   private tipCorpse(): void {
     if (this.corpseTipped) return
     this.anim.stopAll()
-    const side = Math.random() < 0.5 ? 1 : -1
+    const side = this.wanderRandom() < 0.5 ? 1 : -1
     this.mesh.rotation.z = side * (Math.PI / 2)
     this.mesh.position.y += this.isCapsule ? 0.2 * this.def.scale : this.def.modelHeight * 0.3
     this.corpseTipped = true
@@ -3480,7 +3492,7 @@ export class AnimalAgent {
   private tickProduction(nowDays: number): void {
     const production = this.def.production
     if (!production || this.productionReadyAtDays !== null) return
-    this.productionReadyAtDays = initialLivestockProductionReadyAtDays(nowDays, production.intervalDays, Math.random())
+    this.productionReadyAtDays = initialLivestockProductionReadyAtDays(nowDays, production.intervalDays, faunaEventRandom(this.eventSeed, `prod:${this.animalId}`)())
   }
 
   /** True the instant this chicken's current cycle is done and no egg is
@@ -3524,7 +3536,7 @@ export class AnimalAgent {
 
   private tickWoolProduction(nowDays: number): void {
     if (this.def.kind !== 'sheep' || this.woolReadyAtDays !== null) return
-    this.woolReadyAtDays = initialLivestockProductionReadyAtDays(nowDays, WOOL_GROWTH_DAYS, Math.random())
+    this.woolReadyAtDays = initialLivestockProductionReadyAtDays(nowDays, WOOL_GROWTH_DAYS, faunaEventRandom(this.eventSeed, `wool:${this.animalId}`)())
   }
 
   /** True while this sheep's current fleece is ready to shear. */
@@ -4898,7 +4910,7 @@ export class AnimalAgent {
    *  contact, only from an actual `attack()` event. */
   private tryRabiesBiteInfection(target: AnimalAgent): void {
     if (target.health.dead || target.rabid) return
-    if (rollsRabiesInfection(RABIES_BITE_INFECTION_CHANCE, Math.random())) target.infectWithRabies()
+    if (rollsRabiesInfection(RABIES_BITE_INFECTION_CHANCE, this.rabiesRoll(target))) target.infectWithRabies()
   }
 
   private updatePrey(
@@ -5471,6 +5483,7 @@ export class AnimalAgent {
     const ctx: ForagingContext = {
       x: this.mesh.position.x,
       z: this.mesh.position.z,
+      random: this.wanderFn,
       home: this.home,
       def: this.def,
       life: this.life,
@@ -5703,6 +5716,18 @@ export class AnimalAgent {
     return true
   }
 
+  /** Next draw of this agent's own wander/idle/side stream (fauna-050 C4). */
+  private wanderRandom(): number {
+    this.wanderStream ??= faunaEventRandom(this.eventSeed, `wander:${this.animalId}`)
+    return this.wanderStream()
+  }
+
+  /** Keyed rabies roll (C4): same bite (attacker, target, world minute) -> same roll. */
+  private rabiesRoll(target: AnimalAgent): number {
+    const minute = Math.floor(this.tickNowDays * 1440)
+    return faunaEventRandom(this.eventSeed, `rabies:${this.animalId}:${target.animalId}:${minute}`)()
+  }
+
   private wander(dt: number): void {
     // Stay allows local yard wander but never routine long-range trips
     // (plan fauna-030). Threat/needs already ran above this fallback.
@@ -5718,9 +5743,9 @@ export class AnimalAgent {
     if (timerExpired || this.arrived(this.target, 1.2)) {
       const restInstead = timerExpired
         && getStaminaRatio(this.life.stamina) < STAMINA_REST_THRESHOLD
-        && Math.random() < EXTENDED_IDLE_CHANCE
+        && this.wanderRandom() < EXTENDED_IDLE_CHANCE
       if (restInstead) {
-        this.wanderTimer = 2 + Math.random() * 3
+        this.wanderTimer = 2 + this.wanderRandom() * 3
       } else {
         this.pickWanderTarget()
       }
@@ -5791,6 +5816,7 @@ export class AnimalAgent {
     if (bucket === this.lastWaterTripBucket) return false
     this.lastWaterTripBucket = bucket
     const destination = findWaterTripDestination({
+      random: this.wanderFn,
       home: this.home,
       searchRadius: config.searchRadius,
       sociability: this.def.sociability,
@@ -5890,17 +5916,17 @@ export class AnimalAgent {
       // Shorter cadence than the default retarget below — cohesion is
       // retarget-driven, not continuously tracked, so a tighter interval
       // keeps following visibly responsive (plan 118).
-      this.wanderTimer = (1.5 + Math.random() * 2) / bias
+      this.wanderTimer = (1.5 + this.wanderRandom() * 2) / bias
       return
     }
     const [minR, maxR] = this.currentWanderBand()
     const roam = this.currentRoamHome()
     if (this.pickPointNear(roam.x, roam.z, minR * bias, maxR * bias)) {
-      this.wanderTimer = (3 + Math.random() * 4) / bias
+      this.wanderTimer = (3 + this.wanderRandom() * 4) / bias
       return
     }
     this.target.set(roam.x, 0, roam.z)
-    this.wanderTimer = (3 + Math.random() * 4) / bias
+    this.wanderTimer = (3 + this.wanderRandom() * 4) / bias
   }
 
   /** Daytime satellite roam for shepherd-household livestock (plan
@@ -5973,8 +5999,8 @@ export class AnimalAgent {
    *  herd/mother follow bias. */
   private pickPointNear(cx: number, cz: number, minR: number, maxR: number): boolean {
     for (let attempt = 0; attempt < 8; attempt++) {
-      const r = minR + Math.random() * (maxR - minR)
-      const a = Math.random() * Math.PI * 2
+      const r = minR + this.wanderRandom() * (maxR - minR)
+      const a = this.wanderRandom() * Math.PI * 2
       const x = cx + Math.cos(a) * r
       const z = cz + Math.sin(a) * r
       if (
@@ -6490,6 +6516,7 @@ export class AnimalAgent {
         WATER_EXIT_SEARCH_ATTEMPTS,
         (x, z) => this.isWalkable(x, z) && this.waterModeAt(x, z) !== 'swimming' && this.waterModeAt(x, z) !== null,
         (x, z) => -Math.hypot(x - this.mesh.position.x, z - this.mesh.position.z),
+        this.wanderFn,
       )
       if (!found) return false
       this.waterExitRecoveryTarget = this.overshootWaterExit(found.x, found.z)
