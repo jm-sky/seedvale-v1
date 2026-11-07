@@ -522,7 +522,7 @@ export function findRoute(
   // and lock them (plus their immediate approaches) against lateral meander —
   // otherwise meander could slide the polyline off the crossing it paid for,
   // or through a river it never evaluated (plan §7).
-  const anchored = withCrossingAnchors(raw, riverSegments, sampleHeight)
+  let anchored = withCrossingAnchors(raw, riverSegments, sampleHeight)
   const planned = crossingsForPolyline(anchored.points, riverSegments, routeKind, routeId)
   if (!planned) return null
 
@@ -538,11 +538,14 @@ export function findRoute(
     riverSegments,
     obstacles,
   }
+  // Q192: straight deck axes are locked into the chain before shaping (fallback: `straightenBridgeRuns`).
+  const deckLocked = lockBridgeDecks(anchored, planned, routeKind, routeId, shapeEnv)
+  anchored = deckLocked.route
   const pulled = stringPull(anchored.points, anchored.locked, shapeEnv)
   const rounded = roundCorners(pulled.points, pulled.locked, sampleHeight)
   const rungs = [rounded, { points: pulled.points, locked: pulled.locked }, anchored]
   let finalPoints = anchored.points
-  let crossings = planned
+  let crossings = deckLocked.crossings ?? planned
   for (const rung of rungs) {
     if (rung !== anchored && !polylineIsClear(rung.points, shapeEnv)) continue
     const meandered = meanderRoute(
@@ -571,11 +574,88 @@ export function findRoute(
   return { points, segments: toSegments(points, routeKind), kind: routeKind, crossings: straight.crossings }
 }
 
+/**
+ * Q192 deck-first lock: for each planned bridge, replaces the chain stretch within the deck radius by
+ * the straight edge `[E-, E+]` (centre `c` on the edge) on the heading A* already priced (`crossing.angle`) and locks both, so string-pulling, rounding and meander keep the deck axis straight by construction. A bridge
+ * is locked only when the ends are clear, the crossing topology still equals `planned` and the
+ * re-derived deck fits the new edge; otherwise that bridge keeps the unlocked chain (the Q97
+ * `straightenBridgeRuns` fallback runs afterwards unchanged).
+ */
+function lockBridgeDecks(
+  route: { points: { x: number, z: number, h: number }[], locked: Set<number> },
+  planned: readonly RoadRiverCrossing[],
+  routeKind: RoadSegmentKind,
+  routeId: string,
+  env: RouteShapeEnv,
+): {
+  route: { points: { x: number, z: number, h: number }[], locked: Set<number> }
+  crossings: RoadRiverCrossing[] | null
+} {
+  let cur = route
+  let curCrossings: RoadRiverCrossing[] | null = null
+  for (let i = 0; i < planned.length; i++) {
+    const c0 = planned[i]!
+    if (c0.kind !== 'bridge') continue
+    const dir = directionFromYaw(c0.angle)
+    const pts = cur.points
+    let cx = c0.x
+    let cz = c0.z
+    let span = c0.span
+    for (let attempt = 0; attempt < DECK_LOCK_ATTEMPTS; attempt++) {
+      const radius = span / 2 + BRIDGE_APPROACH_MARGIN + BRIDGE_STRAIGHT_APPROACH + DECK_LOCK_SLACK
+      let k = 0
+      let best = Infinity
+      for (let j = 0; j < pts.length; j++) {
+        const d = Math.hypot(pts[j]!.x - cx, pts[j]!.z - cz)
+        if (d < best) { best = d; k = j }
+      }
+      // The merged crossing centre can sit between chain vertices (braided channels); it only has to be inside the deck radius.
+      if (best >= radius) break
+      let lo = k
+      while (lo > 0 && Math.hypot(pts[lo - 1]!.x - cx, pts[lo - 1]!.z - cz) < radius) lo--
+      let hi = k
+      while (hi < pts.length - 1 && Math.hypot(pts[hi + 1]!.x - cx, pts[hi + 1]!.z - cz) < radius) hi++
+      if (lo === 0 || hi === pts.length - 1) break
+      // The first deck end is the one nearer the preceding kept point.
+      const before = pts[lo - 1]!
+      const plus = { x: cx + dir.x * radius, z: cz + dir.z * radius }
+      const minus = { x: cx - dir.x * radius, z: cz - dir.z * radius }
+      const minusFirst = Math.hypot(minus.x - before.x, minus.z - before.z) <= Math.hypot(plus.x - before.x, plus.z - before.z)
+      const ends = (minusFirst ? [minus, plus] : [plus, minus]).map((q) => ({ x: q.x, z: q.z, h: env.sampleHeight(q.x, q.z) }))
+      if (!polylineIsClear([before, ends[0]!], env) || !polylineIsClear([ends[1]!, pts[hi + 1]!], env)) break
+      const newPts = [...pts.slice(0, lo), ...ends, ...pts.slice(hi + 1)]
+      const found = crossingsForPolyline(newPts, env.riverSegments, routeKind, routeId)
+      if (!found || !sameCrossingTopology(found, planned)) break
+      const nc = found[i]!
+      if (deckFitsChord(newPts, nc, nc.span / 2 + BRIDGE_APPROACH_MARGIN + BRIDGE_STRAIGHT_APPROACH)) {
+        const newLocked = new Set<number>()
+        for (const idx of cur.locked) {
+          if (idx < lo) newLocked.add(idx)
+          else if (idx > hi) newLocked.add(idx - (hi - lo + 1) + 2)
+        }
+        newLocked.add(lo)
+        newLocked.add(lo + 1)
+        cur = { points: newPts, locked: newLocked }
+        curCrossings = found
+        break
+      }
+      cx = nc.x
+      cz = nc.z
+      span = Math.max(span, nc.span)
+    }
+  }
+  return { route: cur, crossings: curCrossings }
+}
+
 /** Straight road (m) kept beyond each bridge deck end before the route may bend again (Q97). */
 const BRIDGE_STRAIGHT_APPROACH = 4
 /** Chord radius growth (m) per retry when the re-derived deck does not fit inside the chord. */
 const BRIDGE_CHORD_GROWTH = 4
 const BRIDGE_CHORD_ATTEMPTS = 4
+/** Extra deck-lock radius (m) so the re-derived deck still fits the single locked edge. */
+const DECK_LOCK_SLACK = 1
+/** Re-centre attempts: the straight edge can shift the river traversal a few metres along the heading. */
+const DECK_LOCK_ATTEMPTS = 3
 
 /**
  * Q97: a bridge deck is a straight slab on the crossing's heading, so the road polyline must run straight

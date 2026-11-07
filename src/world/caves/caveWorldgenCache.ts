@@ -46,7 +46,7 @@ export const CAVES_V2_NAMESPACE = 'caves-v2'
  */
 // v9 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
 // v10 (2026-11-07, queue Q186): settlement layout drops off-mainland / waterfall-reserve / landform-footprint sites (plan world-terrain-063 V1).
-export const CAVES_V2_VERSION = 22
+export const CAVES_V2_VERSION = 23
 
 /** Generous per-seed cap: one manifest plus every accepted cave, with room
  *  for a little stale fingerprint churn before the least-recently-written
