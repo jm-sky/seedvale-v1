@@ -123,6 +123,34 @@ const BASIC_WEAPON_TOOL_ARMOR_KINDS = new Set<ItemKind>([
   'shovel',
 ])
 
+/**
+ * Plan items-player-064 O1: Common-tier Stage 4 melee weapons. Offered only by
+ * `weapons-tools` Traders (never `general`/`horses`), in small finite quantities.
+ *
+ * @domain items-player
+ */
+export const STAGE4_ORDINARY_WEAPON_KINDS: readonly ItemKind[] = [
+  'obsidian_knife',
+  'obsidian_dagger',
+  'sword',
+  'halberd',
+  'mace',
+  'war_hammer',
+  'club',
+  'staff',
+]
+
+/**
+ * Plan items-player-064 O2: Stage 4 ammunition. `bolt_heavy`/`bolt_blunt` are
+ * `weapons-tools` only; `sling_stone` is also offered by `general` Traders.
+ *
+ * @domain items-player
+ */
+export const STAGE4_AMMO_KINDS: readonly ItemKind[] = ['sling_stone', 'bolt_heavy', 'bolt_blunt']
+
+const STAGE4_ORDINARY_WEAPON_SET = new Set<ItemKind>(STAGE4_ORDINARY_WEAPON_KINDS)
+const STAGE4_AMMO_SET = new Set<ItemKind>(STAGE4_AMMO_KINDS)
+
 const METAL_KINDS = new Set<ItemKind>([
   'axe',
   'battle_axe',
@@ -130,10 +158,12 @@ const METAL_KINDS = new Set<ItemKind>([
   'dagger',
   'damascus_knife',
   'damascus_short_sword',
+  'halberd',
   'hatchet',
   'iron_rod',
   'knife',
   'long_sword',
+  'mace',
   'masterwork_sword',
   'pan',
   'pickaxe',
@@ -144,6 +174,8 @@ const METAL_KINDS = new Set<ItemKind>([
   'sickle',
   'spear',
   'steel_bracers',
+  'sword',
+  'war_hammer',
   'whetstone',
 ])
 
@@ -310,6 +342,13 @@ export function specializationAffinity(kind: ItemKind, spec: MerchantSpecializat
     || kind === 'fishing_rod'
   const luxury = IMPORT_FLAVOR_KINDS.has(kind) || isPremiumMerchantGood(kind)
 
+  // Plan items-player-064: Stage 4 goods are never offered by every specialization.
+  if (STAGE4_ORDINARY_WEAPON_SET.has(kind) || STAGE4_AMMO_SET.has(kind)) {
+    if (spec === 'weapons-tools') return 2
+    if (spec === 'general' && kind === 'sling_stone') return 1
+    return 0
+  }
+
   switch (spec) {
     case 'food-materials':
       if (foodOrMaterial) return 2
@@ -376,7 +415,13 @@ function quantityFor(
   if (kind === 'arrow' || kind === 'broadhead_arrow') {
     return size === 'XL' ? 12 : size === 'LG' ? 8 : size === 'MD' ? 5 : 3
   }
+  if (kind === 'sling_stone') return size === 'XL' ? 16 : size === 'LG' ? 12 : size === 'MD' ? 8 : 5
+  if (kind === 'bolt_heavy' || kind === 'bolt_blunt') {
+    return size === 'XL' ? 6 : size === 'LG' ? 5 : size === 'MD' ? 3 : 2
+  }
   const base = size === 'SM' ? 1 : size === 'MD' ? 2 : size === 'LG' ? 3 : 4
+  // Stage 4 ordinary weapons stay scarce: at most 2 specimens per Trader.
+  if (STAGE4_ORDINARY_WEAPON_SET.has(kind)) return region === 'import' ? 1 : Math.min(2, Math.max(1, base - 1))
   if (region === 'import') return 1
   if (region === 'local') return base
   return Math.max(1, base - 1)

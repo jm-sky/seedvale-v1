@@ -165,6 +165,8 @@ function resolveHunterGrants(starting: HouseholdStartingContext, householdId: st
   if (rank >= 3) {
     pushGrant(grants, 'broadhead_arrow', forest ? 6 : 4)
   }
+  // items-player-064 O2: sling ammo is a cheap hunter by-product, trade stock only.
+  pushGrant(grants, 'sling_stone', 4 + rank * 2)
   if (rank >= 4) {
     pushGrant(grants, 'saddlebags', 1)
     if (forest) pushGrant(grants, 'long_bow', 1)
@@ -285,6 +287,13 @@ function resolveBlacksmithGrants(starting: HouseholdStartingContext, householdId
       )
     }
   }
+  // items-player-064 O1/O2: deterministic by size/category (no extra rng draws,
+  // so the existing masterwork roll below keeps its stream).
+  if (swords && rank >= 1) pushGrant(grants, 'sword', 1)
+  if ((tools || !profile?.exclusive) && rank >= 2) pushGrant(grants, 'mace', 1)
+  if ((tools || !profile?.exclusive) && rank >= 3) pushGrant(grants, 'war_hammer', 1)
+  if (rank >= 2) pushGrant(grants, 'bolt_heavy', 2 + rank)
+  if (rank >= 3) pushGrant(grants, 'bolt_blunt', 2 + rank)
   if ((rank >= 4 && (metal || rng() < 0.18) && swords) || (swordBias && rank >= 3 && rng() < 0.35)) {
     pushGrant(grants, rng() < 0.5 ? 'masterwork_sword' : 'damascus_short_sword', 1)
   }

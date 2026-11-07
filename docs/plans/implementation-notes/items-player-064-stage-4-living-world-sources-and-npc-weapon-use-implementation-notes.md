@@ -24,3 +24,19 @@
 ## Order
 
 O1/O2 as soon as their 062 profiles land (can interleave per kind) → O3 → O4 → N1 (after npc-067 because both touch `npcCombat.ts`) → U last.
+
+## Slice record — O1/O2 (2026-11-07, Sonnet; technically verified, not browser-verified)
+
+Format: `kind | source owner | eligibility | quantity | price | restock/init | NPC fit`.
+
+| Kind(s) | Source owner | Eligibility | Quantity | Price | Init | NPC fit |
+| --- | --- | --- | --- | --- | --- | --- |
+| `obsidian_knife`, `obsidian_dagger`, `sword`, `halberd`, `mace`, `war_hammer`, `club`, `staff` | Trader (`merchantTrade.ts`, `STAGE4_ORDINARY_WEAPON_KINDS`) | `weapons-tools` only (affinity 0 elsewhere); `sword`/`halberd`/`mace`/`war_hammer` added to `METAL_KINDS` (mountain/iron = local, forest/ocean = import) | ≤ 2 per Trader (import = 1) | `MERCHANT_PRICES` = 062 base | existing persisted latch, no reseed | N1 pending |
+| `sling_stone` | Trader (`weapons-tools` pref 2, `general` 1); Hunter household | any size | Trader 5/8/12/16 by size; Hunter 4 + 2·rank | 2 | latch / first construction | sling only (N1) |
+| `bolt_heavy`, `bolt_blunt` | Trader (`weapons-tools` only); Blacksmith household | `bolt_heavy` rank ≥ 2, `bolt_blunt` rank ≥ 3 | Trader 2/3/5/6; household 2 + rank | 4 / 3 | latch / first construction | crossbow only (N1) |
+| `sword` (rank ≥ 1, swords), `mace` (rank ≥ 2), `war_hammer` (rank ≥ 3) | Blacksmith household (`householdProfessionStock.ts`) | no extra rng draws, existing masterwork roll stream unchanged | 1 each | — | first construction | N1 pending |
+
+- Household trade allowlist (`npcTradeAvailability.ts`): `sword`, `mace`, `war_hammer`, `sling_stone`, `bolt_heavy`, `bolt_blunt` with `noHouseholdReserve`.
+- Adding kinds to `MERCHANT_STOCK` changes the weapons-tools shuffle stream, so **new** worlds' Trader stock differs from before; latched/existing stock is untouched. No worldgen epoch or save-version change.
+- Tests: `merchantStage4Sources.test.ts`, `householdProfessionStock.test.ts` (064 block), `stage4NoSource.test.ts` shrunk to the still-unsourced kinds.
+- Not done: O3 (masterwork), O4 (shields), N1, U; manual browse/buy/save-reload on seed `415424794` pending (queue §2).

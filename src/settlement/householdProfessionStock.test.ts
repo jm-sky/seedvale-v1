@@ -135,3 +135,32 @@ describe('044-M finite bracer stock', () => {
     }
   })
 })
+
+describe('items-player-064 O1/O2 household sources', () => {
+  const count = (grants: readonly { kind: ItemKind, count: number }[], kind: ItemKind) =>
+    grants.find((grant) => grant.kind === kind)?.count ?? 0
+
+  it('hunters stock sling_stone, scaling with settlement size', () => {
+    const sm = resolveProfessionStarterGrants({ hasHunter: true, tradeStock: tradeStock({ size: 'SM' }) }, 'h')
+    const lg = resolveProfessionStarterGrants({ hasHunter: true, tradeStock: tradeStock({ size: 'LG' }) }, 'h')
+    expect(count(sm, 'sling_stone')).toBeGreaterThan(0)
+    expect(count(lg, 'sling_stone')).toBeGreaterThan(count(sm, 'sling_stone'))
+  })
+
+  it('blacksmiths gain ordinary blades, blunt weapons and heavy bolts by size; deterministic', () => {
+    const grantsFor = (size: 'SM' | 'MD' | 'LG') =>
+      resolveProfessionStarterGrants({ hasBlacksmith: true, tradeStock: tradeStock({ size }) }, 'h-smith')
+    const sm = grantsFor('SM')
+    const md = grantsFor('MD')
+    const lg = grantsFor('LG')
+    expect(count(sm, 'sword')).toBe(1)
+    expect(count(sm, 'mace')).toBe(0)
+    expect(count(sm, 'bolt_heavy')).toBe(0)
+    expect(count(md, 'mace')).toBe(1)
+    expect(count(md, 'bolt_heavy')).toBeGreaterThan(0)
+    expect(count(md, 'bolt_blunt')).toBe(0)
+    expect(count(lg, 'war_hammer')).toBe(1)
+    expect(count(lg, 'bolt_blunt')).toBeGreaterThan(0)
+    expect(grantsFor('LG')).toEqual(lg)
+  })
+})

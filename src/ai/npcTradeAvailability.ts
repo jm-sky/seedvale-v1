@@ -118,6 +118,13 @@ const HOUSEHOLD_TRADE_RESERVES: Partial<Record<ItemKind, ReserveResolver>> = {
   damascus_short_sword: noHouseholdReserve,
   damascus_knife: noHouseholdReserve,
   broadhead_arrow: noHouseholdReserve,
+  // items-player-064 O1/O2 — Stage 4 household outputs without self-use reserve.
+  sword: noHouseholdReserve,
+  mace: noHouseholdReserve,
+  war_hammer: noHouseholdReserve,
+  sling_stone: noHouseholdReserve,
+  bolt_heavy: noHouseholdReserve,
+  bolt_blunt: noHouseholdReserve,
   long_bow: noHouseholdReserve,
   knight_pauldron_round: noHouseholdReserve,
   knight_pauldron_spike: noHouseholdReserve,
