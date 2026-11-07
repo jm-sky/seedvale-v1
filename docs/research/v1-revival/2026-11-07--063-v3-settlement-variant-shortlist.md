@@ -1,6 +1,6 @@
 # world-terrain-063 V3 — settlement variant shortlist (G5)
 
-**Date:** 2026-11-07 · **Author:** Opus (queue Q127 V3) · **Status:** waiting for the author (queue §3 **Q127-G5**)
+**Date:** 2026-11-07 · **Author:** Opus (queue Q127 V3) · **Status:** ✅ answered 2026-11-07 — **variant B** (author; see [063 notes §Author decisions](../../plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md#author-decisions-g5--q188-a--q186-a-2026-11-07-and-v4-pre-check-opus)); implementation = queue Q128 (V4)
 **Inputs:** [V2 results](../../plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md#v2-results-sonnet-2026-11-07-q187) (27-cell matrix + uniform + spot seeds), plus a V3 re-census of the candidates on both reference seeds (headless, router `2a19cf4c` + Q186 filters, weight `none`, `census-travel --target --spacing --routes-out`). All numbers are headless estimates; nothing here is browser-verified.
 
 ## 1. Ranking rule (plan §V3)

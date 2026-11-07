@@ -184,3 +184,40 @@ Seeds 7 / 1234 at today's 22@1150 have 4 / 3 routed components (V2 spot seeds). 
 | **unresolved ≤ 1800 m** | 3 (`-5_-2`–`-7_-8`, `-2_12`–`-7_10`, `-5_5`–`1_5`) | same landmass at 18 m, no route in an 1800 m box (search exhausts in 0.2–0.5 s — the start is boxed in by water / rejected crossings) | seed 7 `-7_-8` (LG) stays isolated even with the 900 m rung |
 
 **Recommendation (→ queue §3 Q188-a):** (1) amend the V1 mainland test to "land-connected to the **home** landmass" (keep the per-cell verdict cache; mark cells reached from home as mainland), landing together with V4 in the same worldgen-output batch, after checking the reference seeds stay unchanged; (2) **do not** add a 900 m router rung — absurd 3–5 km roads and seconds of main-thread A*; (3) inlet-separated pairs on non-reference seeds become an **explained exception** (plan §Done when allows it) until a layout-side answer exists (e.g. prefer a lattice neighbour on the same shore). Reference seeds 42 / 415424794 are unaffected by (2)–(3).
+
+## Author decisions G5 / Q188-a / Q186-a (2026-11-07) and V4 pre-check (Opus)
+
+### Decisions (✅ author, 2026-11-07)
+
+- **Q127-G5 → variant B:** 25 settlements, start spacing 950 m, suitability weight `none`. Priority **balance** — a living world with reachable settlements while keeping exploration and wild land. The neighbour-median drop of **−8…−12 %** is accepted in place of the earlier −25…−40 % target (plan §Goal / §V3 priority 2 are superseded by this). **Lipowy Parów need not keep its location or name.** Hard constraint: no loss of correctness of quests, NPCs, relationships and identity of existing entities.
+- **Q188-a → (a):** remove incidental settlements on islands detached from the home landmass; **no multi-kilometre road detours** (no 900 m / 1800 m router rung); geographically justified exceptions may stay but must be **explicitly classified**; no additional transport systems now.
+- **Q186-a → delegated** to the agent: choose the island-detection technique; keep correctness and determinism; avoid unnecessary worldgen cost. Choice below (§Q186-a).
+
+### Q186-a — chosen technique (Opus)
+
+Rejected: **(b) 36 m step** (can bridge < 36 m straits → wrong verdicts, violates correctness); **(c) 1.0 km² threshold** (weaker guard, and an area threshold cannot express Q188-a "connected to the home landmass" — the 1.9 km² island on seed 7 passes any threshold below it). A global landmass raster is not available cheaply: the hydrology install keeps only sparse corrections, not the raw floor grid, and a whole-continent flood at 18 m costs seconds.
+
+**Chosen: directed home-connectivity search at 18 m** (replaces the bounded-area flood in `createMainlandTest`, same owner `settlementLayout.ts`, same walkable rule `h > waterLevel + ROUTE_WATER_CLEARANCE`):
+
+1. A candidate site is feasible iff an 8-neighbour **best-first search** (key = straight distance to the target, ties by cell key) from its 18 m cell reaches a cell already **proven home-connected**. Proven set = the home cell plus every cell on a successful search's closed set; target = the nearest accepted site (distance, then layout index) — every accepted site is proven, so targets are ~1 km away, not across the continent.
+2. **Exhausted** search (open set empty) → detached landmass of any size → reject, cache those cells as `false` (a fact, independent of order).
+3. **Cap** `MAINLAND_SEARCH_MAX_CELLS` (🟡 start ≈ 4 × today's 4630 cells) reached without proof → reject as `unproven`, **do not** cache cells as `false`; count it in the census.
+4. Determinism: candidate order, target choice and tie-breaks are deterministic; `true`/`false` caches are geographic facts; only `unproven` depends on the (deterministic) accepted-site order. Same code in every realm (main / worker / tools) via `settlementWorldGeography` — no new realm dependency.
+5. Cost expectation 🟡: on open land the search runs roughly along the chord (hundreds of cells, ≈ 1–5 ms) instead of always filling 1.5 km² (≈ 13 ms); islands cost their own area once. V4 measures it; **budget stays ≤ 300 ms per layout** (contract §2.1) and must not exceed today's ≈ 340–370 ms. The layout is recomputed in every realm on every boot (`settlementLayoutFor` memo, no worldgen-cache hydration), so this cost is boot cost.
+6. Waterfall-reserve guard (Q186-a part 2): **keep the promoted-XL rectangle** — a site may later be promoted (progression), and a narrower real-size test would let a promoted village overlap a reserve. The seed 415424794 `2_-8` → `2_-7` move stands (under variant B the reference layout changes anyway).
+
+### Q188-a — exception classes (census, explicit)
+
+`census-travel` / `settlement-variants` report every routed component other than home's with a class per unrouted layout pair: **`separate-landmass`** (must be **0** after the new filter — otherwise stop), **`inlet-detour`** (same landmass, route only in a > 450 m box — explained exception, stays; not routed by a wider box), **`unresolved`** (same landmass, no route ≤ 1800 m — explained exception, listed with ids), plus **`unproven`** rejections from §Q186-a 3. Reference seeds 42 / 415424794: expected 0 in every class (verify); spot seeds 7 / 1234 listed in the V4 notes. No router change, no transport system.
+
+### V4 pre-check — compatibility with existing contracts and performance (Opus, 2026-11-07)
+
+| Contract | Verdict | Evidence / what V4 must do |
+| --- | --- | --- |
+| Epoch (D3, persistence-008) | ✅ compatible | Batch epoch already 1 (`worldgenEpoch.ts`); V4 + the Q188-a filter are one worldgen-output slice of the same batch → **no epoch bump**. Epoch-1 intermediate saves are disposable (roadmap cross-plan rule F6). |
+| Cache namespaces | ✅ required | Bump per output-changing slice: settlement-definition 39→40, road-route 28→29, caves 20→21, abandoned-cemetery 24→25, locations-coarse 18→19 (verify current numbers before bumping). |
+| Quests / NPC / relationship identity | ✅ compatible, verify | `src/` has no hard-coded settlement id or name (grep `'<gx>_<gz>'` / `Lipowy` → none outside name morphology); quest casts bind settlements dynamically (`huntersBrotherhoodIntroduction.ts` home + second settlement, `dungeonBanditTreasure.ts` / `lostTreasureExpedition.ts` sorted neighbour ids) and persist ids, which the epoch covers. V4 **tests/census**: both seeds cast every procedural quest (home + ≥ 1 neighbour with eligible NPCs), progression XL/LG/MD + hop-level placement (left 🟡 in V3), and main / worker / cold / hydrated settlement defs + NPC ids equal (plan §Done when). |
+| Lipowy Parów / author route | ✅ relaxed by author | Under B `4_-1` keeps its position on 415424794 (V3); name may change (local-uniqueness rule). Author route = home → `4_-1`, else the census `authorTarget` fallback; timed walk stays in V4 (§2). |
+| Simulation scope ("no reduced simulation") | ✅ compatible | B adds sites (+19 % households, ≈ 104–105 vs 88); nothing per settlement is reduced. |
+| Performance (D4 lifted, tools-026 D7 "not slower beyond noise") | ⚠️ must be measured in V4 | B is **workload-affecting**: V4 records the D7 metrics (layout + road time, cold/warm boot, households / NPCs / active transport, representative offscreen/time-skip) vs the D7 baseline and runs a **WSL A/B** (boot, `stream`, `settlement-heavy`) before calling V4 done (earlier than the plan's post-Q64 A/B, because this slice changes workload); constants stay revertable in one commit; Windows confirmation → queue §4. A regression beyond noise is **not** solved by reducing simulation — stop and ask (§3). |
+| Router pin / Q61–Q63 | ✅ unchanged | Q61–Q63 run after V4; if they change reachability/journey rankings, the shortlist is re-run (plan §Router pin). |

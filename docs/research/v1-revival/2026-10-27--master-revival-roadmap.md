@@ -51,7 +51,7 @@ Runtime work within these plans is inside approved Revival scope (G1–G9, epoch
 | **S3–S4** | [world-terrain-061](../../plans/world-terrain-061-macroclimate-and-climate-weighted-hydrology.md) | Static macroclimate → climate-weighted runoff, area thresholds, perennial vs dry drainage, map hierarchy | **regional look on climate previews** (C2) |
 | **S5** | [world-terrain-062](../../plans/world-terrain-062-regional-biomes-and-local-precipitation-phase.md) | (T,P) biomes incl. possible inland arid areas, borders (absorbs Q70), local temperature + rain/snow phase | arid extent + browser spots |
 | **S5′** | [world-terrain-064](../../plans/world-terrain-064-derived-waterfalls.md) | Derived waterfalls (after V2 donor verdict) | look (§2) |
-| **S6** | [world-terrain-063](../../plans/world-terrain-063-geography-driven-settlement-variants.md) | Suitability + 22/25/28 × spacing × weighting matrix → **author picks 1 of 2–3** → implement | **G5 selection** |
+| **S6** | [world-terrain-063](../../plans/world-terrain-063-geography-driven-settlement-variants.md) | Suitability + 22/25/28 × spacing × weighting matrix → **author picks 1 of 2–3** → implement | **G5 selection** — ✅ 2026-11-07: **B** (25 @ 950 m, `none`) + Q188-a (a) detached islands removed, Q186-a delegated ([decisions](../../plans/implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md#author-decisions-g5--q188-a--q186-a-2026-11-07-and-v4-pre-check-opus)) |
 | **S7** | [world-041](../../plans/world-041-landmark-catalog-and-rumour-leads.md) | Landmarks in the catalog, names on discovery, V2-style rumour leads (Astra text) | line script approval |
 | **Close-out** | Q44 R5–R8 (Q61–Q64) + Q110 | Road retry on final geography, single fixture re-export, WSL A/B (boot, `stream`, `settlement-heavy`), Windows via §4, **epoch-batch close proposal** | epoch close (G1) |
 | later | (no plan yet) | G6 P2: volcanic district, castle/large ruins with per-site budgets, **always separate from large settlements** (G9); Q92 river polish | separate planning |
@@ -76,7 +76,7 @@ S7  D5 ──► world-041 L0 (incl. uncertain-knowledge contract) ──► L3 
 | S3–S4 061 | C1, C2 look, H1, H3–H6 done 2026-11-06 (technical); H2 dry drainage not built (author Q121-a (a)); open: §3 Q122-a/b, 3D catchment look §2 |
 | S5 062 | **B1 contract written (Opus 2026-11-06)** → Q124 (S) ready; B2/B3 after the author's arid look; W1 contract = Q123 (O) |
 | S5′ 064 | W0 = Q125 (O) ready; W1 reserved footprints gate 063 V1 |
-| S6 063 | V0 done; V1–V3 = Q127 (O) after Q124 + 064 W1 → author G5 → V4 (Q128) → Q61–Q64 |
+| S6 063 | V0–V3 done (Q126, Q127, Q186, Q187, Q188) → ✅ author G5 = B (2026-11-07) → **V4 (Q128, S, ready)** → Q61–Q64 |
 | S7 world-041 | L0, L3a done; L1 dry + water kinds may start after Q124 lands |
 | Settlement composition Q37 | **deferred (author 2026-11-06)** until after biomes, settlement placement and roads; author remarks first |
 
