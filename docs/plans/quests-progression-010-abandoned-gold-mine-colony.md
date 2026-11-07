@@ -71,7 +71,9 @@ Quest nie może utrzymywać własnych kopii:
 
 ### `world-terrain-017`
 
-Dostarcza istniejącą przed questem abandoned mountain mine jako stable `WorldLocation`/world feature związany z Cave V2.
+Dostarcza istniejącą przed questem abandoned mountain mine jako stable `WorldLocation`/world feature związany z produkcyjnym systemem naturalnych jaskiń V1 (historycznie nazywanym „Cave V2”; **nie** donor `seedvales-v2`).
+
+**Decyzja autora 2026-11-07:** docelowo Gold Mine ma używać `cave:medium` (obecne V1 `adventure`) i specyficznych dla kopalni pionowych słupów oraz poziomych drewnianych belek. Zobacz [roadmap Gold Mine](../roadmap/quests-abandoned-gold-mine-colony.md) i [Caves and Dungeons](../roadmap/caves-and-dungeons.md). Przed pracami nad geometrią sprawdzić bieżące powiązanie kopalni z jaskinią; zachować stabilne ID, złoża i istniejące kontrakty. Nie rozszerza to zakresu niniejszego planu integracji questa ani nie blokuje niezależnych kontraktów NPC/economy.
 
 Quest potrzebuje stable mine location identity. Nie odpowiada za terrain, cave generation ani geometry.
 
