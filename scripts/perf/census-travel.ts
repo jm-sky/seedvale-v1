@@ -2,8 +2,10 @@
 // tools-026 D3 (Q113): whole-continent route-weighted travel census. Diagnostic only.
 //  - per layout edge: straight distance, entrance-to-entrance polyline length, access legs (centre→entrance), route
 //    ratio, hours as "distance ÷ speed ESTIMATE" for player (6 m/s) and NPC travel (3.6 m/s), grades, river crossings;
-//  - unrouted edges (layout-adjacent pair with no road in roadRoutesForSettlement of either end — failed route OR beyond
-//    the per-settlement road cap; the census cannot tell which);
+//  - unrouted edges (layout-adjacent pair with no road in roadRoutesForSettlement of either end), each with a cause:
+//    `cap` = both ends had already connected `maxNeighborRoads` nearer neighbours before reaching the other (the route was
+//    never attempted from either side), `routeFailed` = at least one end attempted it and the router returned null
+//    (routes are cached per pair, so one attempt decides both sides);
 //  - connectivity over ROUTED edges (true route connectivity) next to the layout-adjacency component count;
 //  - selected / defined / road-connected settlement counts;
 //  - land coverage by straight-line hours from the nearest settlement (2/5/8 h, wilderness > 5 h), per quadrant of home;
@@ -11,7 +13,7 @@
 //  - author route: home edge leaving WEST (−x) on the north-up map (seed 415424794), candidates listed, never inferred.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
-import { clearRoadNetworkCaches, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
+import { clearRoadNetworkCaches, neighborsFor, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { setSettlementLayoutOverrides } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
@@ -161,6 +163,22 @@ function measure(seed: number) {
     }
   })
   const unrouted = [...defined.keys()].filter((k) => !routed.has(k))
+  const pairKeyOf = (x: string, y: string) => (x < y ? `${x}|${y}` : `${y}|${x}`)
+  const maxRoads = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads)
+  /** Whether `from` reached its road cap before attempting `to` (nearest-first, successful routes count). */
+  const cappedBefore = (from: SettlementDef, to: SettlementDef): boolean => {
+    let connected = 0
+    for (const n of neighborsFor({ gx: from.gx, gz: from.gz }, ctx)) {
+      if (connected >= maxRoads) return true
+      if (n.id === to.id) return false
+      if (routed.has(pairKeyOf(from.id, n.id))) connected++
+    }
+    return connected >= maxRoads
+  }
+  const unroutedCause = (k: string): 'cap' | 'routeFailed' => {
+    const [a, b] = k.split('|') as [string, string]
+    return cappedBefore(byId.get(a)!, byId.get(b)!) && cappedBefore(byId.get(b)!, byId.get(a)!) ? 'cap' : 'routeFailed'
+  }
   const totalLen = edgeRows.reduce((s, e) => s + e.polylineM, 0)
   const gradeShare = Object.fromEntries(GRADE_LABELS.map((l, i) => [l, r1((100 * edgeRows.reduce((s, e) => s + e._cls[i]!, 0)) / Math.max(1, totalLen))]))
 
@@ -220,9 +238,9 @@ function measure(seed: number) {
   const rows = edgeRows.map(({ _cls, _route, ...r }) => r)
   return {
     seed, assumptions: `hours = distance ÷ speed ESTIMATE (player ${PLAYER_WALK_SPEED} m/s = ${TRAVEL_HOUR_M} m/game-h; NPC travel ${NPC_TRAVEL_SPEED} m/s = ${Math.round(NPC_HOUR_M)} m/game-h); coverage hours are straight-line`,
-    counts: { selected: layout.sites.length, defined: defs.length, definedEdges: defined.size, routedEdges: routed.size, unroutedEdges: unrouted.length, roadConnectedInLargestComponent: routedComps[0] ?? 0 },
+    counts: { selected: layout.sites.length, defined: defs.length, definedEdges: defined.size, routedEdges: routed.size, unroutedEdges: unrouted.length, unroutedRouteFailed: unrouted.filter((k) => unroutedCause(k) === 'routeFailed').length, roadConnectedInLargestComponent: routedComps[0] ?? 0 },
     connectivity: { layoutAdjacencyComponents: layoutComps.length, routedComponents: routedComps.length, routedComponentSizes: routedComps.slice(0, 8) },
-    unroutedEdges: unrouted.map((k) => { const [a, b] = k.split('|') as [string, string]; return { a, b, straightM: Math.round(dist(byId.get(a)!, byId.get(b)!)) } }),
+    unroutedEdges: unrouted.map((k) => { const [a, b] = k.split('|') as [string, string]; return { a, b, straightM: Math.round(dist(byId.get(a)!, byId.get(b)!)), cause: unroutedCause(k) } }),
     routeStats: {
       totalKm: r1(totalLen / 1000), polylineM: { p10: pct(rows.map((r) => r.polylineM), 0.1), p50: pct(rows.map((r) => r.polylineM), 0.5), p90: pct(rows.map((r) => r.polylineM), 0.9), max: Math.max(0, ...rows.map((r) => r.polylineM)) },
       ratio: { p50: pct(rows.map((r) => r.ratio), 0.5), p90: pct(rows.map((r) => r.ratio), 0.9), max: Math.max(0, ...rows.map((r) => r.ratio)) },

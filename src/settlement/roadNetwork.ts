@@ -281,6 +281,16 @@ const ROUTE_WATER_CLEARANCE = 0.5
  *  when that's the only/shortest way to connect two settlements. */
 const MOUNTAIN_COST_WEIGHT = 25
 
+/** A* search box margin, in grid steps, around the endpoints' bounding box (first attempt). */
+const SEARCH_MARGIN_STEPS = 5
+/**
+ * Wider margins an inter-settlement `road` retries with **only after** the default box found no route
+ * (world-terrain-063 Q127): a sea inlet or bay between two layout neighbours needs a detour that leaves the
+ * 45 m box, which used to leave the pair roadless and split the road network into components. Routes the first
+ * box finds are untouched (same geometry, same crossings); `path`s to minor locations keep the single box.
+ */
+const ROAD_RETRY_MARGIN_STEPS = [25, 50] as const
+
 type RoutingOptions = {
   gridStep: number
   elevationWeight: number
@@ -316,6 +326,8 @@ export type RouteSearchOptions = RoutingOptions & {
   routeId: string
   /** Village footprints to route around (Q60); absent = village-blind routing (the fallback). */
   obstacles?: RouteObstacles
+  /** Search box margin in grid steps; default `SEARCH_MARGIN_STEPS`. Must match the river envelope query. */
+  marginSteps?: number
 }
 
 /**
@@ -356,10 +368,11 @@ export function findRoute(
     routeKind,
     routeId,
     obstacles,
+    marginSteps = SEARCH_MARGIN_STEPS,
   } = opts
   // Wide enough that the search grid has room to route *around* a mountain
   // when that's cheaper, not just straight through it (see MOUNTAIN_COST_WEIGHT).
-  const margin = gridStep * 5
+  const margin = gridStep * marginSteps
 
   const minX = Math.min(a.x, b.x) - margin
   const minZ = Math.min(a.z, b.z) - margin
@@ -806,10 +819,11 @@ function riverSegmentsForEnvelope(
   a: { x: number, z: number },
   b: { x: number, z: number },
   gridStep: number,
+  marginSteps: number,
 ): RiverChannelSegment[] {
   const query = worldRiverQuery()
   if (!query) return []
-  const margin = gridStep * 5
+  const margin = gridStep * marginSteps
   const size =
     Math.max(Math.abs(a.x - b.x), Math.abs(a.z - b.z)) + margin * 2 + RIVER_ENVELOPE_PADDING
   return query.segmentsNear((a.x + b.x) * 0.5, (a.z + b.z) * 0.5, size)
@@ -821,6 +835,7 @@ function searchOptionsFor(
   ctx: RoadNetworkContext,
   routeKind: RoadSegmentKind,
   routeId: string,
+  marginSteps: number = SEARCH_MARGIN_STEPS,
 ): RouteSearchOptions {
   const routing = routingOptionsFrom(ctx)
   return {
@@ -828,9 +843,10 @@ function searchOptionsFor(
     sampleHeight: ctx.sampleHeight,
     sampleMountainRidge: ctx.terrainSamplers.sampleMountainRidge,
     waterLevel: ctx.waterLevel,
-    riverSegments: riverSegmentsForEnvelope(a, b, routing.gridStep),
+    riverSegments: riverSegmentsForEnvelope(a, b, routing.gridStep, marginSteps),
     routeKind,
     routeId,
+    marginSteps,
   }
 }
 
@@ -839,8 +855,9 @@ function defsNearEnvelope(
   a: { x: number, z: number },
   b: { x: number, z: number },
   ctx: RoadNetworkContext,
+  marginSteps: number,
 ): SettlementDef[] {
-  const margin = DEFAULT_ROUTING_OPTIONS.gridStep * 5
+  const margin = DEFAULT_ROUTING_OPTIONS.gridStep * marginSteps
   const minX = Math.min(a.x, b.x) - margin
   const maxX = Math.max(a.x, b.x) + margin
   const minZ = Math.min(a.z, b.z) - margin
@@ -856,7 +873,8 @@ function defsNearEnvelope(
 }
 
 /** Village-aware search first (Q60); if the footprints leave no way through, fall back to the village-blind
- *  search so connectivity never drops. */
+ *  search so connectivity never drops. A `road` that still fails retries in wider boxes
+ *  (`ROAD_RETRY_MARGIN_STEPS`, Q127) — first-box results are unchanged. */
 function findRouteAvoidingVillages(
   from: { x: number, z: number },
   to: { x: number, z: number },
@@ -865,13 +883,18 @@ function findRouteAvoidingVillages(
   routeKind: RoadSegmentKind,
   routeId: string,
 ): RoadRoute | null {
-  const options = searchOptionsFor(from, to, ctx, routeKind, routeId)
-  const obstacles = buildRouteObstacles(
-    defsNearEnvelope(from, to, ctx),
-    [from, to],
-    endpointDefs.map((d) => d.id),
-  )
-  return findRoute(from, to, { ...options, obstacles }) ?? findRoute(from, to, options)
+  const ladder = routeKind === 'road' ? [SEARCH_MARGIN_STEPS, ...ROAD_RETRY_MARGIN_STEPS] : [SEARCH_MARGIN_STEPS]
+  for (const marginSteps of ladder) {
+    const options = searchOptionsFor(from, to, ctx, routeKind, routeId, marginSteps)
+    const obstacles = buildRouteObstacles(
+      defsNearEnvelope(from, to, ctx, marginSteps),
+      [from, to],
+      endpointDefs.map((d) => d.id),
+    )
+    const route = findRoute(from, to, { ...options, obstacles }) ?? findRoute(from, to, options)
+    if (route) return route
+  }
+  return null
 }
 
 /** The inter-settlement road between two settlements, resolved once and shared

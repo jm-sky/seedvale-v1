@@ -168,6 +168,16 @@ describe('findRoute river-aware crossings', () => {
     expect(findRoute(a, b, options([huge]))).toBeNull()
   })
 
+  it('finds a detour around a sea inlet only with a wider search box (Q127)', () => {
+    // Open water across the whole default box (bbox ± 45 m) between a and b; dry land beyond z = 120.
+    const inlet = (x: number, z: number) => (x > 30 && x < 60 && z < 120 ? -1 : GROUND_H)
+    const base = { ...options([]), sampleHeight: inlet }
+    expect(findRoute(a, b, base)).toBeNull()
+    const wide = findRoute(a, b, { ...base, marginSteps: 25 })!
+    expect(wide).not.toBeNull()
+    expect(Math.max(...wide.points.map((p) => p.z))).toBeGreaterThan(120)
+  })
+
   it('never emits a bridge for a minor-location path (V1 policy)', () => {
     expect(findRoute(a, b, options([bigRiver], 'path'))).toBeNull()
     const path = findRoute(a, b, options([stream], 'path'))!

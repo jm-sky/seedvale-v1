@@ -48,7 +48,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v14 (2026-11-05, queue Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
 // v15 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
 // v16 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
-export const ROAD_ROUTE_CACHE_VERSION = 26
+// v27 (2026-11-07, queue Q127): roads that fail in the default A* box retry in wider boxes (sea-inlet detours).
+export const ROAD_ROUTE_CACHE_VERSION = 27
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.
