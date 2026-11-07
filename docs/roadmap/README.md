@@ -14,6 +14,10 @@ Before implementing work:
 
 Plans and current code take precedence over roadmap documents when they disagree.
 
+## Active design topics
+
+- [Caves and Dungeons](./caves-and-dungeons.md) — V1 natural cave sizes, V2-derived constructed dungeons, landmark placement and quest/content direction (author discussion; not an implementation plan).
+
 ## Files
 
 <!-- AUTO-GENERATED:START -->
