@@ -40,6 +40,7 @@ import { buildInventoryGroups, inventoryCountsForUi } from '../items/inventoryVi
 import { isMeleeToolKind, isRangedTool, ITEM_CATALOG } from '../items/itemCatalog'
 import {
   ARMOR_QUALITY_LABELS,
+  type ArmorItemInstance,
   isArmorItemInstance,
   isArmorKind,
   isInstanceBackedKind,
@@ -59,6 +60,7 @@ import {
 } from '../items/trade'
 import { MERCHANT_STOCK, merchantInstancePrice, merchantPrice, NEUTRAL_SELL_PRICE_CONTEXT, npcSalePrice, sellPrice, type SellPriceContext } from '../items/tradeCatalog'
 import { applyPurchaseMarkup, type TradeGrievanceStore } from '../items/tradeGrievance'
+import { UPPER_TIER_IDENTITY_LIST } from '../items/upperTierIdentities'
 import { listOwnedWeaponMaintenance, type SharpenResult, sharpenWeapon } from '../items/weaponMaintenance'
 import { SKILL_LABEL } from '../player/PlayerSkills'
 import {
@@ -362,31 +364,35 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
     const merchantStock = bundle.settlementsManager.getNpcState(npc.id)?.merchantStock
     if (!merchantStock) return []
     const rows: NpcTradeStockRow[] = []
+    const armorRow = (kind: ItemKind, instance: ArmorItemInstance): NpcTradeStockRow | null => {
+      const unitPrice = merchantInstancePrice(instance)
+      if (unitPrice == null) return null
+      const armor = ITEM_CATALOG[instance.kind].armor
+      const effective = armor
+        ? resolveEffectiveArmorPiece(armor, instance.quality, ITEM_DEFS[instance.kind].weight)
+        : null
+      return {
+        kind,
+        quantity: 1,
+        unitPrice: applyPurchaseMarkup(unitPrice, merchantPurchaseMarkup(npc)),
+        instanceId: instance.id,
+        quality: instance.quality,
+        qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
+        weightKg: effective?.weightKg ?? ITEM_DEFS[kind].weight,
+        protectionLabel: effective ? formatResistanceLabel(effective.resist, effective) : undefined,
+        staminaPenaltyLabel: effective ? armorPenaltyLabel(effective.staminaCostMultiplier) : undefined,
+        movementPenaltyLabel: effective ? armorPenaltyLabel(effective.movementSpeedMultiplier) : undefined,
+        recoveryPenaltyLabel: effective ? armorPenaltyLabel(effective.meleeRecoveryMultiplier) : undefined,
+      }
+    }
     for (const kind of MERCHANT_STOCK) {
       if (isArmorKind(kind)) {
         const instances = merchantStock.getInstances(kind)
           .filter(isArmorItemInstance)
           .sort((a, b) => a.id.localeCompare(b.id))
         for (const instance of instances) {
-          const unitPrice = merchantInstancePrice(instance)
-          if (unitPrice == null) continue
-          const armor = ITEM_CATALOG[instance.kind].armor
-          const effective = armor
-            ? resolveEffectiveArmorPiece(armor, instance.quality, ITEM_DEFS[instance.kind].weight)
-            : null
-          rows.push({
-            kind,
-            quantity: 1,
-            unitPrice: applyPurchaseMarkup(unitPrice, merchantPurchaseMarkup(npc)),
-            instanceId: instance.id,
-            quality: instance.quality,
-            qualityLabel: ARMOR_QUALITY_LABELS[instance.quality],
-            weightKg: effective?.weightKg ?? ITEM_DEFS[kind].weight,
-            protectionLabel: effective ? formatResistanceLabel(effective.resist, effective) : undefined,
-            staminaPenaltyLabel: effective ? armorPenaltyLabel(effective.staminaCostMultiplier) : undefined,
-            movementPenaltyLabel: effective ? armorPenaltyLabel(effective.movementSpeedMultiplier) : undefined,
-            recoveryPenaltyLabel: effective ? armorPenaltyLabel(effective.meleeRecoveryMultiplier) : undefined,
-          })
+          const row = armorRow(kind, instance)
+          if (row) rows.push(row)
         }
         continue
       }
@@ -402,6 +408,27 @@ export function createInventoryWiring(deps: InventoryWiringDeps): InventoryWirin
         unitPrice: applyPurchaseMarkup(unitPrice, merchantPurchaseMarkup(npc)),
         weightKg: ITEM_DEFS[kind].weight,
       })
+    }
+    // Upper-tier specimens (items-player-064 U4): one row per physical instance, always bought by
+    // exact instance id (count purchases of these kinds are refused in `trade.ts`).
+    for (const kind of UPPER_TIER_IDENTITY_LIST) {
+      if (!(kind in ITEM_DEFS)) continue
+      for (const instance of [...merchantStock.getInstances(kind as ItemKind)].sort((a, b) => a.id.localeCompare(b.id))) {
+        if (isArmorItemInstance(instance)) {
+          const row = armorRow(instance.kind, instance)
+          if (row) rows.push(row)
+          continue
+        }
+        const unitPrice = merchantInstancePrice(instance)
+        if (unitPrice == null) continue
+        rows.push({
+          kind: instance.kind,
+          quantity: 1,
+          unitPrice: applyPurchaseMarkup(unitPrice, merchantPurchaseMarkup(npc)),
+          instanceId: instance.id,
+          weightKg: ITEM_DEFS[instance.kind].weight,
+        })
+      }
     }
     return rows
   }

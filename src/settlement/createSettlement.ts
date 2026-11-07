@@ -17,6 +17,7 @@ import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { ShepherdFlockHooks } from '../fauna/shepherdFlock'
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
+import type { UpperTierIssuanceLedger } from '../items/upperTierIssuance'
 import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { SettlementTerrain } from '../shared/SettlementName'
 import type { PlayerObservationInput } from '../simulation/observation'
@@ -140,6 +141,7 @@ import { createSettlementSignposts } from './settlementSignposts'
 import { type SettlementVillageTorch } from './settlementVillageTorch'
 import { isStructureRepairProblem, structureRepairPolicy } from './structureCondition'
 import { type AuthoredNpcRepairTarget, createAuthoredNpcRepairTarget, createNpcStructureRepairHooks } from './structureRepairCandidates'
+import { issueHostedUpperTierStock, type UpperTierHostResolver } from './upperTierHosts'
 import { createVillageFire, FUEL_PER_BRANCH, type VillageFire } from './VillageFire'
 import {
   buildWellInteractionQueueConfig,
@@ -477,6 +479,9 @@ export type CreateSettlementDeps = {
   transportOrders?: TransportOrders
   /** World-owned extracted goods at remote resource sites (plan settlements-npcs-021). */
   resourceSiteInventories?: ResourceSiteInventories
+  /** Upper-tier (A8) issuance for merchant stock (items-player-064 slice U): the app-owned ledger
+   *  (by reference) and the deterministic host designation. Absent = no upper-tier source. */
+  upperTierIssuance?: { ledger: UpperTierIssuanceLedger, hosts: UpperTierHostResolver }
   resolveResourceSitePosition?: (resourceId: string) => { x: number, z: number } | null
   /** Bounded inter-settlement food matching/execution (plan settlements-npcs-037). */
   interSettlement?: InterSettlementTransportHooks
@@ -681,6 +686,7 @@ async function buildSettlement(
     workContracts,
     transportOrders,
     resourceSiteInventories,
+    upperTierIssuance,
     resolveResourceSitePosition,
     interSettlement,
     playerWells,
@@ -1470,6 +1476,15 @@ async function buildSettlement(
       families: def.families,
     })
     input.seedMerchantStock?.(npcState)
+    if (upperTierIssuance && input.member.character.role === 'trader') {
+      issueHostedUpperTierStock({
+        ledger: upperTierIssuance.ledger,
+        hosts: upperTierIssuance.hosts,
+        npcId: input.npcId,
+        stock: npcState.merchantStock,
+        alive: !npcState.postDeath,
+      })
+    }
     if (npcState.postDeath) finalizeExpiredNpcCorpse(npcState.postDeath, currentNowDays, droppedItems)
     if (shouldSkipNpcCorpsePresentation(npcState, currentNowDays)) return null
     // Presentation-owner gate (plan settlements-021 Stage A) — covers both

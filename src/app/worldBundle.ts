@@ -12,6 +12,7 @@ import type { SettlementDestinationThreatHooks } from '../fauna/destinationThrea
 import type { SettlementHuntingHooks } from '../fauna/huntingHooks'
 import type { PersistentOccupantSnapshot } from '../fauna/persistentOccupants'
 import type { PersistentOccupantDecl } from '../fauna/persistentOccupants'
+import type { UpperTierIssuanceLedger } from '../items/upperTierIssuance'
 import type { Settlement } from '../settlement/createSettlement'
 import type { FoundedSettlementRegistrySnapshot } from '../settlement/foundedSettlement'
 import type {
@@ -712,6 +713,7 @@ function buildSettlementsManager(
    *  `initialNpcStates` above. */
   initialFoundedSettlements?: FoundedSettlementRegistrySnapshot,
   sightBlockers?: SightBlockerRegistry,
+  upperTierIssuanceLedger?: UpperTierIssuanceLedger,
 ): Promise<SettlementsManager> {
   return createSettlementsManager(
     scene,
@@ -780,6 +782,7 @@ function buildSettlementsManager(
     chunkManager.sampleRuntimeSurfaceGround,
     sightBlockers && ((ownerKey, blockers) => sightBlockers.setBlockers(ownerKey, blockers)),
     sightBlockers && ((ownerKey) => sightBlockers.clearBlockers(ownerKey)),
+    upperTierIssuanceLedger,
   )
 }
 
@@ -1115,6 +1118,8 @@ type WorldSystemsSeed = {
   renewableWorldItems: RenewableWorldItemOverrides
   /** Plan quests-progression-036 — consumed authored extraOneTimePickup ids. */
   consumedWorldPickupIds: ReadonlySet<string>
+  /** App-owned A8 issuance ledger, by reference (items-player-064 U2). */
+  upperTierIssuanceLedger?: UpperTierIssuanceLedger
   removedCropIds: Set<string>
   plantedTrees: PlantedTreeRecord[]
   plantedCrops: CropPlacement[]
@@ -1328,7 +1333,7 @@ async function buildWorldSystems(
   const { bootMark, bootMarkEnd } = useBootMark('buildWorldSystems')
 
   const {
-    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications,
+    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, upperTierIssuanceLedger, removedCropIds, plantedTrees, plantedCrops, modifications,
     mineableRockState,
     playAt, treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
@@ -1736,7 +1741,7 @@ async function buildWorldSystems(
   // background, not awaited here (world-003 §3) — see
   // `SettlementsManager.homeReady`.
   bootMark('buildSettlementsManager')
-  const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements, sightBlockers)
+  const settlementsManager = await buildSettlementsManager(scene, chunkManager, config.seed, playAt, config, forest, worldContext, mining, initialEconomies, onAnimalDeath, getPlayerSocial, isLandPlotOwned, pointLightBudget, getNearbyPlayerWell, foodSources, herbalGather, hunting, destinationThreat, initialHouseholds, initialNpcStates, helperDelivery, initialNpcRelationships, initialLivestock, initialRemovedLivestockIds, initialRats, initialRemovedRatIds, initialRatReconcileBuckets, initialStorageInfestation, seedHomeStorageInfestation, workContracts, transportOrders, resourceSiteInventories, resolveResourceSitePosition, playerWells, droppedItems, grassForage, playerTroughs, terrainPreparations, palisades, standingTorches, residentialBuildings, npcGraves, initialStructureStates, getWorldDays, onSettlementAvailable, npcWorldMovement, onAnimalDeathSound, initialFoundedSettlements, sightBlockers, upperTierIssuanceLedger)
   bootMarkEnd('buildSettlementsManager')
   settlementsManager.setClimateOffsetAt(climateOffsetAt)
   const homeDef = settlementsManager.getHomeDef()
@@ -2588,9 +2593,11 @@ export async function createWorldBundle(
   mineableRockState: MineableRockStateStore = new Map(),
   /** Ash marks from dismantled used player fires (plan items-player-058). */
   initialFireResidues: readonly FireResidueRecord[] = [],
+  /** App-owned A8 issuance ledger, by reference (items-player-064 U2). */
+  upperTierIssuanceLedger?: UpperTierIssuanceLedger,
 ): Promise<BuiltWorldSystems> {
   return buildWorldSystems({
-    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications,
+    scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, upperTierIssuanceLedger, removedCropIds, plantedTrees, plantedCrops, modifications,
     mineableRockState, playAt,
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: initialDroppedItems,
@@ -2743,6 +2750,8 @@ export async function rebuildWorldBundle(
    *  mutated in place, threaded through both `createWorldBundle` and
    *  `rebuildWorldBundle`" contract as `resourceDepletion` above. */
   mineableRockState: MineableRockStateStore = new Map(),
+  /** App-owned A8 issuance ledger, by reference (items-player-064 U2). */
+  upperTierIssuanceLedger?: UpperTierIssuanceLedger,
 ): Promise<WorldBundleRebuildOutcome> {
   // Snapshot before dispose() — a same-session rebuild (config change, not a
   // new seed) recreates `Fauna` from scratch just like every other bundle
@@ -2875,7 +2884,7 @@ export async function rebuildWorldBundle(
   let fresh: WorldBundle
   try {
     const built = await buildWorldSystems({
-      scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
+      scene, config, collectedItemIds, renewableWorldItems, consumedWorldPickupIds, upperTierIssuanceLedger, removedCropIds, plantedTrees, plantedCrops, modifications, playAt,
     treeLifecycle, getWorldDays, dayNight,
     droppedItems: carriedDrops,
     placedFires: carriedFires,

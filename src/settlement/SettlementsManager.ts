@@ -13,6 +13,7 @@ import type { DropLivestockProductHook } from '../fauna/livestockProduction'
 import type { OwnedAnimalControlMode } from '../fauna/ownedAnimalControl'
 import type { MaterialRequirement } from '../items/constructionMaterials'
 import type { DroppedItems } from '../items/createDroppedItems'
+import type { UpperTierIssuanceLedger } from '../items/upperTierIssuance'
 import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { ClimateOffsetAt } from '../terrain/macroClimate'
@@ -136,7 +137,7 @@ import {
   type SettlementDef,
   worldToCell,
 } from './settlementGenerator'
-import { settlementDefFor, type SettlementWorldGeography } from './settlementPlanCache'
+import { settlementDefFor, settlementLayoutFor, type SettlementResolveContext, type SettlementWorldGeography } from './settlementPlanCache'
 import { createLabeledProp, disposeLabeledProp, type LabeledProp, updateLabelOpacity } from './settlementSignposts'
 import { visitUniqueAnimalsById } from './settlementTimeSkipAnimals'
 import { settlementStorageDestination } from './storageDestinations'
@@ -156,6 +157,7 @@ import {
   contributeRegistryStructureRepairWork,
   createSettlementStructureStateRegistry,
 } from './structureStateRegistry'
+import { createUpperTierHostResolver } from './upperTierHosts'
 import { communalFenceFallbackStructureId } from './villagePlan'
 
 type Entry = {
@@ -654,6 +656,9 @@ export async function createSettlementsManager(
   /** World-042 sight blockers — registered/cleared exactly alongside colliders. */
   registerSightBlockers?: (ownerKey: string, blockers: readonly SightBlocker[]) => void,
   clearSightBlockers?: (ownerKey: string) => void,
+  /** App-owned A8 issuance ledger (items-player-064 U2) — the SAME object `createApp`
+   *  owns, mutated in place; never copied. Absent = no upper-tier source is enabled. */
+  upperTierIssuanceLedger?: UpperTierIssuanceLedger,
 ): Promise<SettlementsManager> {
   const surfaceSampleHeight: HeightSampler = (x, z) => sampleBridgeDeck(x, z) ?? sampleHeight(x, z)
   const surfaceSampleLocalWater = (x: number, z: number): LocalWaterSample =>
@@ -680,19 +685,27 @@ export async function createSettlementsManager(
   }
 
   // Defs resolve through the shared settlement plan cache (plan 047 §9.15).
+  const resolveContext = (): SettlementResolveContext => ({
+    seed,
+    sampleHeight,
+    waterLevel,
+    localSearchRadius: localRadius,
+    terrainSamplers,
+    heightScale,
+    region,
+    homeSize,
+    ...worldGeography,
+  })
   function defFor(cell: SettlementCell): SettlementDef | null {
-    return settlementDefFor(cell, {
-      seed,
-      sampleHeight,
-      waterLevel,
-      localSearchRadius: localRadius,
-      terrainSamplers,
-      heightScale,
-      region,
-      homeSize,
-      ...worldGeography,
-    })
+    return settlementDefFor(cell, resolveContext())
   }
+  /** Deterministic upper-tier host designation (items-player-064 U1): a pure function of the
+   *  seed and the layout roster, resolved lazily on first merchant materialization. */
+  const upperTierHosts = createUpperTierHostResolver({
+    seed,
+    cells: () => settlementLayoutFor(resolveContext()).sites.map((site) => site.cell),
+    defFor,
+  })
 
   const economies = createEconomyRegistry(initialEconomies)
   /** Settlements whose economy was materialized in this world lifetime
@@ -1048,6 +1061,9 @@ export async function createSettlementsManager(
     droppedItems,
     grassForage,
     waterSourceProvider,
+    upperTierIssuance: upperTierIssuanceLedger
+      ? { ledger: upperTierIssuanceLedger, hosts: upperTierHosts }
+      : undefined,
     terrainPreparations,
     palisades,
     standingTorches,

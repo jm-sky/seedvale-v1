@@ -878,6 +878,7 @@ export async function createApp(
     initialSave?.authoredWorldConsequences,
     mineableRockState,
     initialSave?.fireResidues ?? [],
+    upperTierIssuanceLedger,
   )
   bootMarkEnd('createWorldBundle')
   resolveSpatialContextAtTarget = (x, y, z) => bundle.caves.spatialContextAt(x, y, z)
@@ -2929,6 +2930,7 @@ export async function createApp(
         consumedWorldPickupIds,
         onAnimalDeathSound,
         mineableRockState,
+        upperTierIssuanceLedger,
       )
       if (rebuildOutcome !== 'published') {
         // 'stale': a concurrent app teardown already disposed `bundle` and

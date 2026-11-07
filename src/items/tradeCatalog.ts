@@ -45,6 +45,7 @@ export const MERCHANT_PRICES: Readonly<Partial<Record<ItemKind, number>>> = {
   harrow_shortsword: 1100,
   ironvale_sword: 1300,
   greywatch_longsword: 1500,
+  yewmaster_longbow: 1300,
   knife: 12,
   pitchfork: 12,
   sickle: 12,
@@ -288,7 +289,6 @@ const RESOURCE_TRADE_VALUE: Partial<Record<ItemKind, number>> = {
   // Plan items-player-047 — quest/exceptional reward, not Kupiec stock; keeps
   // inventory-value/barter semantics without making it purchasable.
   masterwork_hunting_bow: 220,
-  yewmaster_longbow: 1300,
   signet_ring: 40,
   bandit_ledger: 15,
   marked_valuable: 55,
