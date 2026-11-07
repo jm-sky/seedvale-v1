@@ -17,7 +17,7 @@ The intended end state is not merely a completed quest. It is a real mining colo
 ## Core principles
 
 - The mine exists as real world content independently of the quest.
-- The mine is located in a genuine mountainous region and uses the shared Cave V2 system.
+- The mine is located in a genuine mountainous region and uses the existing V1 natural-cave heightfield; its **chosen future classification is `cave:medium`**, per [Caves and Dungeons roadmap](./caves-and-dungeons.md). Historical V1 term `Cave V2` must not be confused with the donor generator from the separate `seedvales-v2` repository.
 - Gold is represented by ordinary finite resource deposits.
 - The Player prepares the colony site using ordinary construction and terrain systems.
 - The expedition consists of real NPCs with real inventories.
@@ -60,13 +60,15 @@ Create the world-side foundation for a valuable abandoned gold mine that exists 
 
 The target region should contain a genuine mountain massif suitable for the mine.
 
-If suitable mountains exist but no appropriate Cave V2 exists, world generation should deterministically provide a suitable cave.
+If suitable mountains exist but no appropriate natural V1 cave for the mine exists, world generation should deterministically provide a suitable cave. The author-selected target is **`cave:medium`** (currently corresponding to V1 `adventure`); reconcile this with the current mine binding and topology before changing worldgen.
 
 If the target region would otherwise contain no appropriate mountains, world generation should ensure a coherent mountain massif at the regional generation level rather than creating a quest-specific hill or placing the mine on unsuitable terrain.
 
 The resulting geography must remain ordinary deterministic world content.
 
 The mine should have a stable identity that other systems can reference.
+
+**Author cave choice (2026-11-07):** Gold Mine uses `cave:medium` with **vertical wooden posts and horizontal support beams** to read as an abandoned mine. These are mine-specific furnishings, not mandatory props in every medium cave. Preserve the existing mine/cave identity, finite deposits and quest/colony bindings. Review cave geometry/furnishings before relevant mine presentation changes; this choice does not block independent expedition, economy or quest contracts. See [Caves and Dungeons](./caves-and-dungeons.md).
 
 ## Gold deposits
 
@@ -437,7 +439,7 @@ That lifecycle should be handled by future settlement/NPC systems rather than pr
 The intended dependency chain is:
 
 ```text
-Cave V2 / terrain / resources
+V1 natural cave (`cave:medium`) / terrain / resources
         ↓
 Mountain gold mine
         ↓
