@@ -1,6 +1,6 @@
 # Implementation notes — world-terrain-063 geography-driven settlement variants
 
-Plan: [world-terrain-063](../world-terrain-063-geography-driven-settlement-variants.md) · queue Q126 (V0), Q127 (V1–V3), Q175 (V1 impl), Q176 (V2 matrix).
+Plan: [world-terrain-063](../world-terrain-063-geography-driven-settlement-variants.md) · queue Q126 (V0), Q127 (V1–V3), Q186 (V1 impl), Q187 (V2 matrix).
 
 ## V0 — variant runner (Sonnet, 2026-11-05, Q126)
 
@@ -26,7 +26,7 @@ Before any variant: the current tree (`0ad00f27`, 22 @ 1150) had **5 / 2 routed 
 
 **Consequence for G5:** the author route now exists but is 67 % *longer* than the remembered 1320 m; −25…−40 % (≈ 790–990 m) needs a neighbour on the near side of the inlet, i.e. a layout answer, not a router one. Every V2 variant is measured on this pinned router revision (`2a19cf4c`, plan "router pin").
 
-## V1 contract (Opus, 2026-11-07) — written before code, implementation = queue Q175 (S)
+## V1 contract (Opus, 2026-11-07) — written before code, implementation = queue Q186 (S)
 
 ### 1. Data sources — no new realm dependency
 
@@ -37,7 +37,7 @@ The layout already requires identical installed geography in every realm (its `s
 
 ### 2. Feasibility filters (hard, before ranking)
 
-1. **Mainland only — default ON, lands with Q175.** A candidate whose probe site is not land-connected to the home site's landmass is rejected: bounded 8-neighbour flood fill at 18 m on the router's walkable rule (`h > waterLevel + ROUTE_WATER_CLEARANCE`, export the constant rather than copying it) from the site; reaching **1.5 km²** of land = mainland, exhausting earlier = island. Only probed (accepted-distance) candidates pay it; budget ≤ 10 ms per candidate, ≤ 300 ms per layout — measure and record; stop if beyond. Output change: seed 42 replaces `-6_11`; seed 415424794 expected unchanged (verify).
+1. **Mainland only — default ON, lands with Q186.** A candidate whose probe site is not land-connected to the home site's landmass is rejected: bounded 8-neighbour flood fill at 18 m on the router's walkable rule (`h > waterLevel + ROUTE_WATER_CLEARANCE`, export the constant rather than copying it) from the site; reaching **1.5 km²** of land = mainland, exhausting earlier = island. Only probed (accepted-distance) candidates pay it; budget ≤ 10 ms per candidate, ≤ 300 ms per layout — measure and record; stop if beyond. Output change: seed 42 replaces `-6_11`; seed 415424794 expected unchanged (verify).
 2. **Waterfall reserves** (064 W1): reject when the promoted-size footprint rectangle around the probe site intersects `waterfallReservesIn`. Today 0 footprints intersect on both seeds (Q168), so this only guards variants.
 3. **060 landform footprints** (crag, crater, lake island, spine summit — `landformDescriptorsOf`): reject when the site lies inside a descriptor footprint. **Pass corridors are not excluded** (they must stay routable).
 
@@ -51,7 +51,7 @@ Filters 2–3 are guards with the same default ON; both are expected to change n
 - `water = 1` within 150 m of a perennial channel, coast or lake, linear to 0 at 400 m (the minimum of the two distances).
 - Lowland slope stays the existing `cheapScore` slope term — not counted twice.
 
-Type: `export type SettlementSuitabilityWeight = 'none' | 'moderate' | 'strong'` → `W = 0 / 0.4 / 0.8` (the seeded jitter is 0.6, so `strong` dominates ties but not the flatness term). `SettlementLayoutOverrides.suitability` carries it; the game default stays `none` until V4. With `none`, Q175 must reproduce today's selection except where filter 1 acts (test: seed 415424794 sites identical).
+Type: `export type SettlementSuitabilityWeight = 'none' | 'moderate' | 'strong'` → `W = 0 / 0.4 / 0.8` (the seeded jitter is 0.6, so `strong` dominates ties but not the flatness term). `SettlementLayoutOverrides.suitability` carries it; the game default stays `none` until V4. With `none`, Q186 must reproduce today's selection except where filter 1 acts (test: seed 415424794 sites identical).
 
 ### 4. Tooling
 
@@ -59,14 +59,14 @@ Type: `export type SettlementSuitabilityWeight = 'none' | 'moderate' | 'strong'`
 - Per variant, census adds (V2 needs them): **workload** — sum of households and residents over defs plus the size histogram (review 031 F7); **long-detour edges** — count with ratio > 1.5; **author route** — home → `4_-1` polyline/ratio when the pair exists, else the nearest home neighbour east of home with its id; **land cover outside belts** — forest / wetland / rock-alpine shares of land farther than `SAFETY_BELT_BY_SIZE` (`settlementFaunaHabitats.ts`, fauna-050) from any settlement and > 30 m from any road (🟡 corridor width).
 - Isolation unchanged: one fresh process per variant; `--abca` must pass.
 
-### 5. Done when (Q175)
+### 5. Done when (Q186)
 
 Contract §1–§4 implemented with JSDoc; tests at the owners (filter 1 on a synthetic island, reserve/landform rejection, `none` = today's selection apart from filter 1, missing sampler throws); main / worker / tool layouts equal on seed 415424794 (one test or the census); settlement-definition + road-route + caves + cemeteries + `locations-coarse` cache bumps for filter 1 (output change); censuses before/after on both seeds in these notes; `docs/state/` settlement doc updated.
 
-### 6. Stop if (Q175)
+### 6. Stop if (Q186)
 
 Filter 1 exceeds its time budget at 18 m and a coarser step would miss real channels; a realm cannot supply `hydrologyId` without a lifecycle change; filter 1 changes a site on seed 415424794 (reference world) — report before landing.
 
-## V2 — matrix (queue Q176, S, after Q175)
+## V2 — matrix (queue Q187, S, after Q186)
 
-Matrix per plan §Design V2 on the pinned router `2a19cf4c` + Q175: targets 22 / 25 / 28 × start spacing 1150 / 1050 / 950 × weight none / moderate / strong on seeds 42 and 415424794, plus the Q116-c extension (uniform 850 / 750 m with counts as land allows; check the 720 m floor) and 3 spot seeds for the shortlisted rows only. Cheap rejection first (selected < target, any quadrant < 70 % within 5 h, components > 1), then full metrics. One results table + JSON into this file's V2 section; previews (`continent-preview-png` + route overlay from `--routes-out`) for the 6 best rows into `docs/research/v1-revival/continent-previews/063-variants/`. Clustered variants (plan V2 (ii)) are **not** in Q176 — V3 decides whether the uniform rows leave a gap worth that design.
+Matrix per plan §Design V2 on the pinned router `2a19cf4c` + Q186: targets 22 / 25 / 28 × start spacing 1150 / 1050 / 950 × weight none / moderate / strong on seeds 42 and 415424794, plus the Q116-c extension (uniform 850 / 750 m with counts as land allows; check the 720 m floor) and 3 spot seeds for the shortlisted rows only. Cheap rejection first (selected < target, any quadrant < 70 % within 5 h, components > 1), then full metrics. One results table + JSON into this file's V2 section; previews (`continent-preview-png` + route overlay from `--routes-out`) for the 6 best rows into `docs/research/v1-revival/continent-previews/063-variants/`. Clustered variants (plan V2 (ii)) are **not** in Q187 — V3 decides whether the uniform rows leave a gap worth that design.
