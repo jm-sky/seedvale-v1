@@ -1,10 +1,15 @@
 import type { HomeVillageSize } from '../config/worldConfig'
 import type { HeightSampler } from '../player/PlayerController'
 import type { RegionParams } from '../terrain/chunkHeightmap'
+import type { LandformIndex } from '../terrain/landformDescriptors'
 import type { TerrainSamplers } from './settlementTerrain'
 import { WORLD_HALF_EXTENT } from '../terrain/continentMask'
+import { isInWaterfallReserve, waterfallReservesIn } from '../terrain/waterfallSites'
+import { perennialChannelDistance } from '../terrain/worldHydrologyStore'
 import { createSeededRandom } from '../world/parseSeed'
 import { TRAVEL_HOUR_M } from '../world/travelUnits'
+import { villageSizeConfig } from './families'
+import { ROUTE_WATER_CLEARANCE } from './routeConstants'
 import {
   cellKey,
   cellSeed,
@@ -54,6 +59,19 @@ const SCORE_WATER_CLEARANCE = 1.5
 const SCORE_JITTER = 0.6
 const LAYOUT_SALT = 0x4c41594f
 
+/** Mainland filter (plan world-terrain-063 V1): flood-fill step (m) and the land area (km²) that counts as mainland. */
+const MAINLAND_STEP_M = 18
+const MAINLAND_MIN_AREA_KM2 = 1.5
+const MAINLAND_MIN_CELLS = Math.ceil((MAINLAND_MIN_AREA_KM2 * 1e6) / (MAINLAND_STEP_M * MAINLAND_STEP_M))
+/** Suitability term: full water access within `NEAR`, none beyond `FAR`; ring probes for coast / lake access. */
+const WATER_ACCESS_NEAR_M = 150
+const WATER_ACCESS_FAR_M = 400
+const COAST_PROBE_RINGS_M = [60, 120] as const
+
+/** Weight of the climate + water-access suitability term over the cheap score (plan world-terrain-063 V1 §3). */
+export type SettlementSuitabilityWeight = 'none' | 'moderate' | 'strong'
+const SUITABILITY_W: Record<SettlementSuitabilityWeight, number> = { none: 0, moderate: 0.4, strong: 0.8 }
+
 export type SettlementLayoutInput = {
   seed: number
   sampleHeight: HeightSampler
@@ -63,6 +81,10 @@ export type SettlementLayoutInput = {
   heightScale: number
   region: RegionParams
   homeSize?: HomeVillageSize
+  /** Installed global hydrology of this world — reads waterfall reserves and the perennial-channel distance. */
+  hydrologyId: string
+  /** 060 landform index of this world (`landformIndexOf(rawParams)`); sites inside a footprint are rejected. */
+  landformIndex: LandformIndex
 }
 
 /** Tooling-only overrides of the selection constants (plan world-terrain-063 V0). */
@@ -71,6 +93,8 @@ export type SettlementLayoutOverrides = {
   target?: number
   /** Replaces `SETTLEMENT_SPACING_M` (first-pass radius). */
   startSpacing?: number
+  /** Climate + water-access weight; default `none` (plan world-terrain-063 V1). */
+  suitability?: SettlementSuitabilityWeight
 }
 
 let layoutOverrides: SettlementLayoutOverrides | null = null
@@ -121,7 +145,34 @@ function cheapScore(
   const slope = maxDelta / (2 * r)
   const ridge = input.terrainSamplers.sampleMountainRidge(c.x, c.z)
   const rand = createSeededRandom(cellSeed(input.seed, cell) ^ LAYOUT_SALT)()
-  return 1 - Math.min(1, slope * 3) - 0.5 * Math.max(0, ridge) + SCORE_JITTER * rand
+  const base = 1 - Math.min(1, slope * 3) - 0.5 * Math.max(0, ridge) + SCORE_JITTER * rand
+  const weight = SUITABILITY_W[layoutOverrides?.suitability ?? 'none']
+  return weight === 0 ? base : base + weight * (0.5 * climateTerm(c.x, c.z, y0, input) + 0.5 * waterAccessTerm(c.x, c.z, input))
+}
+
+/** `1 − (desert + swamp)` biome weights at the cell centre (the sampler has no tundra/snow weights). */
+function climateTerm(x: number, z: number, y: number, input: SettlementLayoutInput): number {
+  const sample = input.terrainSamplers.sampleBiomeWeights
+  if (!sample) {
+    if (input.region.continentMask) throw new Error('settlement suitability needs terrainSamplers.sampleBiomeWeights in this realm')
+    return 1
+  }
+  const altitude01 = Math.min(1, Math.max(0, (y - input.waterLevel) / Math.max(input.heightScale, 0.001)))
+  const w = sample(x, z, altitude01, input.terrainSamplers.sampleMoistureRegion(x, z))
+  return Math.min(1, Math.max(0, 1 - (w.desert + w.swamp)))
+}
+
+/** 1 within `WATER_ACCESS_NEAR_M` of a perennial channel, coast or lake, linear to 0 at `WATER_ACCESS_FAR_M`. */
+function waterAccessTerm(x: number, z: number, input: SettlementLayoutInput): number {
+  let dist = perennialChannelDistance(input.hydrologyId, x, z, WATER_ACCESS_FAR_M)
+  for (const ring of COAST_PROBE_RINGS_M) {
+    if (dist <= ring) break
+    for (let k = 0; k < 8; k++) {
+      const a = (k * Math.PI) / 4
+      if (input.sampleHeight(x + Math.cos(a) * ring, z + Math.sin(a) * ring) <= input.waterLevel) { dist = ring; break }
+    }
+  }
+  return 1 - Math.min(1, Math.max(0, (dist - WATER_ACCESS_NEAR_M) / (WATER_ACCESS_FAR_M - WATER_ACCESS_NEAR_M)))
 }
 
 /** Home first, then every land cell by score descending (ties by gz, gx). */
@@ -136,6 +187,68 @@ function candidateCells(input: SettlementLayoutInput, limit: number): Candidate[
     }
   }
   return out.sort((a, b) => b.score - a.score || a.cell.gz - b.cell.gz || a.cell.gx - b.cell.gx)
+}
+
+/** Largest (promoted) village footprint radius — the reserve guard checks the rectangle a promoted site could occupy. */
+const PROMOTED_FOOTPRINT_M = villageSizeConfig('XL').footprintRadius
+
+/**
+ * Mainland test (plan world-terrain-063 V1 §2.1): bounded 8-neighbour flood fill on the router's walkable rule at
+ * `MAINLAND_STEP_M`. Reaching `MAINLAND_MIN_CELLS` cells means mainland; exhausting earlier means a small island the
+ * road router can never reach. Results are cached per cell so later candidates on the same landmass cost nothing.
+ */
+function createMainlandTest(input: SettlementLayoutInput): (x: number, z: number) => boolean {
+  const verdict = new Map<number, boolean>()
+  const keyOf = (ix: number, iz: number): number => (ix + 8192) * 16384 + (iz + 8192)
+  const walkable = (ix: number, iz: number): boolean =>
+    input.sampleHeight(ix * MAINLAND_STEP_M, iz * MAINLAND_STEP_M) > input.waterLevel + ROUTE_WATER_CLEARANCE
+  return (x, z) => {
+    const ix0 = Math.round(x / MAINLAND_STEP_M)
+    const iz0 = Math.round(z / MAINLAND_STEP_M)
+    const known = verdict.get(keyOf(ix0, iz0))
+    if (known !== undefined) return known
+    const seen = new Set<number>([keyOf(ix0, iz0)])
+    const queue: number[] = [ix0, iz0]
+    for (let head = 0; head < queue.length; head += 2) {
+      if (seen.size >= MAINLAND_MIN_CELLS) {
+        for (const k of seen) verdict.set(k, true)
+        return true
+      }
+      const ix = queue[head]!
+      const iz = queue[head + 1]!
+      for (let dz = -1; dz <= 1; dz++) {
+        for (let dx = -1; dx <= 1; dx++) {
+          if (dx === 0 && dz === 0) continue
+          const k = keyOf(ix + dx, iz + dz)
+          if (seen.has(k) || verdict.get(k) === false) continue
+          if (verdict.get(k) === true) {
+            for (const v of seen) verdict.set(v, true)
+            return true
+          }
+          if (!walkable(ix + dx, iz + dz)) continue
+          seen.add(k)
+          queue.push(ix + dx, iz + dz)
+        }
+      }
+    }
+    const mainland = seen.size >= MAINLAND_MIN_CELLS
+    for (const k of seen) verdict.set(k, mainland)
+    return mainland
+  }
+}
+
+/** Hard feasibility filters on a probed site (plan world-terrain-063 V1 §2): landform footprints, waterfall reserves, mainland. */
+function createSiteFilter(input: SettlementLayoutInput): (site: { x: number, z: number }) => boolean {
+  const onMainland = createMainlandTest(input)
+  return (site) => {
+    for (const d of input.landformIndex.near(site.x, site.z)) {
+      if (Math.hypot(site.x - d.centreX, site.z - d.centreZ) < d.radius) return false
+    }
+    const r = PROMOTED_FOOTPRINT_M
+    if (isInWaterfallReserve(input.hydrologyId, site.x, site.z)
+      || waterfallReservesIn(input.hydrologyId, { minX: site.x - r, maxX: site.x + r, minZ: site.z - r, maxZ: site.z + r }).length > 0) return false
+    return onMainland(site.x, site.z)
+  }
 }
 
 /**
@@ -168,9 +281,11 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
   const homeCenter = settlementCellCenter({ gx: 0, gz: 0 }, input.seed)
   sites.push({ cell: { gx: 0, gz: 0 }, x: homeSite?.x ?? homeCenter.x, z: homeSite?.z ?? homeCenter.z })
 
+  const siteFeasible = createSiteFilter(input)
   const limit = Math.ceil(WORLD_HALF_EXTENT / SETTLEMENT_GRID_STEP)
   const candidates = candidateCells(input, limit)
   const probed = new Map<string, { x: number, z: number } | null>()
+  const feasible = new Map<string, boolean>()
   const taken = new Set<string>([cellKey({ gx: 0, gz: 0 })])
 
   const farEnough = (x: number, z: number, radius: number): boolean =>
@@ -191,6 +306,9 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
       if (!probed.has(key)) probed.set(key, probe(cell))
       const site = probed.get(key)
       if (!site || !farEnough(site.x, site.z, radius)) continue
+      // Feasibility last (the mainland flood fill is the expensive part) and once per cell.
+      if (!feasible.has(key)) feasible.set(key, siteFeasible(site))
+      if (!feasible.get(key)) continue
       sites.push({ cell, x: site.x, z: site.z })
       taken.add(key)
     }

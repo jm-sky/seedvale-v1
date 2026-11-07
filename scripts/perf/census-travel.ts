@@ -13,9 +13,11 @@
 //  - author route: home edge leaving WEST (−x) on the north-up map (seed 415424794), candidates listed, never inferred.
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
+import { safetyBeltWidth } from '../../src/fauna/settlementFaunaHabitats'
+import { villageSizeConfig } from '../../src/settlement/families'
 import { clearRoadNetworkCaches, neighborsFor, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
-import { setSettlementLayoutOverrides } from '../../src/settlement/settlementLayout'
+import { setSettlementLayoutOverrides, type SettlementSuitabilityWeight } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { WORLD_HALF_EXTENT } from '../../src/terrain/continentMask'
@@ -34,10 +36,13 @@ const routesOut = arg('routes-out', '')
 // world-terrain-063 V0: layout overrides (tooling only). Run each variant in a fresh process (see settlement-variants.ts).
 const overrideTarget = arg('target', '')
 const overrideSpacing = arg('spacing', '')
-if (overrideTarget || overrideSpacing) {
+const overrideSuitability = arg('suitability', '')
+if (overrideSuitability && !['moderate', 'none', 'strong'].includes(overrideSuitability)) throw new Error(`--suitability must be none|moderate|strong, got ${overrideSuitability}`)
+if (overrideTarget || overrideSpacing || overrideSuitability) {
   setSettlementLayoutOverrides({
     ...(overrideTarget ? { target: Number(overrideTarget) } : {}),
     ...(overrideSpacing ? { startSpacing: Number(overrideSpacing) } : {}),
+    ...(overrideSuitability ? { suitability: overrideSuitability as SettlementSuitabilityWeight } : {}),
   })
 }
 const NPC_HOUR_M = NPC_TRAVEL_SPEED * DEFAULT_GAME_HOUR_REAL_SEC
@@ -228,6 +233,70 @@ function measure(seed: number) {
     authorRoute = { note: 'candidates sorted by angle from west; author confirms which one (timed in-game walk → queue §2)', ambiguous: cands.length > 1 && cands[1]!.degFromWest - cands[0]!.degFromWest < 30, candidates: cands }
   }
 
+  // V1 (Q186) columns: workload, long detours, author target, land cover outside settlement belts and road corridors.
+  const sizeHistogram: Record<string, number> = {}
+  let households = 0
+  let residents = 0
+  for (const d of defs) {
+    sizeHistogram[d.size] = (sizeHistogram[d.size] ?? 0) + 1
+    households += d.families.length
+    residents += d.families.reduce((n, f) => n + f.members.length, 0)
+  }
+  const longDetourEdges = edgeRows.filter((e) => e.ratio > 1.5).length
+  const authorTarget = (() => {
+    if (!home) return null
+    const direct = edgeRows.find((e) => (e.a === home.id && e.b === '4_-1') || (e.b === home.id && e.a === '4_-1'))
+    const pick = direct ?? edgeRows.filter((e) => (e.a === home.id || e.b === home.id)).map((e) => ({ e, other: byId.get(e.a === home.id ? e.b : e.a)! }))
+      .filter((o) => o.other.x > home.x).sort((l, r) => dist(l.other, home) - dist(r.other, home))[0]?.e
+    if (!pick) return { id: '4_-1', routed: false, nearestEastNeighbour: null }
+    return { id: pick === direct ? '4_-1' : (pick.a === home.id ? pick.b : pick.a), exact: pick === direct, polylineM: pick.polylineM, straightM: pick.straightM, ratio: pick.ratio }
+  })()
+  const roadBuckets = new Map<string, Array<[P, P]>>()
+  const BUCKET = 120
+  for (const e of edgeRows) {
+    const pts = e._route.points
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i]!
+      const b = pts[i + 1]!
+      const n = Math.max(1, Math.ceil(dist(a, b) / 30))
+      for (let k = 0; k <= n; k++) {
+        const key = `${Math.floor((a.x + ((b.x - a.x) * k) / n) / BUCKET)}|${Math.floor((a.z + ((b.z - a.z) * k) / n) / BUCKET)}`
+        const list = roadBuckets.get(key)
+        if (list) list.push([a, b])
+        else roadBuckets.set(key, [[a, b]])
+      }
+    }
+  }
+  const nearRoad = (x: number, z: number, within: number): boolean => {
+    for (let bx = Math.floor((x - within) / BUCKET); bx <= Math.floor((x + within) / BUCKET); bx++) {
+      for (let bz = Math.floor((z - within) / BUCKET); bz <= Math.floor((z + within) / BUCKET); bz++) {
+        for (const [a, b] of roadBuckets.get(`${bx}|${bz}`) ?? []) {
+          const dx = b.x - a.x
+          const dz = b.z - a.z
+          const len2 = dx * dx + dz * dz
+          const t = len2 > 0 ? Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / len2)) : 0
+          if (Math.hypot(a.x + dx * t - x, a.z + dz * t - z) <= within) return true
+        }
+      }
+    }
+    return false
+  }
+  const belts = defs.map((d) => ({ d, r: villageSizeConfig(d.size).footprintRadius + safetyBeltWidth(d.size, d.character, 0.35) }))
+  let outside = 0
+  const cover = { forest: 0, wetland: 0, rockAlpine: 0 }
+  const sampleWeights = ctx.terrainSamplers.sampleBiomeWeights
+  for (let x = -WORLD_HALF_EXTENT; x <= WORLD_HALF_EXTENT; x += step) for (let z = -WORLD_HALF_EXTENT; z <= WORLD_HALF_EXTENT; z += step) {
+    const y = h(x, z)
+    if (y <= snap.waterLevel + 1) continue
+    if (belts.some(({ d, r }) => Math.hypot(d.x - x, d.z - z) <= r) || nearRoad(x, z, 30)) continue
+    outside++
+    const altitude01 = Math.min(1, Math.max(0, (y - snap.waterLevel) / Math.max(snap.heightScale, 0.001)))
+    const w = sampleWeights?.(x, z, altitude01, ctx.terrainSamplers.sampleMoistureRegion(x, z))
+    if (ctx.terrainSamplers.sampleMountainRidge(x, z) > 0.5 || altitude01 > 0.66) cover.rockAlpine++
+    else if (w && w.swamp >= 0.5) cover.wetland++
+    else if (w && w.forest >= 0.5) cover.forest++
+  }
+
   if (routesOut) {
     mkdirSync(routesOut, { recursive: true })
     writeFileSync(`${routesOut}/travel-routes-${seed}.json`, JSON.stringify({
@@ -252,6 +321,10 @@ function measure(seed: number) {
       landKm2: r1((land * step * step) / 1e6), within2hPct: r1((100 * within.h2) / land), within5hPct: r1((100 * within.h5) / land), within8hPct: r1((100 * within.h8) / land), wildernessOver5hPct: r1((100 * wilderness) / land),
       quadrantWithin5hPct: Object.fromEntries(Object.entries(quad).map(([k, v]) => [k, v.land ? r1((100 * v.covered5) / v.land) : null])),
     },
+    workload: { households, residents, sizeHistogram },
+    longDetourEdges,
+    authorTarget,
+    landCoverOutsideBeltsPct: { landOutsideKm2: r1((outside * step * step) / 1e6), forest: r1((100 * cover.forest) / Math.max(1, outside)), wetland: r1((100 * cover.wetland) / Math.max(1, outside)), rockAlpine: r1((100 * cover.rockAlpine) / Math.max(1, outside)) },
     authorRoute, edges: rows,
   }
 }

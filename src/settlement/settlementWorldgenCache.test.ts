@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { RawSampleParams, RegionParams } from '../terrain/chunkHeightmap'
 import type { TerrainSamplers } from './settlementTerrain'
 import { cacheKey, listCacheRecords, putCacheRecords } from '../persistence/worldgenCacheDb'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { UNCONDITIONED_HYDROLOGY_ID } from '../terrain/worldHydrologyStore'
 import * as settlementGenerator from './settlementGenerator'
 import { generateSettlementDef, type SettlementDef } from './settlementGenerator'
@@ -124,6 +125,8 @@ function ctxFor(
     sampleHeight,
     waterLevel: 0,
     localSearchRadius: 56,
+    hydrologyId: 'unconditioned',
+    landformIndex: EMPTY_LANDFORM_INDEX,
     terrainSamplers: samplers,
     heightScale: 1,
     region,

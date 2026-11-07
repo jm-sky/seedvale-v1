@@ -7,7 +7,7 @@ import type {
 } from './chunkHeightmap'
 import type { FbmParams } from './fbm'
 import { bridgesNear, clearRoadNetworkMemoryCaches, fordsNear, segmentsNear, villageSegmentsNear } from '../settlement/roadNetwork'
-import { setSettlementRiverQuery, settlementDefFor } from '../settlement/settlementPlanCache'
+import { setSettlementRiverQuery, settlementDefFor, settlementWorldGeography } from '../settlement/settlementPlanCache'
 import { biomeWeightsSamplerFor } from './biomeRegions'
 import { CEMETERY_SETTLEMENT_GATHER_RADIUS, collectSettlementRefsNear } from './cemeteryAssignment'
 import { isClassicLandmarkKind, type LandmarkKind } from './chunkEnvironment'
@@ -130,6 +130,7 @@ export function worldKnowledgeRoadContext(terrain: WorldKnowledgeTerrainSnapshot
     heightScale: terrain.heightScale,
     region: terrain.region,
     localSearchRadius: terrain.localSearchRadius,
+    ...settlementWorldGeography(raw),
   }
 }
 
@@ -248,6 +249,8 @@ export function chunkParamsForWorldKnowledgeScan(
         heightScale: roadCtx.heightScale,
         region: roadCtx.region,
         homeSize: roadCtx.homeSize,
+        hydrologyId: roadCtx.hydrologyId,
+        landformIndex: roadCtx.landformIndex,
       }),
     )
     const cemeteryGatherSize = terrain.chunkSize * 8

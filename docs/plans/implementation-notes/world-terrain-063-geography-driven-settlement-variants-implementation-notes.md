@@ -67,6 +67,35 @@ Contract §1–§4 implemented with JSDoc; tests at the owners (filter 1 on a sy
 
 Filter 1 exceeds its time budget at 18 m and a coarser step would miss real channels; a realm cannot supply `hydrologyId` without a lifecycle change; filter 1 changes a site on seed 415424794 (reference world) — report before landing.
 
+## V1 implementation (Sonnet, 2026-11-07, Q186)
+
+Implemented per the V1 contract; deviations and measurements:
+
+- **Context plumbing.** `SettlementResolveContext` / `RoadNetworkContext` / `SettlementLayoutInput` gain required `hydrologyId` **and** `landformIndex`. The contract names only `hydrologyId`, but the 060 footprints need the landform index, which the layout cannot rebuild from the id; both come from one constructor, `settlementWorldGeography(rawParams)` (`settlementPlanCache.ts`), used by `worldBundle`, `chunkManager`, `worldKnowledgeScan` (so workers and census tools) and `SettlementsManager` (new required positional `worldGeography` after `region`; its two lifecycle tests shift their `args[]` indices by one).
+- **Climate term** uses `1 − (desert + swamp)`: `BiomeWeights` has only desert / swamp / forest (no tundra / snow weights, unlike the contract text). Missing sampler on a `continentMask` world throws (test).
+- **Channel distance** `perennialChannelDistance(hydrologyId, x, z, maxM)` lives in `worldHydrologyStore.ts` (128 m grid over installed chain segments, `WeakMap` per install; every installed chain is perennial).
+- **Router constant** `ROUTE_WATER_CLEARANCE` moved to `settlement/routeConstants.ts` (no import cycle layout ↔ roadNetwork); the mainland flood walks the same rule.
+- **Filter order:** spacing first, then landform → waterfall → mainland, once per cell. Cache namespaces bumped: settlement-definition v39, road-route v28, caves v20, abandoned-cemetery v24, locations-coarse v18. `WORLDGEN_EPOCH` stays 1 (this Revival batch already bumped it).
+- **Tooling:** `census-travel --suitability=`, `settlement-variants` `<target>@<spacing>[/<weight>]`, census columns `workload`, `longDetourEdges`, `authorTarget`, `landCoverOutsideBeltsPct` (land farther than footprint + `safetyBeltWidth(size, character, 0.35)` from any settlement and > 30 m from any routed road; forest/wetland = biome weight ≥ 0.5, rock-alpine = ridge > 0.5 or altitude > 0.66 — 🟡 census-only thresholds).
+
+**Output change (`none`, headless, router `2a19cf4c`):**
+
+| | seed 42 | seed 415424794 |
+| --- | --- | --- |
+| sites replaced | `-6_11` (0.2 km² island) → `-4_8` | `2_-8` → `2_-7` (**waterfall-reserve guard**, site at (639, −2418); filter 1 changes nothing here) |
+| routed / layout edges | 26 / 28 | 27 / 28 |
+| routed components | 2 → **1** | 1 |
+| households / residents | 88 / 164 | 88 / 165 |
+| long-detour edges (ratio > 1.5) | 7 | 2 |
+| land cover outside belts (forest · wetland · rock-alpine) | 77 · 2.4 · 14.5 % | 68.8 · 3.3 · 13.7 % |
+| author target | `4_-3` east neighbour, ratio 1.01 | `4_-1` exact, 2209 m, ratio 1.78 |
+
+The seed 415424794 change comes from filter 2 (contract §2: "record it and keep it"), not from the mainland filter, so the V1 stop-if does not fire; the author should know the reference world's `2_-8` village moved one lattice cell.
+
+**Cost (headless, same machine as the baseline layout ≈ 1.2 s):** filters add ≈ 340–370 ms per layout (22 floods, avg ≈ 13 ms, max ≈ 28 ms, plus a one-time ≈ 60 ms waterfall index) against the contract budget of ≤ 10 ms per candidate / ≤ 300 ms per layout. The flood is dominated by `sampleHeight` (≈ 6 µs per call; 1.5 km² at 18 m = 4630 cells), so the overshoot is irreducible at 18 m without a coarser step. Running the flood after the spacing check (not on every probed cell) already removed the avoidable part. A 36 m step would meet the budget but could bridge < 36 m straits — left to the author / Opus (§3).
+
+**Not verified:** main / worker / tool layout equality was not exercised with a real worker; all three use `settlementWorldGeography` + the same `computeSettlementLayout`, and the census (tool) and unit tests (synthetic) agree. No browser check.
+
 ## V2 — matrix (queue Q187, S, after Q186)
 
 Matrix per plan §Design V2 on the pinned router `2a19cf4c` + Q186: targets 22 / 25 / 28 × start spacing 1150 / 1050 / 950 × weight none / moderate / strong on seeds 42 and 415424794, plus the Q116-c extension (uniform 850 / 750 m with counts as land allows; check the 720 m floor) and 3 spot seeds for the shortlisted rows only. Cheap rejection first (selected < target, any quadrant < 70 % within 5 h, components > 1), then full metrics. One results table + JSON into this file's V2 section; previews (`continent-preview-png` + route overlay from `--routes-out`) for the 6 best rows into `docs/research/v1-revival/continent-previews/063-variants/`. Clustered variants (plan V2 (ii)) are **not** in Q187 — V3 decides whether the uniform rows leave a gap worth that design.

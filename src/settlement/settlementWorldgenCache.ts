@@ -62,7 +62,8 @@ export const SETTLEMENT_DEFINITION_CACHE_NAMESPACE = 'settlement-definitions'
 // v26 (2026-11-05, queue Q118): range spines/passes/summits reshape the relief (plan world-terrain-060 R1–R2).
 // v27 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
 // v28 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
-export const SETTLEMENT_DEFINITION_CACHE_VERSION = 38
+// v39 (2026-11-07, queue Q186): settlement layout drops off-mainland / waterfall-reserve / landform-footprint sites (plan world-terrain-063 V1).
+export const SETTLEMENT_DEFINITION_CACHE_VERSION = 39
 // v7 (2026-10-31, queue Q43): settlement storehouse — plot-infra-storehouse-0 (+ houseDefinitionId/houseYaw/storehouse),
 // landmark kind 'storehouse', ClearingLayout.storehouses.
 // v6 (2026-10-31, queue Q41): household compounds — plot.houseDefinitionId/houseYaw/yard/discs,

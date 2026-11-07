@@ -132,6 +132,7 @@ import {
   settlementDefinitionCacheReady,
   settlementLayoutFor,
   type SettlementResolveContext,
+  settlementWorldGeography,
   worldRiverQuery,
 } from '../settlement/settlementPlanCache'
 import { createSettlementsManager, type SettlementsManager } from '../settlement/SettlementsManager'
@@ -725,6 +726,7 @@ function buildSettlementsManager(
     worldContext,
     config.terrain.heightScale,
     config.terrain.region,
+    settlementWorldGeography(rawSampleParamsFromWorld(config)),
     chunkManager.waitForChunks,
     config.terrain.chunkSize,
     chunkManager.collidersNear,
@@ -1427,6 +1429,7 @@ async function buildWorldSystems(
     sampleHeight: chunkManager.sampleLandHeight,
     waterLevel: config.terrain.waterLevel,
     localSearchRadius: HOME_RADIUS,
+    ...settlementWorldGeography(rawSampleParamsFromWorld(config)),
     terrainSamplers: {
       sampleContinentalness: chunkManager.sampleContinentalness,
       sampleMountainRidge: chunkManager.sampleMountainRidge,

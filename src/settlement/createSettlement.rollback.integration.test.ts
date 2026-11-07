@@ -3,6 +3,7 @@ import { Scene } from 'three'
 import { describe, expect, it, vi } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { TerrainSamplers } from './settlementTerrain'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { createSettlementsManager } from './SettlementsManager'
 
 vi.mock('./livestock', async (importOriginal) => {
@@ -43,7 +44,7 @@ describe('createSettlement rollback (real factory, injected failure after attach
     const registerSubtree = vi.fn()
     const unregisterSubtree = vi.fn()
     const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const args: unknown[] = new Array(63).fill(undefined)
+    const args: unknown[] = new Array(64).fill(undefined)
     args[0] = scene
     args[1] = () => 12
     args[2] = 0
@@ -56,12 +57,13 @@ describe('createSettlement rollback (real factory, injected failure after attach
     args[9] = samplers
     args[10] = 1
     args[11] = region
-    args[12] = () => Promise.resolve()
-    args[13] = 32
-    args[14] = () => []
-    args[15] = registerColliders
-    args[16] = clearColliders
-    args[24] = {
+    args[12] = { hydrologyId: 'unconditioned', landformIndex: EMPTY_LANDFORM_INDEX }
+    args[13] = () => Promise.resolve()
+    args[14] = 32
+    args[15] = () => []
+    args[16] = registerColliders
+    args[17] = clearColliders
+    args[25] = {
       registerSubtree,
       unregisterSubtree,
       register: () => {},

@@ -8,6 +8,7 @@ import type {
   RiverChannelSegment,
   RoadCorridorSegment,
 } from '../terrain/chunkHeightmap'
+import type { LandformIndex } from '../terrain/landformDescriptors'
 import type { FordProjection } from '../terrain/riverFord'
 import type { RoadBridgeSpec } from '../terrain/roadBridge'
 import type { RoadRiverCrossing } from './roadRiverCrossing'
@@ -25,6 +26,7 @@ import {
   evaluateRoadRiverCrossing,
   riverHitsOnEdge,
 } from './roadRiverCrossing'
+import { ROUTE_WATER_CLEARANCE } from './routeConstants'
 import { buildRouteObstacles, type RouteObstacles } from './routeObstacles'
 import { polylineIsClear, roundCorners, type RouteShapeEnv, straightChordAround, stringPull } from './routeShape'
 import {
@@ -78,6 +80,10 @@ export type RoadNetworkContext = {
   localSearchRadius: number
   /** Home village size override — must match `SettlementsManager` / world config. */
   homeSize?: HomeVillageSize
+  /** Installed hydrology id of this world (see `SettlementResolveContext.hydrologyId`). */
+  hydrologyId: string
+  /** 060 landform index of this world (see `SettlementResolveContext.landformIndex`). */
+  landformIndex: LandformIndex
 }
 
 /**
@@ -209,6 +215,8 @@ function resolveCtx(ctx: RoadNetworkContext): SettlementResolveContext {
     heightScale: ctx.heightScale,
     region: ctx.region,
     homeSize: ctx.homeSize,
+    hydrologyId: ctx.hydrologyId,
+    landformIndex: ctx.landformIndex,
   }
 }
 
@@ -267,12 +275,6 @@ const NEIGHBOR_OFFSETS = [
   [1, 1], [1, -1], [-1, 1], [-1, -1],
 ] as const
 
-/** Clearance above `waterLevel` a route needs to consider a cell dry land —
- *  water is still a hard reject. This is the *lake/ocean* gate: a node whose
- *  terrain sits at or below the sea is never road. Rivers are handled
- *  separately and analytically (`roadRiverCrossing.ts`) — their carved channel
- *  is often above this level, so elevation alone can never see them. */
-const ROUTE_WATER_CLEARANCE = 0.5
 /** Mountains are *not* a hard reject — real roads cross mountains (passes,
  *  switchbacks), just at real cost. This multiplies a step's distance by
  *  `1 + weight * ridge²` (ridge ≈ 0..1, averaged over the step's endpoints),

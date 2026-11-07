@@ -135,7 +135,7 @@ import {
   type SettlementDef,
   worldToCell,
 } from './settlementGenerator'
-import { settlementDefFor } from './settlementPlanCache'
+import { settlementDefFor, type SettlementWorldGeography } from './settlementPlanCache'
 import { createLabeledProp, disposeLabeledProp, type LabeledProp, updateLabelOpacity } from './settlementSignposts'
 import { visitUniqueAnimalsById } from './settlementTimeSkipAnimals'
 import { settlementStorageDestination } from './storageDestinations'
@@ -472,6 +472,8 @@ export async function createSettlementsManager(
   terrainSamplers: TerrainSamplers,
   heightScale: number,
   region: RegionParams,
+  /** Hydrology id + landform index of this world (`settlementWorldGeography(rawParams)`) — layout inputs. */
+  worldGeography: SettlementWorldGeography,
   /** Forces + awaits generation of the terrain chunks around a settlement
    *  site before that settlement is built — see `chunksNear`'s comment. */
   waitForChunks: (coords: ChunkCoord[]) => Promise<void>,
@@ -673,6 +675,7 @@ export async function createSettlementsManager(
     region,
     localSearchRadius: localRadius,
     homeSize,
+    ...worldGeography,
   }
 
   // Defs resolve through the shared settlement plan cache (plan 047 §9.15).
@@ -686,6 +689,7 @@ export async function createSettlementsManager(
       heightScale,
       region,
       homeSize,
+      ...worldGeography,
     })
   }
 

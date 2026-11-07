@@ -245,6 +245,71 @@ export function streamHeadsFor(hydrologyId: string): readonly StreamHead[] {
   return heads
 }
 
+const CHANNEL_GRID_M = 128
+
+type ChannelGrid = { cells: Map<number, number[]>, points: Float32Array }
+
+const channelGridCache = new WeakMap<WorldHydrology, ChannelGrid>()
+
+function channelCellKey(cx: number, cz: number): number {
+  return (cx + 32768) * 65536 + (cz + 32768)
+}
+
+function channelGridFor(data: WorldHydrology): ChannelGrid {
+  let grid = channelGridCache.get(data)
+  if (!grid) {
+    const { offsets, points } = data.chains
+    const cells = new Map<number, number[]>()
+    for (let i = 0; i + 1 < offsets.length; i++) {
+      // Segment `p → p + 1` is bucketed by its start point; chain points are far denser than `CHANNEL_GRID_M`.
+      for (let p = offsets[i]!; p + 1 < offsets[i + 1]!; p++) {
+        const k = channelCellKey(Math.floor(points[p * 4]! / CHANNEL_GRID_M), Math.floor(points[p * 4 + 1]! / CHANNEL_GRID_M))
+        const list = cells.get(k)
+        if (list) list.push(p)
+        else cells.set(k, [p])
+      }
+    }
+    grid = { cells, points }
+    channelGridCache.set(data, grid)
+  }
+  return grid
+}
+
+/**
+ * Distance (m) from `(x, z)` to the nearest perennial channel of the installed global chains (every installed chain
+ * is a perennial stream — `accumulation` already passed the stream threshold), or `maxM` when none lies within
+ * `maxM`. Memoized per installed data (coarse grid, dropped with the install). `Infinity`-free: unconditioned ids have
+ * no channels and return `maxM`. Throws when `hydrologyId` is not installed. Used by the settlement layout's
+ * water-access term (plan world-terrain-063 V1).
+ *
+ * @domain world-terrain
+ */
+export function perennialChannelDistance(hydrologyId: string, x: number, z: number, maxM: number): number {
+  if (isUnconditionedHydrologyId(hydrologyId)) return maxM
+  const { cells, points } = channelGridFor(worldHydrologyFor(hydrologyId))
+  const reach = Math.ceil(maxM / CHANNEL_GRID_M) + 1
+  const cx0 = Math.floor(x / CHANNEL_GRID_M)
+  const cz0 = Math.floor(z / CHANNEL_GRID_M)
+  let best = maxM * maxM
+  for (let cx = cx0 - reach; cx <= cx0 + reach; cx++) {
+    for (let cz = cz0 - reach; cz <= cz0 + reach; cz++) {
+      for (const p of cells.get(channelCellKey(cx, cz)) ?? []) {
+        const ax = points[p * 4]!
+        const az = points[p * 4 + 1]!
+        const dx = points[(p + 1) * 4]! - ax
+        const dz = points[(p + 1) * 4 + 1]! - az
+        const len2 = dx * dx + dz * dz
+        const t = len2 > 0 ? Math.max(0, Math.min(1, ((x - ax) * dx + (z - az) * dz) / len2)) : 0
+        const ex = ax + dx * t - x
+        const ez = az + dz * t - z
+        const d2 = ex * ex + ez * ez
+        if (d2 < best) best = d2
+      }
+    }
+  }
+  return Math.sqrt(best)
+}
+
 // ---- chains --------------------------------------------------------------------------------------------------------
 
 /** Packed chains → `RiverChain[]` (the shape the existing consumers use). */

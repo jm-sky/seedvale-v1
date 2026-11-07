@@ -49,7 +49,8 @@ export const ROAD_ROUTE_CACHE_NAMESPACE = 'road-routes'
 // v15 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
 // v16 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
 // v27 (2026-11-07, queue Q127): roads that fail in the default A* box retry in wider boxes (sea-inlet detours).
-export const ROAD_ROUTE_CACHE_VERSION = 27
+// v28 (2026-11-07, queue Q186): settlement layout drops off-mainland / waterfall-reserve / landform-footprint sites (plan world-terrain-063 V1).
+export const ROAD_ROUTE_CACHE_VERSION = 28
 
 const DEFAULT_DEBOUNCE_MS = 4000
 /** Bounded per-seed cap of requested routes only — never a full pair scan.

@@ -2,12 +2,14 @@ import type { HomeVillageSize } from '../config/worldConfig'
 import type { HeightSampler } from '../player/PlayerController'
 import type { SettlementBaseName } from '../shared/SettlementName'
 import type { RawSampleParams, RegionParams } from '../terrain/chunkHeightmap'
+import type { LandformIndex } from '../terrain/landformDescriptors'
 import type { RiverQuery } from '../terrain/riverQuery'
 import type { VillageSize } from './families'
 import type { TerrainSamplers } from './settlementTerrain'
 import { pickNameCulture } from '../ai/nameCultures'
 import { getMonitor } from '../perf/active'
 import { withStage } from '../perf/monitor'
+import { landformIndexOf } from '../terrain/chunkHeightmap'
 import { createHomeElderFamily } from './homeAuthoredResidents'
 import {
   createLostTreasureArchaeologistFamily,
@@ -68,6 +70,18 @@ export type SettlementResolveContext = {
   region: RegionParams
   /** Home village size override (`WorldConfig.settlements.homeSize`). */
   homeSize?: HomeVillageSize
+  /** Installed hydrology id of this world (`RawSampleParams.hydrologyId`) — layout reads waterfall reserves and channels. */
+  hydrologyId: string
+  /** 060 landform index of this world (`landformIndexOf(rawParams)`) — layout rejects sites inside a footprint. */
+  landformIndex: LandformIndex
+}
+
+/** The world-level inputs the settlement layout reads beyond sampling: installed hydrology and landform footprints. */
+export type SettlementWorldGeography = Pick<SettlementResolveContext, 'hydrologyId' | 'landformIndex'>
+
+/** Geography of a world from its terrain params — every realm builds its context fields through this. */
+export function settlementWorldGeography(params: RawSampleParams): SettlementWorldGeography {
+  return { hydrologyId: params.hydrologyId, landformIndex: landformIndexOf(params) }
 }
 
 /** The running world's canonical river geometry lookup (`terrain/riverQuery.ts`).

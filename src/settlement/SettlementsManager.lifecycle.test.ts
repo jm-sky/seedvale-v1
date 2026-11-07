@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { RegionParams } from '../terrain/chunkHeightmap'
 import type { Settlement } from './createSettlement'
 import type { TerrainSamplers } from './settlementTerrain'
+import { EMPTY_LANDFORM_INDEX } from '../terrain/landformDescriptors'
 import { clearSettlementDefCache } from './settlementPlanCache'
 import { createSettlementsManager } from './SettlementsManager'
 
@@ -73,7 +74,7 @@ const flush = async (): Promise<void> => {
 }
 
 async function makeManager(onAvailable?: (s: { id: string }) => void) {
-  const args: unknown[] = new Array(63).fill(undefined)
+  const args: unknown[] = new Array(64).fill(undefined)
   args[0] = new Scene()
   args[1] = () => 12
   args[2] = 0
@@ -86,12 +87,13 @@ async function makeManager(onAvailable?: (s: { id: string }) => void) {
   args[9] = samplers
   args[10] = 1
   args[11] = region
-  args[12] = () => Promise.resolve()
-  args[13] = 32
-  args[14] = () => []
-  args[15] = () => {}
+  args[12] = { hydrologyId: 'unconditioned', landformIndex: EMPTY_LANDFORM_INDEX }
+  args[13] = () => Promise.resolve()
+  args[14] = 32
+  args[15] = () => []
   args[16] = () => {}
-  args[57] = onAvailable
+  args[17] = () => {}
+  args[58] = onAvailable
   return (createSettlementsManager as (...a: unknown[]) => ReturnType<typeof createSettlementsManager>)(...args)
 }
 

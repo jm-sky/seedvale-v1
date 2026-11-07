@@ -58,7 +58,7 @@ import {
 } from '../settlement/props'
 import { bridgesNear, fordsNear, type RoadNetworkContext, segmentsNear, villageSegmentsNear } from '../settlement/roadNetwork'
 import { cellFromId } from '../settlement/settlementGenerator'
-import { setSettlementRiverQuery, settlementDefFor } from '../settlement/settlementPlanCache'
+import { setSettlementRiverQuery, settlementDefFor, settlementWorldGeography } from '../settlement/settlementPlanCache'
 import { type Collider, createColliderRegistry } from '../world/collision'
 import { type BridgePresentation, createBridge } from '../world/createBridge'
 import { createChunkRiver, type WorldRiver } from '../world/createRiverWater'
@@ -1394,6 +1394,7 @@ export function createChunkManager(
     heightScale: config.heightScale,
     region: config.region,
     localSearchRadius: config.settlementSearchRadius,
+    ...settlementWorldGeography(fallbackParams),
   }
 
   function chunkRectOf(coord: ChunkCoord): { minX: number, maxX: number, minZ: number, maxZ: number } {
@@ -1437,6 +1438,8 @@ export function createChunkManager(
       heightScale: roadCtx.heightScale,
       region: roadCtx.region,
       homeSize: roadCtx.homeSize,
+      hydrologyId: roadCtx.hydrologyId,
+      landformIndex: roadCtx.landformIndex,
     }
   }
 

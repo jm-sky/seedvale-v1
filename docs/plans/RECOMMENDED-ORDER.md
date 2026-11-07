@@ -437,9 +437,6 @@ Score = priority + direct unlocks + transitive unlocks + depth - effort.
 - [`world-terrain-062-regional-biomes-and-local-precipitation-phase.md`](world-terrain-062-regional-biomes-and-local-precipitation-phase.md)  
   is blocked by:
   - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
-- [`world-terrain-063-geography-driven-settlement-variants.md`](world-terrain-063-geography-driven-settlement-variants.md)  
-  is blocked by:
-  - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
 - [`world-terrain-064-derived-waterfalls.md`](world-terrain-064-derived-waterfalls.md)  
   is blocked by:
   - [`world-terrain-061-macroclimate-and-climate-weighted-hydrology.md`](world-terrain-061-macroclimate-and-climate-weighted-hydrology.md)
@@ -597,6 +594,7 @@ graph TD
   items_player_065["items-player-065 — Layered anatomical armor and typed physical damage (core)"]
   items_player_066["items-player-066 — Layered armor catalogue, ordinary acquisition and balance"]
   items_player_067["items-player-067 — Melee weapon reach and damage balance"]
+  items_player_068["items-player-068 — Masterwork utility items"]
   npc_001["npc-001 — NPC Physical Stats — Sex & Age"]
   npc_002["npc-002 — NPC Healing"]
   npc_004["npc-004 — Drzewo genealogiczne NPC"]
