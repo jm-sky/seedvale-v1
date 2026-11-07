@@ -215,3 +215,6 @@ Przyszłe przykłady:
 
 Pierwsza pełna implementacja systemu obejmująca fundament lokacji, pierwsze typy, location knowledge, discovery przez strażnika, mapy kupowane u handlarza, mapę/minimapę, nawigację oraz narzędzia debug.
 
+### Natural landmark gameplay content — Revival draft (2026-11-07)
+
+- [world-043 — Natural landmark gameplay content and quest integration](../plans/world-043-natural-landmark-gameplay-content.md) — **draft**, records the author's candidate content for craters, crags, summits, lake islands and waterfalls, with independent resources/treasures first and optional quests/world simulation later. No implementation or queue placement approved; read together with [world-041 discovery](../plans/world-041-landmark-catalog-and-rumour-leads.md) and [world-terrain-064 waterfalls](../plans/world-terrain-064-derived-waterfalls.md).
