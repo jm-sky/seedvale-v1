@@ -20,6 +20,7 @@ import { createSeededRandom } from '../world/parseSeed'
 import { villageSizeConfig } from './families'
 import { clearMinorLocationCaches, minorLocationsFor } from './minorLocations'
 import {
+  createRiverSegmentIndex,
   crossingsForPolyline,
   evaluateRoadRiverCrossing,
   riverHitsOnEdge,
@@ -402,6 +403,7 @@ export function findRoute(
   // edge's cost. Keyed on the sorted node-key pair.
   const edgeSpan = (maxCols + 1) * (maxRows + 1) + 1
   const crossingCostCache = new Map<number, number | null>()
+  const riverIndex = createRiverSegmentIndex(riverSegments)
   /** Deterministic infrastructure cost of the river crossings on one A* step,
    *  or `null` when the step needs a crossing this route kind cannot build. */
   const crossingCost = (k1: number, k2: number, ax: number, az: number, bx: number, bz: number): number | null => {
@@ -410,7 +412,7 @@ export function findRoute(
     const cached = crossingCostCache.get(ek)
     if (cached !== undefined) return cached
     let total = 0
-    for (const hit of riverHitsOnEdge(ax, az, bx, bz, riverSegments)) {
+    for (const hit of riverHitsOnEdge(ax, az, bx, bz, riverIndex.near(ax, az, bx, bz))) {
       const verdict = evaluateRoadRiverCrossing(hit.facts, routeKind)
       if (verdict.kind === 'reject') {
         crossingCostCache.set(ek, null)

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { RiverChannelSegment } from '../terrain/chunkHeightmap'
 import {
+  createRiverSegmentIndex,
   crossingsForPolyline,
   evaluateRoadRiverCrossing,
   riverHitsOnEdge,
@@ -91,6 +92,27 @@ describe('riverHitsOnEdge', () => {
     const second = channel({ ax: 70, az: -200, bx: 70, bz: 200, waterHalfWidth: 1.5 })
     const hits = riverHitsOnEdge(0, 0, 100, 0, [second, stream])
     expect(hits.map((h) => Math.round(h.facts.x))).toEqual([50, 70])
+  })
+})
+
+describe('createRiverSegmentIndex', () => {
+  it('gives riverHitsOnEdge exactly the hits of the full segment list (Q127)', () => {
+    let state = 12345
+    const rand = () => ((state = (state * 1103515245 + 12345) % 2147483648) / 2147483648)
+    const segments: RiverChannelSegment[] = []
+    for (let i = 0; i < 300; i++) {
+      const ax = rand() * 600 - 300
+      const az = rand() * 600 - 300
+      segments.push(channel({ ax, az, bx: ax + rand() * 60 - 30, bz: az + rand() * 60 - 30, waterHalfWidth: 0.5 + rand() * 9 }))
+    }
+    const index = createRiverSegmentIndex(segments)
+    for (let k = 0; k < 2000; k++) {
+      const ax = rand() * 640 - 320
+      const az = rand() * 640 - 320
+      const bx = ax + (rand() < 0.5 ? 9 : -9) * Math.round(rand())
+      const bz = az + (rand() < 0.5 ? 9 : -9) * Math.round(rand())
+      expect(riverHitsOnEdge(ax, az, bx, bz, index.near(ax, az, bx, bz))).toEqual(riverHitsOnEdge(ax, az, bx, bz, segments))
+    }
   })
 })
 

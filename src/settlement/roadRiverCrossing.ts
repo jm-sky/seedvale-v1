@@ -249,6 +249,57 @@ export function riverHitsOnEdge(
   return hits
 }
 
+/** Cell size (m) of {@link createRiverSegmentIndex}; A* steps are 9–13 m, so an edge touches 1–4 cells. */
+const SEGMENT_INDEX_CELL_M = 32
+
+/**
+ * Uniform-grid index over a route search's river segments (Q127). `near(edge)` returns, **in original order**, every
+ * segment whose water-reach AABB can overlap the edge's AABB — a superset of the segments `riverHitsOnEdge` would
+ * keep after its own AABB reject, so `riverHitsOnEdge(edge, index.near(edge))` equals `riverHitsOnEdge(edge, all)`.
+ * Replaces the per-step linear scan over the whole envelope, which dominated route search time.
+ *
+ * @domain world-terrain
+ */
+export function createRiverSegmentIndex(segments: readonly RiverChannelSegment[]): {
+  near: (ax: number, az: number, bx: number, bz: number) => readonly RiverChannelSegment[]
+} {
+  if (segments.length === 0) return { near: () => segments }
+  const cells = new Map<number, number[]>()
+  const cellOf = (v: number) => Math.floor(v / SEGMENT_INDEX_CELL_M)
+  const keyOf = (cx: number, cz: number) => (cx + 32768) * 65536 + (cz + 32768)
+  segments.forEach((seg, i) => {
+    const reach = Math.max(seg.aWaterHalfWidth, seg.bWaterHalfWidth)
+    for (let cx = cellOf(Math.min(seg.ax, seg.bx) - reach); cx <= cellOf(Math.max(seg.ax, seg.bx) + reach); cx++) {
+      for (let cz = cellOf(Math.min(seg.az, seg.bz) - reach); cz <= cellOf(Math.max(seg.az, seg.bz) + reach); cz++) {
+        const k = keyOf(cx, cz)
+        const list = cells.get(k)
+        if (list) list.push(i)
+        else cells.set(k, [i])
+      }
+    }
+  })
+  const stamp = new Int32Array(segments.length)
+  let query = 0
+  return {
+    near(ax, az, bx, bz) {
+      query++
+      const picked: number[] = []
+      for (let cx = cellOf(Math.min(ax, bx)); cx <= cellOf(Math.max(ax, bx)); cx++) {
+        for (let cz = cellOf(Math.min(az, bz)); cz <= cellOf(Math.max(az, bz)); cz++) {
+          for (const i of cells.get(keyOf(cx, cz)) ?? []) {
+            if (stamp[i] === query) continue
+            stamp[i] = query
+            picked.push(i)
+          }
+        }
+      }
+      if (picked.length === 0) return []
+      picked.sort((x, y) => x - y)
+      return picked.map((i) => segments[i]!)
+    },
+  }
+}
+
 /** Closest approach between two 2D segments, as the clamped parameters on
  *  each plus the distance. Good enough for the near-bank case above: exact
  *  when at least one closest point is an endpoint, which is always true once
