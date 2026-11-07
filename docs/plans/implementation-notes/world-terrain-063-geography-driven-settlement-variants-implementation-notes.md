@@ -172,3 +172,15 @@ Land runs out at **≈ 43 sites (seed 42) / 40 (seed 415424794)** at the 720 m f
 ## V3 shortlist (Opus, 2026-11-07, Q127)
 
 [Shortlist note](../../research/v1-revival/2026-11-07--063-v3-settlement-variant-shortlist.md): A 22@1050 · B 25@950 (recommended) · C 35@850, weight `none`; author question queue §3 Q127-G5. Re-census found: the author route improves to 1400 m on every row with start spacing ≤ 1050 although home and `4_-1` keep their positions (different home access point, route stays north of the inlet — cause not isolated 🟡, V4 confirms by walk); land cover outside belts is practically density-independent; spot seeds 7 / 1234 fail connectivity for every row including today → Q188.
+
+## Q188 — spot-seed road connectivity (Opus, 2026-11-07, recon only, no code change)
+
+Seeds 7 / 1234 at today's 22@1150 have 4 / 3 routed components (V2 spot seeds). Re-ran every unrouted layout pair (`diagnose-unrouted.ts` + a scratch extension: 18 m landmass labels on the router's walkable rule, `findRoute` with `marginSteps` for 450 / 900 / 1800 m boxes, timed). All 12 pairs are `waterBlocked` in the default box; entrances are dry (+3…+9.5 m, 8/8 dry neighbours).
+
+| class | pairs | what it is | effect of a fix |
+| --- | --- | --- | --- |
+| **separate landmass** | 2 (seed 7: `-11_-1`, `-12_-5`, both SM) | a **1.9 km² island** — passes the V1 mainland test because it only asks "≥ 1.5 km² of connected land", not "connected to the home landmass" | rejecting it in the layout removes seed 7's 2-site component |
+| **inlet detour > 450 m** | 7 (seed 7: 4, seed 1234: 3) | same landmass; a dry/ford route exists only with a 900 m box: **3.1–5.0 km roads for 1.2–1.9 km chords (ratio 2–3.8)**, A* **0.7–2.5 s** each (main thread on a cache miss) | a 900 m retry rung would merge seed 1234 into 1 component and seed 7 into 19 + 2 (island) + 1 |
+| **unresolved ≤ 1800 m** | 3 (`-5_-2`–`-7_-8`, `-2_12`–`-7_10`, `-5_5`–`1_5`) | same landmass at 18 m, no route in an 1800 m box (search exhausts in 0.2–0.5 s — the start is boxed in by water / rejected crossings) | seed 7 `-7_-8` (LG) stays isolated even with the 900 m rung |
+
+**Recommendation (→ queue §3 Q188-a):** (1) amend the V1 mainland test to "land-connected to the **home** landmass" (keep the per-cell verdict cache; mark cells reached from home as mainland), landing together with V4 in the same worldgen-output batch, after checking the reference seeds stay unchanged; (2) **do not** add a 900 m router rung — absurd 3–5 km roads and seconds of main-thread A*; (3) inlet-separated pairs on non-reference seeds become an **explained exception** (plan §Done when allows it) until a layout-side answer exists (e.g. prefer a lattice neighbour on the same shore). Reference seeds 42 / 415424794 are unaffected by (2)–(3).
