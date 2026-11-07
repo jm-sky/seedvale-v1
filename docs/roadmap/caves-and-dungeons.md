@@ -43,6 +43,13 @@ Keep existing natural cave layout and behavior unchanged.
 - A steep, **non-traversable** central incline separates the two levels. Both floor zones are genuine usable spaces for player, NPCs, props, anchors, encounters and quests.
 - Aim to use the existing V1 heightfield representation (one floor elevation per X/Z), not fake decorative shelves. Verify collision, traversability, NPC navigation, ceiling clearance, entrance transition, content placement and heightfield grid/performance limits before implementing.
 
+### Gold Mine — author-selected `cave:medium`
+
+- **Decision (2026-11-07):** The abandoned Gold Mine uses a natural V1 `cave:medium` (current `adventure` topology), **not** the separately sourced SeedVales V2 constructed-dungeon geometry.
+- Add **vertical wooden posts and horizontal support beams** as mine-specific environmental furnishings. These are not required in every `cave:medium`.
+- Retain existing mine identity, gold deposits, quest/colony hooks and deterministic behavior. Reconcile current cave binding before implementation.
+- Coordination: [Abandoned Gold Mine roadmap](./quests-abandoned-gold-mine-colony.md) and [quest integration plan 010](../plans/quests-progression-010-abandoned-gold-mine-colony.md). Geometry/presentation changes are to be scheduled before related mine-specific visual work, but do not block unrelated expedition/economy integration.
+
 ## V2-derived constructed dungeons
 
 V1 organic heightfield caves remain the principal natural-cave solution. Preserve/adapt V2's more geometric, rectangular-profile corridor and chamber representation selectively for constructed dungeons, not as a wholesale replacement of V1 cave infrastructure.
