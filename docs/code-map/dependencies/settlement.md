@@ -1884,6 +1884,7 @@ Generated from TypeScript imports.
 - `app/actions/workContractPayment.ts`
 - `app/createApp.ts`
 - `app/worldBundle.ts`
+- `fauna/offscreenTravelThreats.test.ts`
 - `items/foreignProperty.ts`
 - `items/upperTierTransfers.test.ts`
 - `persistence/saveData.ts`
@@ -2464,6 +2465,7 @@ Generated from TypeScript imports.
 - `settlement/minorLocations.ts`
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/roadTrunks.ts`
 - `settlement/routeConstants.ts`
 - `settlement/routeObstacles.ts`
 - `settlement/routeShape.ts`
@@ -2488,6 +2490,7 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/roadTrunks.integration.test.ts`
 - `settlement/settlementPalisade.ts`
 - `settlement/settlementSignposts.ts`
 - `terrain/chunkManager.ts`
@@ -2516,6 +2519,8 @@ Generated from TypeScript imports.
 - `settlement/roadRiverCrossing.test.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/roadTrunks.test.ts`
+- `settlement/roadTrunks.ts`
 - `settlement/routeShape.ts`
 
 ## `settlement/roadRouteWorldgenCache.test.ts`
@@ -2548,6 +2553,35 @@ Generated from TypeScript imports.
 - `settlement/roadNetwork.test.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/roadRouteWorldgenCache.test.ts`
+
+## `settlement/roadTrunks.integration.test.ts`
+
+**Imports**
+
+- `config/worldConfig.ts`
+- `settlement/roadNetwork.ts`
+- `settlement/settlementGenerator.ts`
+- `settlement/settlementPlanCache.ts`
+- `terrain/riverQuery.ts`
+- `terrain/worldKnowledgeScan.ts`
+
+## `settlement/roadTrunks.test.ts`
+
+**Imports**
+
+- `settlement/roadRiverCrossing.ts`
+- `settlement/roadTrunks.ts`
+
+## `settlement/roadTrunks.ts`
+
+**Imports**
+
+- `settlement/roadRiverCrossing.ts`
+
+**Imported by**
+
+- `settlement/roadNetwork.ts`
+- `settlement/roadTrunks.test.ts`
 
 ## `settlement/routeConstants.ts`
 
@@ -2741,6 +2775,7 @@ Generated from TypeScript imports.
 - `settlement/props.ts`
 - `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/roadTrunks.integration.test.ts`
 - `settlement/routeObstacles.test.ts`
 - `settlement/routeObstacles.ts`
 - `settlement/settlementGenerator.test.ts`
@@ -2926,6 +2961,7 @@ Generated from TypeScript imports.
 - `settlement/lostTreasureChroniclesSpecialistResident.test.ts`
 - `settlement/roadEntranceAngles.test.ts`
 - `settlement/roadNetwork.ts`
+- `settlement/roadTrunks.integration.test.ts`
 - `settlement/settlementNameUniqueness.test.ts`
 - `settlement/settlementProgression.test.ts`
 - `settlement/settlementWorldgenCache.test.ts`

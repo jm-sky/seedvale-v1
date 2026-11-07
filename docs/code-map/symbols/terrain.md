@@ -174,15 +174,15 @@ Generated from exported TypeScript symbols.
 - `ChunkTileData` — type — line 384
 - `ChunkTileParams` — type — line 247
 - `ClearingSegment` — type — line 179
-- `computeChunkTile` — function — line 1324
-- `createLocalTerrainSampler` — function — line 1409
+- `computeChunkTile` — function — line 1330
+- `createLocalTerrainSampler` — function — line 1415
   - domain: world-terrain
-- `createWorldTerrainSampler` — function — line 1451
+- `createWorldTerrainSampler` — function — line 1457
   - domain: world-terrain
 - `extractCoreGrid` — function — line 949
 - `landformDescriptorsOf` — function — line 546
 - `landformIndexOf` — function — line 541
-- `LocalTerrainSampler` — type — line 1384
+- `LocalTerrainSampler` — type — line 1390
   - domain: world-terrain
 - `rangeSpinesFor` — function — line 560
 - `RawSampleParams` — type — line 364
@@ -759,9 +759,10 @@ Generated from exported TypeScript symbols.
 
 ## `terrain/roadBridge.ts`
 
-- `bridgeDeckYAt` — function — line 72
-- `isOnAnyBridgeDeck` — function — line 82
-- `isOnBridgeDeck` — function — line 63
+- `bridgeDeckYAt` — function — line 84
+- `deckYAtAlong` — function — line 75
+- `isOnAnyBridgeDeck` — function — line 94
+- `isOnBridgeDeck` — function — line 68
 - `RoadBridgeSpec` — type — line 23
   - domain: world-terrain
   - system: roads

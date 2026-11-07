@@ -442,6 +442,7 @@ Generated from TypeScript imports.
 - `ai/npcSocialTitle.test.ts`
 - `ai/npcSocialTitle.ts`
 - `ai/npcTradeAvailability.ts`
+- `ai/npcTravelCheckpoint.ts`
 - `ai/npcVendor.ts`
 - `ai/npcVoiceLines.ts`
 - `ai/npcWorkContract.ts`
@@ -981,6 +982,7 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `ai/npcCombat.test.ts`
 - `ai/npcLoadout.test.ts`
+- `ai/npcTravelCheckpoint.ts`
 - `app/actions/npcItemTransfer.test.ts`
 - `items/stage4Ammo.test.ts`
 - `items/stage4Bows.test.ts`
@@ -1603,6 +1605,7 @@ Generated from TypeScript imports.
 - `ai/npcOffscreenSurvival.test.ts`
 - `ai/npcTravel.test.ts`
 - `ai/npcTravelCheckpoint.ts`
+- `fauna/offscreenTravelThreats.test.ts`
 - `settlement/foundedSettlementBootstrap.ts`
 - `settlement/merchantJourney.ts`
 - `settlement/npcState.ts`
@@ -1613,15 +1616,23 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `ai/characters.ts`
+- `ai/npcCombat.ts`
 - `ai/npcOffscreenSurvival.ts`
 - `ai/npcTravel.ts`
 - `settlement/npcState.ts`
+- `shared/HealthState.ts`
+- `shared/injuryRecovery.ts`
 
 **Imported by**
 
 - `ai/NpcAgent.spatialLifecycle.test.ts`
 - `ai/NpcAgent.ts`
 - `ai/npcOffscreenSurvival.test.ts`
+- `fauna/createFauna.threat.test.ts`
+- `fauna/createFauna.ts`
+- `fauna/destinationThreatHooks.ts`
+- `fauna/offscreenTravelThreats.test.ts`
 - `settlement/SettlementsManager.ts`
 
 ## `ai/npcVendor.test.ts`

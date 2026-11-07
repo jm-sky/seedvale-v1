@@ -1617,13 +1617,14 @@ Generated from exported TypeScript symbols.
 - `emptyLocationScanDiagnostics` — function — line 132
 - `LandmarkQueryOptions` — type — line 161
 - `LocationScanDiagnostics` — type — line 96
-- `settlementLocationId` — function — line 1171
+- `settlementLocationId` — function — line 1181
 - `WorldLocationCatalog` — type — line 171
 - `WorldLocationCatalogDeps` — type — line 32
 
 ## `world/locations/worldLocationNames.ts`
 
-- `landmarkName` — function — line 101
+- `landmarkName` — function — line 115
+- `uniqueLandformNames` — function — line 140
 
 ## `world/locations/worldLocationTypes.ts`
 

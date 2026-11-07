@@ -19,11 +19,11 @@ Generated from exported TypeScript symbols.
 ## `persistence/saveData.ts`
 
 - `CURRENT_SAVE_VERSION` — const — line 782
-- `isSaveData` — function — line 3058
-- `loadSaveData` — function — line 3158
-- `loadStoredSave` — function — line 4829
-- `LoadStoredSaveOptions` — type — line 4819
-- `migrateStoredSave` — function — line 4781
+- `isSaveData` — function — line 3059
+- `loadSaveData` — function — line 3159
+- `loadStoredSave` — function — line 4830
+- `LoadStoredSaveOptions` — type — line 4820
+- `migrateStoredSave` — function — line 4782
 - `SaveBadges` — type — line 262
 - `SaveBedroll` — type — line 610
 - `SaveCarriedContainer` — type — line 446
@@ -51,7 +51,7 @@ Generated from exported TypeScript symbols.
 - `SaveLocationKnowledge` — type — line 230
 - `SaveMap` — type — line 239
 - `SaveMeasurableWorkContractScope` — type — line 713
-- `SaveMigration` — type — line 3172
+- `SaveMigration` — type — line 3173
 - `SaveMineableRockState` — type — line 438
 - `SavePalisadeContractTarget` — type — line 701
 - `SavePalisadeSegment` — type — line 571
@@ -95,7 +95,7 @@ Generated from exported TypeScript symbols.
 - `SaveWorkContractScope` — type — line 749
 - `SaveWorkContractState` — type — line 662
 - `SaveWorldFlags` — type — line 208
-- `StoredSaveResult` — type — line 4810
+- `StoredSaveResult` — type — line 4811
 - `UpperTierOwnerRow` — type — line 1634
 - `upperTierOwnerRowsFromSave` — function — line 1643
   - domain: persistence

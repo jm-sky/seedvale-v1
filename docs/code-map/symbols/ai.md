@@ -648,37 +648,41 @@ Generated from exported TypeScript symbols.
 
 ## `ai/npcTravel.ts`
 
-- `beginOffscreenNpcTravel` — function — line 152
+- `beginOffscreenNpcTravel` — function — line 157
   - domain: npc
-- `blockNpcTravel` — function — line 242
-- `cloneNpcTravel` — function — line 71
-- `cloneNpcTravelPurpose` — function — line 62
-- `hasCommittedNpcTravel` — function — line 136
-- `interpolateNpcTravelPosition` — function — line 116
-- `isNpcTravelArrived` — function — line 129
-- `keepsNpcTravelAfterReify` — function — line 140
-- `markNpcTravelReached` — function — line 230
+- `blockNpcTravel` — function — line 250
+- `cloneNpcTravel` — function — line 74
+- `cloneNpcTravelPurpose` — function — line 65
+- `hasCommittedNpcTravel` — function — line 141
+- `interpolateNpcTravelPosition` — function — line 121
+- `isNpcTravelArrived` — function — line 134
+- `keepsNpcTravelAfterReify` — function — line 145
+- `markNpcTravelReached` — function — line 237
 - `NpcTravelContinuity` — type — line 36
 - `NpcTravelExecution` — type — line 20
-- `NpcTravelHost` — type — line 56
+- `NpcTravelHost` — type — line 59
 - `NpcTravelPoint` — type — line 18
   - domain: npc
 - `NpcTravelPurpose` — type — line 27
-- `NpcTravelResolveResult` — type — line 49
-- `observeNpcTravelArrival` — function — line 306
+- `NpcTravelResolveResult` — type — line 52
+- `observeNpcTravelArrival` — function — line 315
   - domain: npc
-- `reifyNpcTravel` — function — line 198
+- `reifyNpcTravel` — function — line 205
   - domain: npc
-- `resolveOffscreenNpcTravel` — function — line 267
+- `resolveOffscreenNpcTravel` — function — line 276
   - domain: npc
-- `stampNpcTravelCheckpoint` — function — line 216
+- `stampNpcTravelCheckpoint` — function — line 223
   - domain: npc
-- `travelProgress01` — function — line 108
+- `travelProgress01` — function — line 113
 
 ## `ai/npcTravelCheckpoint.ts`
 
-- `resolveNpcTravelCheckpoint` — function — line 35
+- `OffscreenTravelThreatQuery` — type — line 19
+- `OffscreenTravelThreatResult` — type — line 30
+- `OffscreenTravelThreats` — type — line 43
+- `resolveNpcTravelCheckpoint` — function — line 114
   - domain: npc
+- `UNARMED_TRAVELLER_DAMAGE` — const — line 16
 
 ## `ai/npcVendor.ts`
 

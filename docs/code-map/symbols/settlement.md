@@ -1138,49 +1138,49 @@ Generated from exported TypeScript symbols.
 
 ## `settlement/roadNetwork.ts`
 
-- `activateRoadRouteWorldgenCache` — function — line 144
+- `activateRoadRouteWorldgenCache` — function — line 147
   - domain: world-terrain
   - system: worldgen-cache
-- `attachRoadRoutePersistence` — function — line 133
+- `attachRoadRoutePersistence` — function — line 136
   - domain: world-terrain
-- `bridgesNear` — function — line 1445
+- `bridgesNear` — function — line 1527
   - domain: world-terrain
-- `bridgeSpecOf` — function — line 1404
-- `clearRoadNetworkCaches` — function — line 203
-- `clearRoadNetworkMemoryCaches` — function — line 190
+- `bridgeSpecOf` — function — line 1476
+- `clearRoadNetworkCaches` — function — line 207
+- `clearRoadNetworkMemoryCaches` — function — line 193
   - domain: world-terrain
-- `entranceToward` — function — line 229
-- `findRoute` — function — line 354
+- `entranceToward` — function — line 233
+- `findRoute` — function — line 358
   - domain: world-terrain
-- `fordsNear` — function — line 1337
+- `fordsNear` — function — line 1406
   - domain: world-terrain
-- `ingestHydratedRoadRoute` — function — line 123
+- `ingestHydratedRoadRoute` — function — line 126
   - domain: world-terrain
-- `meanderRoute` — function — line 806
-- `MidpointSignpost` — type — line 1128
-- `midpointSignpostsFor` — function — line 1142
-- `neighborsFor` — function — line 258
-- `peekRoadRouteCache` — function — line 154
-- `RoadNetworkContext` — type — line 70
-- `RoadRoute` — type — line 100
-- `roadRouteLocationKey` — function — line 176
-  - domain: world-terrain
-  - system: worldgen-cache
-- `roadRoutePairKey` — function — line 165
+- `meanderRoute` — function — line 810
+- `MidpointSignpost` — type — line 1197
+- `midpointSignpostsFor` — function — line 1211
+- `neighborsFor` — function — line 262
+- `peekRoadRouteCache` — function — line 157
+- `RoadNetworkContext` — type — line 71
+- `RoadRoute` — type — line 101
+- `roadRouteLocationKey` — function — line 179
   - domain: world-terrain
   - system: worldgen-cache
-- `roadRoutesForSettlement` — function — line 1056
-- `roadRouteWorldgenCacheReady` — function — line 149
-- `RoadSegment` — type — line 60
-- `RoadSegmentKind` — type — line 58
-- `RoutePoint` — type — line 48
-- `RouteSearchOptions` — type — line 315
-- `routeToMinorLocation` — function — line 1193
-- `segmentsNear` — function — line 1262
-- `SettlementSignpost` — type — line 1093
-- `signpostsForSettlement` — function — line 1105
-- `VillageSegments` — type — line 1474
-- `villageSegmentsNear` — function — line 1498
+- `roadRoutePairKey` — function — line 168
+  - domain: world-terrain
+  - system: worldgen-cache
+- `roadRoutesForSettlement` — function — line 1060
+- `roadRouteWorldgenCacheReady` — function — line 152
+- `RoadSegment` — type — line 61
+- `RoadSegmentKind` — type — line 59
+- `RoutePoint` — type — line 49
+- `RouteSearchOptions` — type — line 319
+- `routeToMinorLocation` — function — line 1262
+- `segmentsNear` — function — line 1331
+- `SettlementSignpost` — type — line 1162
+- `signpostsForSettlement` — function — line 1174
+- `VillageSegments` — type — line 1556
+- `villageSegmentsNear` — function — line 1580
 
 ## `settlement/roadRiverCrossing.ts`
 
@@ -1221,6 +1221,15 @@ Generated from exported TypeScript symbols.
   - domain: world-terrain
   - system: worldgen-cache
 - `RoadRouteWorldgenCache` — type — line 173
+
+## `settlement/roadTrunks.ts`
+
+- `snapRouteToTrunks` — function — line 467
+- `TrunkEnv` — type — line 25
+- `TrunkPartner` — type — line 24
+- `TrunkPoint` — type — line 22
+  - domain: world-terrain
+- `TrunkRoute` — type — line 23
 
 ## `settlement/routeConstants.ts`
 

@@ -1587,6 +1587,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/roadTrunks.integration.test.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementPlanCache.ts`
 - `settlement/settlementProgression.ts`
@@ -1966,8 +1967,11 @@ Generated from TypeScript imports.
 - `fauna/animalHarvest.test.ts`
 - `fauna/animalSteering.test.ts`
 - `fauna/animalVariants.test.ts`
+- `fauna/createFauna.advance.test.ts`
 - `fauna/createFauna.groups.test.ts`
+- `fauna/createFauna.keyedRandom.test.ts`
 - `fauna/createFauna.records.test.ts`
+- `fauna/createFauna.threat.test.ts`
 - `fauna/createFauna.ts`
 - `fauna/faunaProximity.test.ts`
 - `fauna/persistentOccupants.test.ts`
@@ -2242,6 +2246,7 @@ Generated from TypeScript imports.
 
 **Imported by**
 
+- `settlement/roadTrunks.integration.test.ts`
 - `terrain/chunkHeightmap.worker.ts`
 - `terrain/chunkHeightmapProtocol.ts`
 - `terrain/chunkManager.ts`

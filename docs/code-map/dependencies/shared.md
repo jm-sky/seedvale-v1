@@ -17,6 +17,7 @@ Generated from TypeScript imports.
 - `ai/graveVisitPressure.test.ts`
 - `ai/npcOffscreenSurvival.ts`
 - `ai/npcStamina.test.ts`
+- `ai/npcTravelCheckpoint.ts`
 - `ai/npcVigor.test.ts`
 - `app/actions/gatheringActions.ts`
 - `app/actions/survivalActions.test.ts`
@@ -114,6 +115,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.ts`
 - `fauna/animalCorpse.ts`
 - `fauna/waterTraversal.test.ts`
+- `fauna/wildHabitatAdvance.ts`
 - `items/sensibleFood.test.ts`
 - `player/PlayerNeeds.staminaSprintHysteresis.test.ts`
 - `player/PlayerNeeds.ts`
@@ -328,7 +330,9 @@ Generated from TypeScript imports.
 - `ai/NpcAgent.ts`
 - `ai/npcOffscreenSurvival.test.ts`
 - `ai/npcOffscreenSurvival.ts`
+- `ai/npcTravelCheckpoint.ts`
 - `fauna/AnimalAgent.ts`
+- `fauna/wildHabitatAdvance.ts`
 - `player/PlayerController.ts`
 - `player/PlayerNeeds.ts`
 - `player/playerDamage.ts`

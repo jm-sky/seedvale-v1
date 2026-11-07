@@ -1677,6 +1677,7 @@ Generated from TypeScript imports.
 - `app/actions/survivalActions.ts`
 - `app/createApp.ts`
 - `app/inspection/buildWorldInspection.ts`
+- `fauna/offscreenTravelThreats.test.ts`
 - `items/Inventory.test.ts`
 - `items/Inventory.ts`
 - `items/inventoryTransfer.test.ts`

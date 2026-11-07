@@ -11,6 +11,15 @@ Generated from TypeScript imports.
 - `render/actorCullBounds.ts`
 - `shared/agentAnimationSet.ts`
 
+## `render/actorCullBounds.fauna.assets.test.ts`
+
+**Imports**
+
+- `assets/loadGltf.ts`
+- `fauna/animalDefs.ts`
+- `render/actorCullBounds.ts`
+- `render/actorSkeletonSharing.ts`
+
 ## `render/actorCullBounds.test.ts`
 
 **Imports**
@@ -22,7 +31,9 @@ Generated from TypeScript imports.
 **Imported by**
 
 - `ai/NpcAgent.ts`
+- `fauna/AnimalAgent.ts`
 - `render/actorCullBounds.assets.test.ts`
+- `render/actorCullBounds.fauna.assets.test.ts`
 - `render/actorCullBounds.test.ts`
 - `render/actorSkeletonSharing.assets.test.ts`
 
@@ -74,6 +85,7 @@ Generated from TypeScript imports.
 
 - `ai/NpcAgent.ts`
 - `fauna/AnimalAgent.ts`
+- `render/actorCullBounds.fauna.assets.test.ts`
 - `render/actorSkeletonSharing.assets.test.ts`
 
 ## `render/agentPresentationLod.test.ts`

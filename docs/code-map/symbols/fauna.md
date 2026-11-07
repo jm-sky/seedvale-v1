@@ -16,32 +16,32 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/AnimalAgent.ts`
 
-- `AnimalAgent` — class — line 1281
+- `AnimalAgent` — class — line 1286
   - domain: fauna
   - system: animal-agent
   - role: Central per-animal behaviour integration point: predator/prey AI, needs, health, production (livestock) and riding (mounts).
   - uses: HealthState, StaminaState
   - simulation: tick
-- `AnimalAgentDebugInfo` — type — line 667
-- `AnimalAgentDeps` — type — line 1045
-- `AnimalSaveState` — type — line 802
-- `AnimalUpdateContext` — type — line 1128
-- `BURY_DURATION_SEC` — const — line 460
-- `canPredatorPursueIntoVillage` — function — line 892
-- `FAUNA_SHADOW_DISTANCE` — const — line 429
-- `FaunaAiBranch` — type — line 588
-- `FaunaNavRescueDebugInfo` — type — line 635
-- `FaunaWaterCrossingDebugInfo` — type — line 649
-- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 523
-- `FrenzyWolfCandidate` — type — line 980
-- `HARVEST_MEAT_DURATION_SEC` — const — line 463
-- `isWithinVillageRadius` — function — line 873
-- `NearbyNpcCandidate` — type — line 975
-- `pickNearestEligibleWolf` — function — line 989
-- `pickRabidTarget` — function — line 1014
-- `RABIES_BITE_INFECTION_CHANCE` — const — line 447
-- `villageFleeBiasFalloff` — function — line 900
-- `VillageInfo` — type — line 867
+- `AnimalAgentDebugInfo` — type — line 669
+- `AnimalAgentDeps` — type — line 1047
+- `AnimalSaveState` — type — line 804
+- `AnimalUpdateContext` — type — line 1133
+- `BURY_DURATION_SEC` — const — line 462
+- `canPredatorPursueIntoVillage` — function — line 894
+- `FAUNA_SHADOW_DISTANCE` — const — line 431
+- `FaunaAiBranch` — type — line 590
+- `FaunaNavRescueDebugInfo` — type — line 637
+- `FaunaWaterCrossingDebugInfo` — type — line 651
+- `FRENZY_VILLAGE_ARRIVAL_RADIUS` — const — line 525
+- `FrenzyWolfCandidate` — type — line 982
+- `HARVEST_MEAT_DURATION_SEC` — const — line 465
+- `isWithinVillageRadius` — function — line 875
+- `NearbyNpcCandidate` — type — line 977
+- `pickNearestEligibleWolf` — function — line 991
+- `pickRabidTarget` — function — line 1016
+- `RABIES_BITE_INFECTION_CHANCE` — const — line 449
+- `villageFleeBiasFalloff` — function — line 902
+- `VillageInfo` — type — line 869
 
 ## `fauna/animalAreaBound.ts`
 
@@ -101,41 +101,41 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/animalCorpse.ts`
 
-- `advanceAnimalCorpse` — function — line 432
-- `AnimalCorpseState` — type — line 125
-- `buryCorpse` — function — line 237
-- `canHarvestMeatFrom` — function — line 90
-- `claimCorpseAsFood` — function — line 460
-- `claimCorpseForCleanup` — function — line 478
-- `CORPSE_BONES_ONSET_DAYS` — const — line 35
-- `CORPSE_REMOVE_DAYS` — const — line 37
-- `CORPSE_ROT_ONSET_DAYS` — const — line 33
-- `corpseElapsedDays` — function — line 72
-- `CorpseHost` — type — line 209
-- `corpseLingerDays` — function — line 41
-- `CorpseNeighbour` — type — line 225
-- `CorpsePhase` — type — line 30
+- `advanceAnimalCorpse` — function — line 433
+- `AnimalCorpseState` — type — line 126
+- `buryCorpse` — function — line 238
+- `canHarvestMeatFrom` — function — line 91
+- `claimCorpseAsFood` — function — line 461
+- `claimCorpseForCleanup` — function — line 479
+- `CORPSE_BONES_ONSET_DAYS` — const — line 36
+- `CORPSE_REMOVE_DAYS` — const — line 38
+- `CORPSE_ROT_ONSET_DAYS` — const — line 34
+- `corpseElapsedDays` — function — line 73
+- `CorpseHost` — type — line 210
+- `corpseLingerDays` — function — line 42
+- `CorpseNeighbour` — type — line 226
+- `CorpsePhase` — type — line 31
   - domain: fauna
   - role: Corpse/remains/decay/rot-FX/rabies-exposure/food-claim state machine for one dead `AnimalAgent` (plan fauna-017 step 5, review E3) — plain state plus free functions over an explicit `CorpseHost`, mirroring how `AnimalLife.ts` owns `AnimalLifeState` without owning the animal. Not a second entity: `health.dead` stays authoritative on `AnimalAgent`, and every public method there (`bury`, `harvestMeat`, `corpsePhase`, `claimAsFood`, …) stays a thin delegate into this module, so no cross- agent call shape changes.
-- `corpsePhaseFromElapsed` — function — line 68
-- `corpseReadyToRemove` — function — line 243
-- `createAnimalCorpseState` — function — line 184
-- `disposeAnimalCorpse` — function — line 504
-- `disposeAnimalCorpseRotFx` — function — line 422
-- `harvestCorpseMeat` — function — line 309
-- `HARVESTED_REMAINS_LINGER_DAYS` — const — line 39
-- `hideLivingVisual` — function — line 256
-- `isRabiesCorpseContact` — function — line 113
-- `markCorpseFoodConsumed` — function — line 495
-- `RABIES_CORPSE_CONTACT_RADIUS` — const — line 57
-- `RABIES_CORPSE_INFECTION_CHANCE` — const — line 60
-- `releaseCorpseClaim` — function — line 468
-- `releaseCorpseCleanupClaim` — function — line 487
-- `rollsRabiesInfection` — function — line 104
-- `rotFxRelevant` — function — line 80
-- `showLivingVisual` — function — line 261
-- `spawnDeathSplat` — function — line 327
-- `spawnHarvestedRemains` — function — line 291
+- `corpsePhaseFromElapsed` — function — line 69
+- `corpseReadyToRemove` — function — line 244
+- `createAnimalCorpseState` — function — line 185
+- `disposeAnimalCorpse` — function — line 505
+- `disposeAnimalCorpseRotFx` — function — line 423
+- `harvestCorpseMeat` — function — line 310
+- `HARVESTED_REMAINS_LINGER_DAYS` — const — line 40
+- `hideLivingVisual` — function — line 257
+- `isRabiesCorpseContact` — function — line 114
+- `markCorpseFoodConsumed` — function — line 496
+- `RABIES_CORPSE_CONTACT_RADIUS` — const — line 58
+- `RABIES_CORPSE_INFECTION_CHANCE` — const — line 61
+- `releaseCorpseClaim` — function — line 469
+- `releaseCorpseCleanupClaim` — function — line 488
+- `rollsRabiesInfection` — function — line 105
+- `rotFxRelevant` — function — line 81
+- `showLivingVisual` — function — line 262
+- `spawnDeathSplat` — function — line 328
+- `spawnHarvestedRemains` — function — line 292
 
 ## `fauna/animalDebugVisual.ts`
 
@@ -178,7 +178,7 @@ Generated from exported TypeScript symbols.
 ## `fauna/animalForaging.ts`
 
 - `AnimalWaterSourceProvider` — type — line 99
-- `applySourceRelief` — function — line 735
+- `applySourceRelief` — function — line 739
 - `canAcceptHandFeed` — function — line 146
 - `CARCASS_EAT_DURATION_SEC` — const — line 73
 - `CarcassCandidate` — type — line 231
@@ -187,12 +187,12 @@ Generated from exported TypeScript symbols.
 - `dietItemReliefScale` — function — line 136
 - `DRINK_DURATION_SEC` — const — line 69
 - `EAT_DURATION_SEC` — const — line 66
-- `findFoodTarget` — function — line 646
-- `findForageTarget` — function — line 512
-- `findGrassPatchTarget` — function — line 540
-- `findHouseholdTroughTarget` — function — line 402
-- `findTroughTarget` — const — line 426
-- `findWaterTarget` — function — line 482
+- `findFoodTarget` — function — line 650
+- `findForageTarget` — function — line 515
+- `findGrassPatchTarget` — function — line 544
+- `findHouseholdTroughTarget` — function — line 404
+- `findTroughTarget` — const — line 428
+- `findWaterTarget` — function — line 484
 - `FOOD_INTERACTION_RANGE` — const — line 60
 - `FOOD_SEARCH_RADIUS` — const — line 32
   - domain: fauna
@@ -200,8 +200,8 @@ Generated from exported TypeScript symbols.
 - `forageEdgeScore` — function — line 113
 - `ForagingContext` — type — line 309
 - `isCarcassEdible` — function — line 173
-- `isDrinkableNaturalShorePoint` — function — line 371
-- `isSourceTargetValid` — function — line 661
+- `isDrinkableNaturalShorePoint` — function — line 373
+- `isSourceTargetValid` — function — line 665
 - `selectDietFeedKind` — function — line 124
 - `SOURCE_SEARCH_COOLDOWN_SEC` — const — line 77
 - `SOURCE_TARGET_TIMEOUT_SEC` — const — line 82
@@ -334,11 +334,11 @@ Generated from exported TypeScript symbols.
 - `AnimalTrip` — type — line 34
 - `AnimalTripKind` — type — line 32
 - `AnimalTripPhase` — type — line 33
-- `findSettlementOutskirtsDestination` — function — line 125
-- `findStrayReturnDestination` — function — line 187
-- `findWaterTripDestination` — function — line 151
+- `findSettlementOutskirtsDestination` — function — line 127
+- `findStrayReturnDestination` — function — line 190
+- `findWaterTripDestination` — function — line 153
 - `probeBestPointNear` — function — line 75
-- `StrayReturnDestinationContext` — type — line 173
+- `StrayReturnDestinationContext` — type — line 176
 - `tripDayBucket` — function — line 61
 - `TripDestinationContext` — type — line 104
 
@@ -555,28 +555,28 @@ Generated from exported TypeScript symbols.
 
 ## `fauna/createFauna.ts`
 
-- `clearsRiverChannel` — function — line 328
-- `createFauna` — function — line 550
-- `Fauna` — type — line 174
-- `FAUNA_URLS` — const — line 451
-- `faunaGltfUrls` — function — line 466
-- `findHomeCaveSpawner` — function — line 410
-- `isDeerEdgeHabitat` — function — line 382
-- `isNearRoadCorridor` — function — line 363
-- `isValidWildFaunaSpawnSite` — function — line 338
-- `resolveWildFaunaSpawnPosition` — function — line 349
-- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 427
-- `SPAWNER_DESTROYING_GENITIVE` — const — line 435
-- `SPAWNER_LABELS` — const — line 419
-- `spawnerDestroyBusyLabel` — function — line 446
-- `spawnerDestroyPromptLabel` — function — line 442
+- `clearsRiverChannel` — function — line 351
+- `createFauna` — function — line 573
+- `Fauna` — type — line 193
+- `FAUNA_URLS` — const — line 474
+- `faunaGltfUrls` — function — line 489
+- `findHomeCaveSpawner` — function — line 433
+- `isDeerEdgeHabitat` — function — line 405
+- `isNearRoadCorridor` — function — line 386
+- `isValidWildFaunaSpawnSite` — function — line 361
+- `resolveWildFaunaSpawnPosition` — function — line 372
+- `SPAWNER_DESTROY_ACCUSATIVE` — const — line 450
+- `SPAWNER_DESTROYING_GENITIVE` — const — line 458
+- `SPAWNER_LABELS` — const — line 442
+- `spawnerDestroyBusyLabel` — function — line 469
+- `spawnerDestroyPromptLabel` — function — line 465
 
 ## `fauna/destinationThreatHooks.ts`
 
-- `collectDestinationThreats` — function — line 35
-- `createDestinationThreatHooks` — function — line 70
-- `DestinationAnimalThreat` — type — line 14
-- `SettlementDestinationThreatHooks` — type — line 21
+- `collectDestinationThreats` — function — line 39
+- `createDestinationThreatHooks` — function — line 74
+- `DestinationAnimalThreat` — type — line 15
+- `SettlementDestinationThreatHooks` — type — line 22
 
 ## `fauna/dogGuard.ts`
 
@@ -635,21 +635,20 @@ Generated from exported TypeScript symbols.
 - `FaunaDecisionInput` — type — line 39
 - `scoreFaunaBehaviours` — function — line 163
 
+## `fauna/faunaEventRandom.ts`
+
+- `faunaEventRandom` — function — line 13
+
 ## `fauna/faunaGroupLifecycle.ts`
 
-- `CarriedSpawnerEntry` — type — line 58
-- `CarriedSpawnerRuntime` — type — line 49
-- `CarriedSpawnerStore` — class — line 71
-- `CATCH_UP_STEP_DAYS` — const — line 41
-- `catchUpSpawnerLifecycle` — function — line 127
-  - domain: fauna
-- `ENGAGED_DEMATERIALIZE_TIMEOUT_SEC` — const — line 46
-- `FaunaHabitatGroupInput` — type — line 29
-- `GroupAgentEngagement` — type — line 167
-- `isGroupEngaged` — function — line 174
-- `materializedPopulation` — function — line 187
-- `MAX_CATCH_UP_DAYS` — const — line 44
-- `SpawnerSnapshotRow` — type — line 65
+- `CarriedSpawnerEntry` — type — line 33
+- `CarriedSpawnerStore` — class — line 45
+- `ENGAGED_DEMATERIALIZE_TIMEOUT_SEC` — const — line 31
+- `FaunaHabitatGroupInput` — type — line 20
+- `GroupAgentEngagement` — type — line 93
+- `isGroupEngaged` — function — line 100
+- `materializedPopulation` — function — line 112
+- `SpawnerSnapshotRow` — type — line 39
 
 ## `fauna/faunaProximity.ts`
 
@@ -764,6 +763,28 @@ Generated from exported TypeScript symbols.
 - `nextLivestockProductionReadyAtDays` — function — line 49
 - `WOOL_GROWTH_DAYS` — const — line 42
 - `WOOL_YIELD` — const — line 43
+
+## `fauna/offscreenTravelThreats.ts`
+
+- `ENCOUNTER_MAX_ROUNDS` — const — line 25
+- `EncounterOutcome` — type — line 63
+- `EncounterParty` — type — line 53
+- `EncounterPredator` — type — line 61
+- `PARTY_HIT_CHANCE` — const — line 26
+- `PARTY_MAX_ATTACKERS` — const — line 31
+- `PREDATOR_HIT_CHANCE` — const — line 27
+- `resolveOffscreenTravelEncounter` — function — line 74
+- `THREAT_BUBBLE_RADIUS` — const — line 18
+- `THREAT_CHANCE_SCALE` — const — line 20
+- `THREAT_MAX_CHANCE` — const — line 21
+- `THREAT_MAX_ENGAGED` — const — line 23
+- `THREAT_STEP_DAYS` — const — line 16
+  - domain: fauna
+  - system: wild-fauna-records
+  - role: Pure parts of the offscreen travel threat bubble (plan fauna-050 C3, Q035-a addition): step sampling that is independent of checkpoint partitioning, the encounter chance, and the one resolver `resolveOffscreenTravelEncounter` that turns a traveller party and dormant predators into HP deltas. `createFauna` owns the record query and write-back; the NPC owner applies the traveller deltas. No Three.js, no agents, no `Math.random`. 🟡 Numbers are first-version values (rounds, hit chances, scale) built from the existing `ANIMAL_DEFS.humanDanger`, `damageVsHuman` and NPC melee weapon damage. They are not a combat model: no armor, block, stamina, ranged weapons or strength profile yet.
+- `threatEncounterChance` — function — line 47
+- `threatStepIndices` — function — line 37
+- `UNARMED_MELEE_DAMAGE` — const — line 29
 
 ## `fauna/ownedAnimalControl.ts`
 
@@ -971,6 +992,21 @@ Generated from exported TypeScript symbols.
   - system: wild-fauna-records
   - role: Durable identity + persistence shape of generated wild individuals (plan fauna-050 C1/C2). Pure data and registry operations — no Three.js, no agents. `createFauna` owns the live projection (an `AnimalAgent` is the projection of exactly one record); this module owns ids, the record shape, the "group initialised" markers and the sorted save snapshot.
 - `wildSexFromRoll` — function — line 60
+
+## `fauna/wildHabitatAdvance.ts`
+
+- `advanceWildHabitat` — function — line 239
+- `AdvanceWildHabitatInput` — type — line 79
+- `advanceWildRecords` — function — line 186
+- `freshWildAnimalState` — function — line 202
+- `OFFSCREEN_NEED_CEILING` — const — line 37
+  - domain: fauna
+  - system: wild-fauna-records
+  - role: Common world-time transition of one wild habitat (plan fauna-050 C3). ONE path for dormant promote / load, time skip and rebuild: pure functions over records + the spawner's lifecycle fields, event-driven (not day quanta), with no day cap. Conservation per record, births / immigration per Q035-b (c) and Q160-a (b). No Three.js, no agents; the caller owns terrain placement (`createRecord`) and applies the returned events.
+- `planWildCreation` — function — line 59
+- `WildCreationMember` — type — line 45
+- `WildCreationPlan` — type — line 40
+- `WildFaunaEvent` — type — line 74
 
 ## `fauna/wolfDenScenario.ts`
 

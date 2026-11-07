@@ -276,6 +276,7 @@ Generated from TypeScript imports.
 - `player/PlayerController.appearance.test.ts`
 - `player/PlayerController.ts`
 - `player/PlayerTorch.ts`
+- `render/actorCullBounds.fauna.assets.test.ts`
 - `render/actorSkeletonSharing.assets.test.ts`
 - `settlement/PlacedFires.ts`
 - `settlement/campfireProps.ts`

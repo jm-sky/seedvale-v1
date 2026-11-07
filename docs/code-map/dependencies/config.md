@@ -81,6 +81,7 @@ Generated from TypeScript imports.
 - `settlement/SettlementsManager.ts`
 - `settlement/roadNetwork.ts`
 - `settlement/roadRouteWorldgenCache.ts`
+- `settlement/roadTrunks.integration.test.ts`
 - `settlement/settlementGenerator.ts`
 - `settlement/settlementLayout.ts`
 - `settlement/settlementPlanCache.ts`

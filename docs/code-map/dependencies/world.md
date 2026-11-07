@@ -4815,6 +4815,7 @@ Generated from TypeScript imports.
 - `fauna/animalCorpse.ts`
 - `fauna/animalMetabolismGameplay.test.ts`
 - `fauna/createFauna.ts`
+- `fauna/wildHabitatAdvance.ts`
 - `persistence/saveData.ts`
 - `player/PlayerNeeds.ts`
 - `quests/QuestManager.ts`
@@ -5018,6 +5019,7 @@ Generated from TypeScript imports.
 - `fauna/AnimalLife.test.ts`
 - `fauna/AnimalLife.ts`
 - `fauna/animalMetabolismGameplay.test.ts`
+- `fauna/createFauna.ts`
 - `player/PlayerController.ts`
 - `settlement/SettlementsManager.ts`
 - `settlement/settlementLayout.ts`
