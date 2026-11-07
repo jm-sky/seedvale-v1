@@ -99,3 +99,72 @@ The seed 415424794 change comes from filter 2 (contract §2: "record it and keep
 ## V2 — matrix (queue Q187, S, after Q186)
 
 Matrix per plan §Design V2 on the pinned router `2a19cf4c` + Q186: targets 22 / 25 / 28 × start spacing 1150 / 1050 / 950 × weight none / moderate / strong on seeds 42 and 415424794, plus the Q116-c extension (uniform 850 / 750 m with counts as land allows; check the 720 m floor) and 3 spot seeds for the shortlisted rows only. Cheap rejection first (selected < target, any quadrant < 70 % within 5 h, components > 1), then full metrics. One results table + JSON into this file's V2 section; previews (`continent-preview-png` + route overlay from `--routes-out`) for the 6 best rows into `docs/research/v1-revival/continent-previews/063-variants/`. Clustered variants (plan V2 (ii)) are **not** in Q187 — V3 decides whether the uniform rows leave a gap worth that design.
+
+## V2 results (Sonnet, 2026-11-07, Q187)
+
+**Pinned router:** `2a19cf4c` + Q186 filters (headless, `pnpm worldgen:variants`, one fresh process per variant × seed). Raw data: [`v2-results.json`](../../research/v1-revival/continent-previews/063-variants/v2-results.json). Previews (hillshade + routes + sites, seeds 42 / 415424794; rows 22@1150/none · 25@950/none · 28@1050/none · 28@950/none · 35@850/none · 25@1150/strong): [`continent-previews/063-variants/`](../../research/v1-revival/continent-previews/063-variants/). Tooling added: `continent-preview-png.ts --variant=<target>@<spacing>[/<weight>]`.
+
+**Cheap rejection:** no row failed on `selected < target` or any quadrant < 70 % within 5 h (min 74.9 %); only **components > 1** occurs: seed 42 `28@*/strong` (3 cells, 2 components); seed 415424794 `25@1150/*` and `28@1150/*` (2). All other 27-row cells have 1 component on both seeds. Rows below show `seed 42 / seed 415424794`; `p50m`/`p90m` = routed-edge polyline length (m), `long` = edges with route ratio > 1.5, `author` = nearest-to-author-route edge ratio (🟡 target lattice changes with variant, so not comparable across rows), `wild` = wilderness > 5 h %, `minQ` = worst quadrant within 5 h %.
+
+| variant | selected | comps | p50m | p90m | long | households | author edge | wild5h % | minQ % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 22@1150/none | 22/22 | 1/1 | 1601/1578 | 2948/2209 | 7/2 | 88/88 | 4_-3×1.01 / 4_-1×1.78 | 11.1/13.2 | 81.4/80.4 |
+| 22@1150/moderate | 22/22 | 1/1 | 1673/1624 | 2948/2209 | 7/2 | 94/95 | 4_-3×1.01 / 4_-1×1.78 | 11.3/15.9 | 81.4/78.7 |
+| 22@1150/strong | 22/22 | 1/1 | 1625/1553 | 2948/2354 | 6/2 | 99/91 | 4_-3×1.01 / 4_-1×1.78 | 11.1/15.1 | 81.4/78.7 |
+| 22@1050/none | 22/22 | 1/1 | 1608/1506 | 2948/2045 | 6/1 | 89/94 | 4_-3×1.01 / 4_-1×1.13 | 11.2/14.9 | 81.4/76.4 |
+| 22@1050/moderate | 22/22 | 1/1 | 1627/1493 | 2436/1780 | 5/1 | 92/98 | 4_-3×1.01 / 4_-1×1.13 | 10.9/16.1 | 86.6/76.4 |
+| 22@1050/strong | 22/22 | 1/1 | 1627/1533 | 2436/2354 | 5/1 | 93/99 | 4_-3×1.01 / 4_-1×1.13 | 11/16.3 | 86.2/76.4 |
+| 22@950/none | 22/22 | 1/1 | 1601/1577 | 2436/2128 | 5/2 | 93/96 | 4_-3×1.01 / 0_4×0.99 | 11.6/14.2 | 84.8/74.9 |
+| 22@950/moderate | 22/22 | 1/1 | 1601/1624 | 2149/2362 | 4/3 | 98/96 | 4_-3×1.01 / 0_4×0.98 | 11.9/15.7 | 83.1/81.3 |
+| 22@950/strong | 22/22 | 1/1 | 1519/1533 | 2149/2362 | 4/3 | 101/96 | 4_-3×1.01 / 4_-1×1.13 | 12.1/15.9 | 82.9/76.6 |
+| 25@1150/none | 25/25 | 1/2 | 1506/1553 | 2326/2209 | 5/2 | 95/98 | 4_-3×1.01 / 4_-1×1.78 | 7/9.1 | 89.7/81.9 |
+| 25@1150/moderate | 25/25 | 1/2 | 1549/1553 | 2326/2209 | 5/2 | 101/102 | 4_-3×1.01 / 4_-1×1.78 | 6.9/9.6 | 91/81.9 |
+| 25@1150/strong | 25/25 | 1/2 | 1519/1553 | 2166/2209 | 4/2 | 104/102 | 4_-3×1.01 / 4_-1×1.78 | 6.6/9.6 | 91.6/81.9 |
+| 25@1050/none | 25/25 | 1/1 | 1506/1563 | 2326/2415 | 4/4 | 92/102 | 4_-3×1.01 / 4_-1×1.13 | 7/9.8 | 89.7/86.6 |
+| 25@1050/moderate | 25/25 | 1/1 | 1549/1506 | 2326/2461 | 5/3 | 101/108 | 4_-3×1.01 / 4_-1×1.13 | 6.9/10.3 | 91/78.6 |
+| 25@1050/strong | 25/25 | 1/1 | 1519/1506 | 2166/2461 | 4/3 | 104/108 | 4_-3×1.01 / 4_-1×1.13 | 6.6/10.3 | 91.6/78.6 |
+| 25@950/none | 25/25 | 1/1 | 1437/1577 | 2131/2362 | 4/5 | 105/105 | 4_-3×1.01 / 4_-1×1.13 | 8.3/8.8 | 84.8/83.3 |
+| 25@950/moderate | 25/25 | 1/1 | 1506/1493 | 2149/2128 | 4/3 | 109/107 | 4_-3×1.01 / 4_-1×1.13 | 8.2/9.7 | 84.8/81.3 |
+| 25@950/strong | 25/25 | 1/1 | 1502/1533 | 2114/2128 | 4/3 | 115/108 | 4_-3×1.01 / 4_-1×1.13 | 9/9.9 | 87.8/81.3 |
+| 28@1150/none | 28/28 | 1/2 | 1437/1454 | 2022/2048 | 5/3 | 104/110 | 4_-3×1.01 / 4_-1×1.78 | 4/4.1 | 95.1/93.5 |
+| 28@1150/moderate | 28/28 | 1/2 | 1505/1512 | 2081/2048 | 5/3 | 110/109 | 4_-3×1.01 / 4_-1×1.78 | 3.8/4.9 | 94.5/93.5 |
+| 28@1150/strong | 28/28 | 2/2 | 1506/1512 | 2081/2048 | 4/3 | 111/109 | 4_-3×1.01 / 4_-1×1.78 | 4.1/4.9 | 94.5/93.5 |
+| 28@1050/none | 28/28 | 1/1 | 1437/1512 | 2081/2292 | 4/5 | 101/113 | 4_-3×1.01 / 4_-1×1.13 | 4/4.2 | 95.1/93.6 |
+| 28@1050/moderate | 28/28 | 1/1 | 1505/1482 | 2081/2307 | 5/4 | 110/116 | 4_-3×1.01 / 4_-1×1.13 | 3.8/5.9 | 94.5/91.2 |
+| 28@1050/strong | 28/28 | 2/1 | 1506/1482 | 2081/2307 | 4/4 | 111/116 | 4_-3×1.01 / 4_-1×1.13 | 4.1/5.9 | 94.5/91.2 |
+| 28@950/none | 28/28 | 1/1 | 1437/1533 | 2005/2362 | 3/6 | 113/117 | 4_-3×1.01 / 4_-1×1.13 | 4.8/4.1 | 94.4/94.8 |
+| 28@950/moderate | 28/28 | 1/1 | 1455/1533 | 2005/2362 | 3/5 | 117/119 | 4_-3×1.01 / 4_-1×1.13 | 4.6/6.5 | 94.4/84.9 |
+| 28@950/strong | 28/28 | 2/1 | 1454/1533 | 2005/2362 | 3/5 | 120/119 | 4_-3×1.01 / 4_-1×1.13 | 4.9/6.5 | 94.4/84.9 |
+
+**Uniform spacing (Q116-c, weight none; the 720 m floor `SETTLEMENT_MIN_DISTANCE_M` is reachable, never the limiter):**
+
+| variant | seed 42: sel · comps · p50m · p90m · hh · long · wild5h · minQ | seed 415424794 |
+| --- | --- | --- |
+| 35@850 | 35 · 1 · 1219 · 1853 · 148 · 3 · 2.6 · 95.8 | 35 · 1 · 1354 · 2473 · 154 · 9 · 3.1 · 94.5 |
+| 45@850 | **43** · 1 · 1096 · 1770 · 176 · 3 · 1.0 · 97.7 | **40** · **2** · 1162 · 2278 · 177 · 7 · 1.2 · 97.2 |
+| 45@750 / 60@750 | **43** (identical) · 1 · 1147 · 1770 · 179 · 3 | **40** · **2** · 1232 · 1826 · 177 · 9 |
+| 60@850/moderate | 42 · 1 · 1096 · 1837 · 176 · 3 | 40 · 2 · 1162 · 2278 · 183 · 7 |
+
+Land runs out at **≈ 43 sites (seed 42) / 40 (seed 415424794)** at the 720 m floor: targets above that change nothing. Suitability weight barely moves anything at these densities.
+
+**Spot seeds (shortlist rows only, weight none; sel · comps · p50m · p90m · long · wild5h · minQ):**
+
+| variant | seed 1 | seed 7 | seed 1234 |
+| --- | --- | --- | --- |
+| 22@1150 | 22·1·1779·2875·5·12.2·82.9 | 22·**4**·1740·2263·1·14.5·79.5 | 22·**3**·1588·2027·2·15.8·76.0 |
+| 25@950 | 25·1·1387·2229·1·13.1·82.4 | 25·**3**·1482·2264·1·10.5·80.8 | 25·**2**·1519·1909·3·7.7·84.4 |
+| 28@1050 | 28·**2**·1376·2023·2·7.3·86.3 | 28·**3**·1382·2264·2·5.9·90.4 | 28·1·1406·1717·2·3.4·95.6 |
+| 28@950 | 28·1·1304·2049·1·6.8·90.3 | 28·**2**·1439·2263·1·6.2·85.9 | 28·**2**·1447·1735·4·4.0·91.3 |
+| 35@850 | 35·1·1122·2072·2·4.2·94.2 | 35·**2**·1262·1887·3·3.6·87.4 | 35·1·1273·1779·4·1.4·97.7 |
+
+**Findings (for V3, no recommendation made here):**
+1. Priority 1 (one routed component) holds on **both** reference seeds for 22@\*, 25@1050/950 and 28@1050/950 (except the strong-weight cells above); it fails on the spot seeds even for the **current 22@1150** (seeds 7 and 1234: 4 and 3 components) — a pre-existing property of the router/land, not of the denser variants. Denser rows do not systematically worsen connectivity.
+2. Journeys: p50 route 1601 → 1437 m (28@950, −10 %), 1219 m (35@850, −24 %); p90 2948 → 2005 m on seed 42. Even 43 sites (≈ 1100 m p50) is only ≈ −30 %. The Q116-c −25…−40 % band is reachable only with ≥ 35 sites (uniform), i.e. ≈ +60–95 % households (88 → 148–179).
+3. Workload scales near-linearly: households 88 (22) → 104–120 (28) → 148–154 (35) → 176–179 (43); no simulation reduction was assumed. Timing/offscreen cost not measured here (V3 / author).
+4. Wilderness > 5 h falls 11–13 % → 4–8 % (28) → ~3 % (35) → ~1 % (43); quadrant coverage never goes below 74.9 %.
+5. Weight `moderate`/`strong` changes 1–5 % of metrics and sometimes raises households or adds a component (28@\*/strong); weight `none` stays the simplest baseline.
+6. Cost caveat from Q186 (flood ≈ 340–370 ms/layout, §3 Q186-a) applies to every row.
+
+**A→B→A:** `pnpm worldgen:variants --seeds=42,415424794 --variants=22@1150/none,28@950/none --abca` passed (exit 0, A again identical on both seeds).
+
+**Not done / caveats:** clustered variants (plan V2 (ii)) intentionally out of scope; timed author walk, simulation-workload timing and browser look not performed; previews are static PNGs, unreviewed by the author (→ queue §2). All numbers headless.

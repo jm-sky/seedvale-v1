@@ -19,6 +19,7 @@ import { deflateSync } from 'node:zlib'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { createBenchmarkWorldConfig } from '../../src/config/worldConfig'
 import { clearRoadNetworkCaches, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
+import { setSettlementLayoutOverrides, type SettlementLayoutOverrides } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
 import { clearCemeteryCaches } from '../../src/terrain/cemeteryAssignment'
 import { landformDescriptorsOf, rangeSpinesFor } from '../../src/terrain/chunkHeightmap'
@@ -180,6 +181,13 @@ if (flag('landforms')) {
 }
 
 if (flag('settlements') || flag('routes')) {
+  // world-terrain-063 V2 (tooling only): `--variant=<target>@<startSpacingM>[/<none|moderate|strong>]`, same syntax as `pnpm worldgen:variants`.
+  const variant = flags.find((f) => f.startsWith('--variant='))?.slice(10)
+  if (variant) {
+    const [target, rest = ''] = variant.split('@')
+    const [spacing, weight = 'none'] = rest.split('/')
+    setSettlementLayoutOverrides({ target: Number(target), startSpacing: Number(spacing), suitability: weight as NonNullable<SettlementLayoutOverrides['suitability']> })
+  }
   clearSettlementDefCache(); clearRoadNetworkCaches(); clearCemeteryCaches()
   const t = defaultTerrainConfig(65)
   const snap: WorldKnowledgeTerrainSnapshot = {
