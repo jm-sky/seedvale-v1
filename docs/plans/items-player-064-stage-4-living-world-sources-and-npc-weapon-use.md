@@ -28,7 +28,7 @@ Armor sources are **not** here: ordinary armor acquisition is owned by items-pla
 | **O3** | Masterwork-tier donor weapons: scarce (premium/regional), multiple specimens allowed | 062 batch done |
 | **O4** | Shields as goods: ordinary trade only; `iron_rimmed_shield` keyed quest-reward source only if an existing quest owner can host it — otherwise leave unsourced and record | 062 W4 |
 | **N1** | NPC weapon use: profession preference for new families, ammo compatibility, verification that NPCs use owned new gear (no kit grants beyond existing first-creation loadout rules) | 062 + npc-067 |
-| **U** | Upper-tier sources (14 identities): limited specialist offers and authored rewards/discoveries through the 063 claim command only; pickups carry durable instance payloads | 063 R1–R3 from [Opus R-A review 042](../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) + U1–U4 (review §3 F4/F5) + author Q-U1/Q-U2 (index §6) |
+| **U** | Upper-tier sources (14 identities): limited specialist offers and authored rewards/discoveries through the 063 claim command only; pickups carry durable instance payloads | 063 R1–R3 from [Opus R-A review 042](../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) + U1–U4 (review §3 F4/F5) + author Q-U1/Q-U2 answered (a) 2026-11-07 (index §6) |
 
 ## Rules
 

@@ -64,7 +64,7 @@ Format: `kind | source owner | eligibility | quantity | price | restock/init | N
 
 ## Slice U preconditions — Opus R-A (2026-11-07)
 
-[Review 042](../../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) — **U is NO-GO** until 063 R1–R3 land and the author answers Q-U1 (A8 reappearance / grave goods) and Q-U2 (designated host vs first-visited). U then must provide:
+[Review 042](../../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) — **U is NO-GO** until 063 R1–R3 land (author answers 2026-11-07: **Q-U1 (a)** — a destroyed specimen is lost forever, the identity never returns; **Q-U2 (a)** — one designated host per identity from the seed). U then must provide:
 
 - **U1** — one deterministic designated host per identity per world (seed + stable eligible source keys), computed before materialization; only that source calls `claimUpperTierInstance`, with a stable `issuanceKey` (`merchant:<settlementId>:<npcId>:<kind>`, `quest:<questId>:<kind>`). The ledger is the safety net, not the selector.
 - **U2** — thread the app-owned ledger by reference through the existing composition seam (like `consumedWorldPickupIds`); no second registry.

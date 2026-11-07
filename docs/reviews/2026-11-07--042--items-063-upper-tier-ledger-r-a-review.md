@@ -105,15 +105,17 @@ The list is empty. U may add issuers only after R1–R3 and with U1–U4; each n
 | **R1** | 063 | 064 U | Refuse restricted kinds in `sellInstancesForCoins` / `resolveInstanceSellPrice`; bypass test |
 | **R2** | 063 | 064 U | Orphan live claim = accept + diagnostic; duplicates still reject; round-trip test |
 | **R3** | 063 | 064 U | Structural owner-coverage test; add `settlementEconomies` food |
-| **U1** | 064 U | first issuer | Deterministic designated host per identity; stable `issuanceKey` format (Q-U2) |
+| **U1** | 064 U | first issuer | Deterministic designated host per identity; stable `issuanceKey` format (Q-U2 ✅ (a)) |
 | **U2–U4** | 064 U | first issuer | Ledger by reference; latch + claim atomicity; exact-instance purchase path |
 | armor quality | 066 + 064 U | first armor issuer | Identity-owned authored quality table |
-| **Q-U1** | author | 064 U | A8 reappearance/destruction policy incl. grave goods (index §6, queue §3) |
+| **Q-U1** | author | 064 U | ✅ answered (a) 2026-11-07: permanent loss, no reissue |
 | F7 | 063 | optional | Type dedupe, capability import test, scoped count walk |
 
 R1–R3 are small (one session, no save version bump: R2 changes validation only and accepts strictly more saves; R3 adds a test and one walker domain). After R1–R3 green, **R-A is satisfied for the 063 protocol**; U then proceeds on its own preconditions and the author's Q-U1/Q-U2 answers. A re-review is not required for R1–R3; an Opus spot check of the **first** U issuer is recommended (same pattern as review 033).
 
 ## 6. Questions for the author (mirrored in queue §3)
+
+**Answered 2026-11-07:** Q-U1 → **(a)** („Nie da się go odzyskać, przepada.”) — destruction is a permanent tombstone, no reissue; burial keeps the specimen as a grave good (F6 needs no change). Q-U2 → **(a)** — U1 designated host is binding. Archived in queue archive §3.
 
 - **Q-U1 — A8 po zniszczeniu / grobie:** (a) zniszczony lub pochowany egzemplarz przepada na zawsze, tożsamość nigdy nie wraca [rek. na start]; (b) po zniszczeniu tożsamość może raz wrócić z innego, deterministycznego źródła; (c) pochówek upuszcza przedmioty unikatowe przy grobie zamiast je zakopywać, reszta jak (a).
 - **Q-U2 — gdzie pojawia się unikat:** (a) każdy unikat ma jedno z góry wyznaczone źródło na świat (z seeda), to samo przy każdej grze na tym seedzie [rek.]; (b) wygrywa pierwsze źródło, które gracz odwiedzi (zależne od kolejności zwiedzania).
