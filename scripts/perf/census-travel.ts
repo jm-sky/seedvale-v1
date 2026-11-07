@@ -15,7 +15,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { defaultTerrainConfig } from '../../src/config/worldConfig'
 import { safetyBeltWidth } from '../../src/fauna/settlementFaunaHabitats'
 import { villageSizeConfig } from '../../src/settlement/families'
-import { clearRoadNetworkCaches, neighborsFor, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
+import { clearRoadNetworkCaches, entranceToward, findRoute, neighborsFor, type RoadNetworkContext, type RoadRoute, roadRoutesForSettlement } from '../../src/settlement/roadNetwork'
 import { cellKey, type SettlementDef } from '../../src/settlement/settlementGenerator'
 import { setSettlementLayoutOverrides, type SettlementSuitabilityWeight } from '../../src/settlement/settlementLayout'
 import { clearSettlementDefCache, setSettlementRiverQuery, settlementDefFor, settlementLayoutFor } from '../../src/settlement/settlementPlanCache'
@@ -101,7 +101,9 @@ function measure(seed: number) {
     hillsFbm: snap.hillsFbm, fbm: snap.fbm, biome: snap.biome, region: snap.region, hydrologyId: snap.hydrologyId,
   }))
   const ctx: RoadNetworkContext = worldKnowledgeRoadContext(snap)
+  const tLayout = performance.now()
   const layout = settlementLayoutFor(ctx)
+  const layoutMs = Math.round(performance.now() - tLayout)
   const defs: SettlementDef[] = []
   for (const s of layout.sites) { const d = settlementDefFor(s.cell, ctx); if (d) defs.push(d) }
   const byId = new Map(defs.map((d) => [d.id, d]))
@@ -141,6 +143,25 @@ function measure(seed: number) {
   }
   const layoutComps = components(defined.keys())
   const routedComps = components(routed.keys())
+
+  // Q188-a exception classes (plan world-terrain-063 V4): sites outside the home routed component. `separate-landmass` cannot
+  // occur after the home-connectivity filter (reported as the filter's `detached` / `unproven` rejections); the rest is split
+  // by whether a 900 m box (100 steps, diagnostic only — the game never uses it) finds a route to a home-component layout neighbour.
+  const uf = new Map(defs.map((d) => [d.id, d.id]))
+  const ufFind = (x: string): string => (uf.get(x) === x ? x : (uf.set(x, ufFind(uf.get(x)!)), uf.get(x)!))
+  for (const e of routed.keys()) { const [a, b] = e.split('|') as [string, string]; uf.set(ufFind(a), ufFind(b)) }
+  const homeRoot = ufFind('0_0')
+  const outsideHome = defs.filter((d) => ufFind(d.id) !== homeRoot).map((d) => {
+    const probes: Array<{ to: string, wideRoute: boolean }> = []
+    for (const n of layout.neighborsOf({ gx: d.gx, gz: d.gz })) {
+      const b = byId.get(cellKey(n.cell))
+      if (!b || ufFind(b.id) !== homeRoot) continue
+      const from = entranceToward(d, b); const to = entranceToward(b, d)
+      const opts = { gridStep: 9, elevationWeight: 6, smoothingWindow: ctx.region.roadNetwork.smoothingWindow, meanderAmplitude: ctx.region.roadNetwork.meanderAmplitude, meanderScale: ctx.region.roadNetwork.meanderScale, seed: ctx.seed, sampleHeight: ctx.sampleHeight, sampleMountainRidge: ctx.terrainSamplers.sampleMountainRidge, waterLevel: ctx.waterLevel, riverSegments: [], routeKind: 'road' as const, routeId: 'census-q188', marginSteps: 100 }
+      probes.push({ to: b.id, wideRoute: findRoute(from, to, opts) !== null })
+    }
+    return { id: d.id, size: d.size, class: probes.some((p) => p.wideRoute) ? 'inlet-detour' : 'unresolved', homeNeighbourProbes: probes.length }
+  })
 
   const h = (x: number, z: number) => ctx.sampleHeight(x, z)
   const edgeRows = [...routed.entries()].map(([key, route]) => {
@@ -308,6 +329,8 @@ function measure(seed: number) {
   return {
     seed, assumptions: `hours = distance ÷ speed ESTIMATE (player ${PLAYER_WALK_SPEED} m/s = ${TRAVEL_HOUR_M} m/game-h; NPC travel ${NPC_TRAVEL_SPEED} m/s = ${Math.round(NPC_HOUR_M)} m/game-h); coverage hours are straight-line`,
     counts: { selected: layout.sites.length, defined: defs.length, definedEdges: defined.size, routedEdges: routed.size, unroutedEdges: unrouted.length, unroutedRouteFailed: unrouted.filter((k) => unroutedCause(k) === 'routeFailed').length, roadConnectedInLargestComponent: routedComps[0] ?? 0 },
+    mainlandFilter: { ...layout.filterStats, layoutMs },
+    outsideHome: { count: outsideHome.length, limit: 1, sites: outsideHome },
     connectivity: { layoutAdjacencyComponents: layoutComps.length, routedComponents: routedComps.length, routedComponentSizes: routedComps.slice(0, 8) },
     unroutedEdges: unrouted.map((k) => { const [a, b] = k.split('|') as [string, string]; return { a, b, straightM: Math.round(dist(byId.get(a)!, byId.get(b)!)), cause: unroutedCause(k) } }),
     routeStats: {

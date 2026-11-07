@@ -38,11 +38,11 @@ import {
 export const SETTLEMENT_MIN_DISTANCE_M = 4 * TRAVEL_HOUR_M
 /** First-pass selection radius — the spacing the world is *aimed* at. The pass radius
  *  relaxes towards `SETTLEMENT_MIN_DISTANCE_M` only when the target count is not met. */
-export const SETTLEMENT_SPACING_M = 1150
+export const SETTLEMENT_SPACING_M = 950
 /** Radius decrement between selection passes. */
 const SPACING_RELAX_STEP_M = 100
 /** Settlements to select (059 decision 4: 20–25 in total, home included). */
-export const SETTLEMENT_TARGET_COUNT = 22
+export const SETTLEMENT_TARGET_COUNT = 25
 /** Graph edges longer than this are dropped unless they are the only link (connectivity). */
 export const SETTLEMENT_MAX_EDGE_M = 2400
 /** Edges beyond the 10 h band (`1800 m`) are pruned when both ends keep ≥ 2 other links and
@@ -59,10 +59,8 @@ const SCORE_WATER_CLEARANCE = 1.5
 const SCORE_JITTER = 0.6
 const LAYOUT_SALT = 0x4c41594f
 
-/** Mainland filter (plan world-terrain-063 V1): flood-fill step (m) and the land area (km²) that counts as mainland. */
+/** Home-connectivity filter (plan world-terrain-063 V4): search step (m), equal to the router's grid. */
 const MAINLAND_STEP_M = 18
-const MAINLAND_MIN_AREA_KM2 = 1.5
-const MAINLAND_MIN_CELLS = Math.ceil((MAINLAND_MIN_AREA_KM2 * 1e6) / (MAINLAND_STEP_M * MAINLAND_STEP_M))
 /** Suitability term: full water access within `NEAR`, none beyond `FAR`; ring probes for coast / lake access. */
 const WATER_ACCESS_NEAR_M = 150
 const WATER_ACCESS_FAR_M = 400
@@ -121,6 +119,8 @@ export type SettlementLayout = {
   siteOf(cell: SettlementCell): LayoutSite | null
   /** Graph neighbours of `cell`, nearest first. Empty for an unselected cell. */
   neighborsOf(cell: SettlementCell): readonly LayoutSite[]
+  /** Home-connectivity filter counters (tooling / census). */
+  readonly filterStats: Readonly<MainlandFilterStats>
   /** Number of undirected graph edges. */
   readonly edgeCount: number
 }
@@ -192,54 +192,144 @@ function candidateCells(input: SettlementLayoutInput, limit: number): Candidate[
 /** Largest (promoted) village footprint radius — the reserve guard checks the rectangle a promoted site could occupy. */
 const PROMOTED_FOOTPRINT_M = villageSizeConfig('XL').footprintRadius
 
+/** Search cap (cells) of one home-connectivity search; reaching it without proof rejects the site as `unproven`. */
+export const MAINLAND_SEARCH_MAX_CELLS = 4 * 4630
+
+/** Counters of the home-connectivity filter (plan world-terrain-063 V4 / Q188-a), reported by the census tools. */
+export type MainlandFilterStats = {
+  /** Sites rejected because their landmass is detached from the home landmass (exhausted search). */
+  detached: number
+  /** Sites rejected because the search hit `MAINLAND_SEARCH_MAX_CELLS` without proof (not cached as detached). */
+  unproven: number
+  /** Cells expanded by all searches (cost indicator). */
+  expandedCells: number
+}
+
 /**
- * Mainland test (plan world-terrain-063 V1 §2.1): bounded 8-neighbour flood fill on the router's walkable rule at
- * `MAINLAND_STEP_M`. Reaching `MAINLAND_MIN_CELLS` cells means mainland; exhausting earlier means a small island the
- * road router can never reach. Results are cached per cell so later candidates on the same landmass cost nothing.
+ * Home-connectivity test (plan world-terrain-063 V4, Q186-a / Q188-a): a site is feasible iff a best-first 8-neighbour
+ * search at `MAINLAND_STEP_M` on the router's walkable rule reaches a cell already proven home-connected. Targets are
+ * the home and every site accepted so far (accepted sites are proven by construction). An exhausted search means a
+ * detached landmass of any size (reject, cached as a fact); the cap means `unproven` (reject, not cached). Pure
+ * function of the terrain and the deterministic acceptance order.
  */
-function createMainlandTest(input: SettlementLayoutInput): (x: number, z: number) => boolean {
-  const verdict = new Map<number, boolean>()
+function createMainlandTest(
+  input: SettlementLayoutInput,
+  home: { x: number, z: number },
+  stats: MainlandFilterStats,
+): (x: number, z: number) => boolean {
+  const proven = new Set<number>()
+  const detached = new Set<number>()
+  const targets: Array<{ ix: number, iz: number }> = []
   const keyOf = (ix: number, iz: number): number => (ix + 8192) * 16384 + (iz + 8192)
   const walkable = (ix: number, iz: number): boolean =>
     input.sampleHeight(ix * MAINLAND_STEP_M, iz * MAINLAND_STEP_M) > input.waterLevel + ROUTE_WATER_CLEARANCE
+  const addTarget = (x: number, z: number): void => {
+    const ix = Math.round(x / MAINLAND_STEP_M)
+    const iz = Math.round(z / MAINLAND_STEP_M)
+    targets.push({ ix, iz })
+    proven.add(keyOf(ix, iz))
+  }
+  addTarget(home.x, home.z)
   return (x, z) => {
     const ix0 = Math.round(x / MAINLAND_STEP_M)
     const iz0 = Math.round(z / MAINLAND_STEP_M)
-    const known = verdict.get(keyOf(ix0, iz0))
-    if (known !== undefined) return known
-    const seen = new Set<number>([keyOf(ix0, iz0)])
-    const queue: number[] = [ix0, iz0]
-    for (let head = 0; head < queue.length; head += 2) {
-      if (seen.size >= MAINLAND_MIN_CELLS) {
-        for (const k of seen) verdict.set(k, true)
-        return true
+    const startKey = keyOf(ix0, iz0)
+    if (detached.has(startKey)) { stats.detached++; return false }
+    if (proven.has(startKey)) { addTarget(x, z); return true }
+    // Nearest accepted target (distance, then acceptance order).
+    let tgt = targets[0]!
+    let best = Infinity
+    for (const t of targets) {
+      const d = (t.ix - ix0) ** 2 + (t.iz - iz0) ** 2
+      if (d < best) { best = d; tgt = t }
+    }
+    // Binary min-heap of (priority = squared distance to target, cell key) — ties by key.
+    const heapP: number[] = []
+    const heapK: number[] = []
+    const less = (i: number, j: number): boolean => heapP[i]! < heapP[j]! || (heapP[i] === heapP[j] && heapK[i]! < heapK[j]!)
+    const swap = (i: number, j: number): void => {
+      const p = heapP[i]!; heapP[i] = heapP[j]!; heapP[j] = p
+      const k = heapK[i]!; heapK[i] = heapK[j]!; heapK[j] = k
+    }
+    const push = (ix: number, iz: number): void => {
+      heapP.push((ix - tgt.ix) ** 2 + (iz - tgt.iz) ** 2)
+      heapK.push(keyOf(ix, iz))
+      let i = heapP.length - 1
+      while (i > 0) {
+        const parent = (i - 1) >> 1
+        if (!less(i, parent)) break
+        swap(i, parent)
+        i = parent
       }
-      const ix = queue[head]!
-      const iz = queue[head + 1]!
-      for (let dz = -1; dz <= 1; dz++) {
+    }
+    const pop = (): number => {
+      const top = heapK[0]!
+      const lastP = heapP.pop()!
+      const lastK = heapK.pop()!
+      if (heapP.length > 0) {
+        heapP[0] = lastP
+        heapK[0] = lastK
+        let i = 0
+        for (;;) {
+          const l = 2 * i + 1
+          const r = l + 1
+          let m = i
+          if (l < heapP.length && less(l, m)) m = l
+          if (r < heapP.length && less(r, m)) m = r
+          if (m === i) break
+          swap(i, m)
+          i = m
+        }
+      }
+      return top
+    }
+    const seen = new Set<number>([startKey])
+    push(ix0, iz0)
+    let expanded = 0
+    let proof = false
+    while (heapP.length > 0 && !proof) {
+      if (expanded >= MAINLAND_SEARCH_MAX_CELLS) {
+        stats.expandedCells += expanded
+        stats.unproven++
+        return false
+      }
+      const k = pop()
+      const ix = Math.floor(k / 16384) - 8192
+      const iz = (k % 16384) - 8192
+      expanded++
+      for (let dz = -1; dz <= 1 && !proof; dz++) {
         for (let dx = -1; dx <= 1; dx++) {
           if (dx === 0 && dz === 0) continue
-          const k = keyOf(ix + dx, iz + dz)
-          if (seen.has(k) || verdict.get(k) === false) continue
-          if (verdict.get(k) === true) {
-            for (const v of seen) verdict.set(v, true)
-            return true
-          }
+          const nk = keyOf(ix + dx, iz + dz)
+          if (seen.has(nk)) continue
+          if (proven.has(nk)) { proof = true; break }
+          if (detached.has(nk)) { seen.add(nk); continue }
           if (!walkable(ix + dx, iz + dz)) continue
-          seen.add(k)
-          queue.push(ix + dx, iz + dz)
+          seen.add(nk)
+          push(ix + dx, iz + dz)
         }
       }
     }
-    const mainland = seen.size >= MAINLAND_MIN_CELLS
-    for (const k of seen) verdict.set(k, mainland)
-    return mainland
+    stats.expandedCells += expanded
+    if (proof) {
+      for (const k of seen) if (!detached.has(k)) proven.add(k)
+      addTarget(x, z)
+      return true
+    }
+    // Exhausted: every seen cell belongs to the same walkable component, which never reached home.
+    for (const k of seen) detached.add(k)
+    stats.detached++
+    return false
   }
 }
 
 /** Hard feasibility filters on a probed site (plan world-terrain-063 V1 §2): landform footprints, waterfall reserves, mainland. */
-function createSiteFilter(input: SettlementLayoutInput): (site: { x: number, z: number }) => boolean {
-  const onMainland = createMainlandTest(input)
+function createSiteFilter(
+  input: SettlementLayoutInput,
+  home: { x: number, z: number },
+  stats: MainlandFilterStats,
+): (site: { x: number, z: number }) => boolean {
+  const onMainland = createMainlandTest(input, home, stats)
   return (site) => {
     for (const d of input.landformIndex.near(site.x, site.z)) {
       if (Math.hypot(site.x - d.centreX, site.z - d.centreZ) < d.radius) return false
@@ -281,7 +371,8 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
   const homeCenter = settlementCellCenter({ gx: 0, gz: 0 }, input.seed)
   sites.push({ cell: { gx: 0, gz: 0 }, x: homeSite?.x ?? homeCenter.x, z: homeSite?.z ?? homeCenter.z })
 
-  const siteFeasible = createSiteFilter(input)
+  const filterStats: MainlandFilterStats = { detached: 0, unproven: 0, expandedCells: 0 }
+  const siteFeasible = createSiteFilter(input, sites[0]!, filterStats)
   const limit = Math.ceil(WORLD_HALF_EXTENT / SETTLEMENT_GRID_STEP)
   const candidates = candidateCells(input, limit)
   const probed = new Map<string, { x: number, z: number } | null>()
@@ -314,7 +405,7 @@ export function computeSettlementLayout(input: SettlementLayoutInput): Settlemen
     }
   }
 
-  return buildLayout(sites)
+  return buildLayout(sites, filterStats)
 }
 
 type EdgeCandidate = { a: number, b: number, d: number }
@@ -395,7 +486,7 @@ function pruneRedundantLongEdges(edges: EdgeCandidate[], n: number): EdgeCandida
   return out
 }
 
-function buildLayout(sites: readonly LayoutSite[]): SettlementLayout {
+function buildLayout(sites: readonly LayoutSite[], filterStats: MainlandFilterStats): SettlementLayout {
   const byKey = new Map(sites.map((s, i) => [cellKey(s.cell), i]))
   const edges = buildEdges(sites)
   const adjacency: Array<Array<{ j: number, d: number }>> = sites.map(() => [])
@@ -406,6 +497,7 @@ function buildLayout(sites: readonly LayoutSite[]): SettlementLayout {
   const neighbors = adjacency.map((list) => list.sort((l, r) => l.d - r.d || l.j - r.j).map((x) => sites[x.j]!))
   return {
     sites,
+    filterStats,
     edgeCount: edges.length,
     has: (cell) => byKey.has(cellKey(cell)),
     siteOf: (cell) => {

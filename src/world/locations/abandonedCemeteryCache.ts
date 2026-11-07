@@ -31,7 +31,7 @@ export const ABANDONED_CEMETERY_NAMESPACE = 'abandoned-cemeteries'
  *  v12: C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
  *  v13 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
  *  v14 (2026-11-07, queue Q186): settlement layout drops off-mainland / waterfall-reserve / landform-footprint sites (plan world-terrain-063 V1). */
-export const ABANDONED_CEMETERY_VERSION = 24
+export const ABANDONED_CEMETERY_VERSION = 25
 
 export type CachedAbandonedCemeteryResult =
   | { status: 'none' }

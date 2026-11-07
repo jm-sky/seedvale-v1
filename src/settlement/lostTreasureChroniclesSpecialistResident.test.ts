@@ -146,7 +146,9 @@ describe('lost treasure chronicles specialist resident', () => {
     expect(host!.families.some(isLostTreasureElderFamily)).toBe(false)
 
     const members = flattenedSettlementMembers(host!)
-    const authored = members.filter((member) => member.name === LOST_TREASURE_SPECIALIST_GIVEN_NAME)
+    // Procedural residents may share the given name; the authored resident is the one in the specialist family.
+    const authored = host!.families.filter(isLostTreasureSpecialistFamily).flatMap((family) => family.members)
+      .filter((member) => member.name === LOST_TREASURE_SPECIALIST_GIVEN_NAME)
     expect(authored).toHaveLength(1)
     const npcs = settlementOpportunityNpcsFromDef(host!)
     const authoredNpcs = npcs.filter((npc) => npc.householdId === LOST_TREASURE_SPECIALIST_FAMILY_ID)
