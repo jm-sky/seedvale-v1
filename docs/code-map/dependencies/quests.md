@@ -958,6 +958,7 @@ Generated from TypeScript imports.
 - `ui-vue/lib/questTerminalFeedback.test.ts`
 - `ui-vue/npcDialogueGreeting.ts`
 - `ui-vue/npcDialogueOpen.test.ts`
+- `world/locations/guardLocalKnowledge.ts`
 
 ## `quests/settlementLightLookup.ts`
 

@@ -1764,6 +1764,7 @@ Generated from TypeScript imports.
 
 - `ai/rumourLines.test.ts`
 - `app/inventoryWiring.ts`
+- `world/locations/guardLocalKnowledge.test.ts`
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/npcPlayerFollowUpDelivery.ts`
 

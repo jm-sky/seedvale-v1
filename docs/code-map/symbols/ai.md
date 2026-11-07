@@ -753,15 +753,17 @@ Generated from exported TypeScript symbols.
 
 ## `ai/rumourLines.ts`
 
-- `isRumourKind` — function — line 144
-- `rumourBearing` — function — line 110
+- `isRumourKind` — function — line 167
+- `rumourBearing` — function — line 128
 - `RumourKind` — type — line 18
 - `RumourOutcome` — type — line 20
-- `rumourOutcomeLine` — function — line 140
+- `rumourOutcomeLine` — function — line 158
 - `RumourSpeaker` — type — line 15
   - domain: dialogue
-- `rumourSuccessLine` — function — line 129
-- `rumourTravelTime` — function — line 116
+- `rumourSuccessLine` — function — line 147
+- `rumourTravelTime` — function — line 134
+- `rumourWaitLine` — function — line 163
+- `RumourWaitPhase` — type — line 25
 
 ## `ai/schedule.ts`
 

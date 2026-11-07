@@ -19,6 +19,11 @@ export type RumourKind = Extract<WorldLocationKind, 'cave' | 'ruins' | 'lake' | 
 
 export type RumourOutcome = 'trust' | 'cap' | 'none' | 'daily'
 
+/** Deferred-research replies (script §6; restored by queue Q172): the request
+ *  was accepted / is still being thought over. The "hour" in the text matches
+ *  `RUMOUR_RESEARCH_DELAY_DAYS` (one game hour). */
+export type RumourWaitPhase = 'start' | 'pending'
+
 type LineSet = { adult: readonly string[], guard?: string, hunter?: string }
 
 const SUCCESS: Record<RumourKind, LineSet> = {
@@ -90,6 +95,19 @@ const OUTCOME: Record<RumourOutcome, LineSet> = {
   },
 }
 
+const WAIT: Record<RumourWaitPhase, LineSet> = {
+  start: {
+    adult: ['Let me think on it. Ask me again in an hour.'],
+    guard: "Give me an hour to think it over. I'd rather not send you the wrong way.",
+    hunter: "Let me think. There's little use in muddled directions. Ask me again in an hour.",
+  },
+  pending: {
+    adult: ["I haven't an answer for you yet. Give me a little longer."],
+    guard: 'Not yet. I still need a little time.',
+    hunter: "I'm still thinking it over. Ask me a little later.",
+  },
+}
+
 const BEARING_WORD: Record<CardinalSector, string> = {
   N: 'north',
   NE: 'north-east',
@@ -139,6 +157,11 @@ export function rumourSuccessLine(
 /** One reply that carries no new lead (trust gate, cap, empty pool, daily limit). */
 export function rumourOutcomeLine(outcome: RumourOutcome, speaker: RumourSpeaker, variantSeed: number): string {
   return pick(OUTCOME[outcome], speaker, variantSeed)
+}
+
+/** "Let me think on it" (`start`) or "not yet" (`pending`) — never a lead. */
+export function rumourWaitLine(phase: RumourWaitPhase, speaker: RumourSpeaker): string {
+  return pick(WAIT[phase], speaker, 0)
 }
 
 export function isRumourKind(kind: WorldLocationKind): kind is RumourKind {

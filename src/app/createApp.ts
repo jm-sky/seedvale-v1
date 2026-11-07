@@ -3939,6 +3939,13 @@ export async function createApp(
     window.__seedvaleRunBenchmark = (id, durationSec, options) => benchmark.run(id, durationSec, options)
     window.__seedvaleWorldgenFixtureStats = getWorldgenFixtureStats
     window.__seedvaleExportWorldgenFixture = (profile, meta) => exportWorldgenFixture(config.seed, profile, meta)
+    // Rumour/discovery query probe (queue Q172): one landmark band query from
+    // the player, with wall time and the catalog's running scan diagnostics.
+    window.__seedvaleLandmarkQuery = async (minHours, maxHours) => {
+      const start = performance.now()
+      const found = await worldLocationCatalog.landmarksInRangeAsync(player.mesh.position.x, player.mesh.position.z, minHours, maxHours)
+      return { ms: performance.now() - start, count: found.length, diagnostics: { ...worldLocationCatalog.getScanDiagnostics() } }
+    }
   }
 
   // `?benchmarkAutorun=0` boots the fixture world without starting the run

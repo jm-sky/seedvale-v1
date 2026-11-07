@@ -645,5 +645,10 @@ declare global {
       meta: { fixtureVersion: number, gitSha: string },
     ) => Promise<import('../persistence/worldgenFixture').WorldgenFixtureExport>
     __seedvalePerfWindow?: { startMs: number; endMs: number }
+    __seedvaleLandmarkQuery?: (minHours: number, maxHours: number) => Promise<{
+      ms: number
+      count: number
+      diagnostics: import('../world/locations/worldLocationCatalog').LocationScanDiagnostics
+    }>
   }
 }

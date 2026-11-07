@@ -1388,22 +1388,22 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/guardLocalKnowledge.ts`
 
-- `createGuardLocalKnowledge` — function — line 87
+- `createGuardLocalKnowledge` — function — line 104
   - domain: world-locations
-- `GUARD_AREA_RESEARCH_PENDING` — const — line 16
-- `GuardLocalKnowledge` — type — line 51
+- `GuardLocalKnowledge` — type — line 65
   - domain: world-locations
-- `GuardLocalKnowledgeDeps` — type — line 61
-- `isSaveGuardLocalKnowledge` — function — line 138
-- `isSaveGuardLocalKnowledgeByNpc` — function — line 150
-- `normalizeSaveGuardLocalKnowledge` — function — line 166
+- `GuardLocalKnowledgeDeps` — type — line 76
+- `isSaveGuardLocalKnowledge` — function — line 266
+- `isSaveGuardLocalKnowledgeByNpc` — function — line 278
+- `normalizeSaveGuardLocalKnowledge` — function — line 294
   - domain: world-locations
-- `RUMOUR_BAND_MAX_HOURS` — const — line 13
-- `RUMOUR_BAND_MIN_HOURS` — const — line 12
-- `RUMOUR_EXPERT_BAND_MAX_HOURS` — const — line 14
-- `RUMOUR_TRUST_MIN` — const — line 10
-- `SaveGuardLocalKnowledge` — type — line 19
-- `SaveGuardLocalKnowledgeByNpc` — type — line 39
+- `RUMOUR_BAND_MAX_HOURS` — const — line 21
+- `RUMOUR_BAND_MIN_HOURS` — const — line 20
+- `RUMOUR_EXPERT_BAND_MAX_HOURS` — const — line 22
+- `RUMOUR_RESEARCH_DELAY_DAYS` — const — line 26
+- `RUMOUR_TRUST_MIN` — const — line 18
+- `SaveGuardLocalKnowledge` — type — line 28
+- `SaveGuardLocalKnowledgeByNpc` — type — line 49
 
 ## `world/locations/knownSettlementReputation.ts`
 
@@ -1610,15 +1610,14 @@ Generated from exported TypeScript symbols.
 
 ## `world/locations/worldLocationCatalog.ts`
 
-- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 246
+- `abandonedCemeteryChunkIntersectsHoursBand` — function — line 257
   - domain: world
-- `COOPERATIVE_ABANDONED_PROBE_THRESHOLD` — const — line 158
-- `createWorldLocationCatalog` — function — line 314
-- `emptyLocationScanDiagnostics` — function — line 123
-- `LandmarkQueryOptions` — type — line 147
+- `createWorldLocationCatalog` — function — line 359
+- `emptyLocationScanDiagnostics` — function — line 132
+- `LandmarkQueryOptions` — type — line 161
 - `LocationScanDiagnostics` — type — line 96
-- `settlementLocationId` — function — line 1090
-- `WorldLocationCatalog` — type — line 160
+- `settlementLocationId` — function — line 1171
+- `WorldLocationCatalog` — type — line 171
 - `WorldLocationCatalogDeps` — type — line 32
 
 ## `world/locations/worldLocationNames.ts`

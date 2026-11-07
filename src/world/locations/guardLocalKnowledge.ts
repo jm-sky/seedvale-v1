@@ -2,7 +2,15 @@ import type { RumourSpeaker } from '../../ai/rumourLines'
 import type { NpcId } from '../../settlement/npcState'
 import type { LocationKnowledge } from './locationKnowledge'
 import type { WorldLocation } from './worldLocationTypes'
-import { isRumourKind, rumourBearing, rumourOutcomeLine, rumourSuccessLine, rumourTravelTime } from '../../ai/rumourLines'
+import {
+  isRumourKind,
+  rumourBearing,
+  rumourOutcomeLine,
+  rumourSuccessLine,
+  rumourTravelTime,
+  rumourWaitLine,
+} from '../../ai/rumourLines'
+import { WORLD_KNOWLEDGE_HOUR_DAYS } from '../../quests/quests'
 import { MEDIUM_RANGE_HOURS, NEAR_RANGE_HOURS, worldUnitsToHours } from './locationConfig'
 import { countOpenRumourLeads, RUMOUR_LEAD_CAP, rumourLeadAreaForEntry } from './rumourLead'
 
@@ -12,9 +20,10 @@ export const RUMOUR_TRUST_MIN = -10
 export const RUMOUR_BAND_MIN_HOURS = NEAR_RANGE_HOURS
 export const RUMOUR_BAND_MAX_HOURS = MEDIUM_RANGE_HOURS
 export const RUMOUR_EXPERT_BAND_MAX_HOURS = 25
-/** Legacy (pre-Q138) wait line — still returned when an old armed follow-up cannot be delivered. */
-export const GUARD_AREA_RESEARCH_PENDING =
-  'Wciąż przeglądam meldunki i szlaki. Wróć trochę później.'
+/** Game-time wait between "let me think on it" and the answer (plan 047,
+ *  restored by queue Q172 — author Q172-a (a)). The approved wait lines say
+ *  "an hour", so this must stay one game hour. */
+export const RUMOUR_RESEARCH_DELAY_DAYS = WORLD_KNOWLEDGE_HOUR_DAYS
 
 export type SaveGuardLocalKnowledge =
   | {
@@ -33,28 +42,34 @@ export type SaveGuardLocalKnowledge =
       selectedIds: string[]
     }
 
-/** Per-npc keyed save shape (plan npc-050 §10). Since Q138 nothing writes it
- *  any more (rumours are answered instantly); an old save's entries are read
- *  for compatibility and dropped on restore. */
+/** Per-npc keyed save shape (plan npc-050 §10): one pending rumour request
+ *  per asking NPC. `resolved.selectedIds` holds at most the one candidate the
+ *  background research picked; it is a session cache — restore turns it back
+ *  into `requested` so the pick is always recomputed by current code. */
 export type SaveGuardLocalKnowledgeByNpc = Record<NpcId, SaveGuardLocalKnowledge>
 
 /**
- * Rumour producer (plan world-041 L3b, queue Q138): "an NPC tells the player
- * about a place". Every NPC only ever gives an `estimated` rumour lead (never
+ * Rumour producer (plan world-041 L3b, queue Q138; deferred again by Q172):
+ * "an NPC tells the player about a place". The first ask answers at once with
+ * "let me think on it" and starts the candidate-pool research in the
+ * background (cooperative `landmarksInRangeAsync` — a cold 25 h band costs
+ * seconds of worldgen); asking again once `RUMOUR_RESEARCH_DELAY_DAYS` of game
+ * time has passed delivers the result, re-checked at delivery (trust, cap,
+ * already known). Every NPC only ever gives an `estimated` rumour lead (never
  * an exact pin or a name); guards and hunters give a smaller area (`expert`
- * tier, persisted on the entry) and reach farther. Owns no persisted state —
- * the daily limit is derived (`(seed, npc, day)`), the cap is derived from
- * `LocationKnowledge`.
+ * tier, persisted on the entry) and reach farther. Owns only the per-NPC
+ * pending request; the daily pick is derived from `(seed, npc, request day)`.
  *
  * @domain world-locations
  */
 export type GuardLocalKnowledge = {
   /** `trust` = the asking NPC's settlement trust dimension toward the player. */
   askAboutArea(npcId: NpcId, originX: number, originZ: number, speaker: RumourSpeaker, trust: number): Promise<string>
-  /** Accepts (and drops) pre-Q138 research state. */
   restore(saved: SaveGuardLocalKnowledgeByNpc | undefined): void
   serialize(): SaveGuardLocalKnowledgeByNpc | undefined
+  /** New world: drop every pending request. */
   reset(): void
+  /** Same world rebuilt (terrain params): keep requests, recompute their picks. */
   invalidate(): void
 }
 
@@ -81,54 +96,167 @@ function hashSeed(seed: number, parts: readonly (string | number)[]): number {
   return h >>> 0
 }
 
+type PendingRequest = Extract<SaveGuardLocalKnowledge, { status: 'requested' }>
+
 /**
  * @domain world-locations
  */
 export function createGuardLocalKnowledge(deps: GuardLocalKnowledgeDeps): GuardLocalKnowledge {
+  const byNpc = new Map<NpcId, SaveGuardLocalKnowledge>()
+  /** In-flight research per NPC (session only), tagged with the epoch it started in. */
+  const research = new Map<NpcId, { epoch: number, promise: Promise<string | null> }>()
+  /** Day each NPC last delivered an answer (session only): a same-day re-ask
+   *  answers directly (the pool is warm by then) instead of a second wait. */
+  const answeredDay = new Map<NpcId, number>()
+  let epoch = 0
+
+  const bandMax = (speaker: RumourSpeaker): number => speaker === 'adult' ? RUMOUR_BAND_MAX_HOURS : RUMOUR_EXPERT_BAND_MAX_HOURS
+
+  /** Today's top candidate for this NPC, or `null`. Ordering ignores knowledge
+   *  state, so asking again / reloading the same day yields the same candidate
+   *  and cannot farm extra leads. */
+  const pickCandidate = async (npcId: NpcId, originX: number, originZ: number, speaker: RumourSpeaker, day: number): Promise<string | null> => {
+    const seed = deps.getWorldSeed()
+    const homeId = deps.homeLocationId()
+    const found = await deps.landmarksInRange(originX, originZ, RUMOUR_BAND_MIN_HOURS, bandMax(speaker))
+    const pool = found
+      .filter((location) => isRumourKind(location.kind) && location.id !== homeId)
+      .map((location) => ({ id: location.id, rank: hashSeed(seed, [npcId, day, location.id]) }))
+      .sort((a, b) => a.rank - b.rank || a.id.localeCompare(b.id))
+    return pool[0]?.id ?? null
+  }
+
+  /** Starts (once per NPC and epoch) the background pool research of a pending request. */
+  const launch = (npcId: NpcId, request: SaveGuardLocalKnowledge, speaker: RumourSpeaker): Promise<string | null> => {
+    const running = research.get(npcId)
+    if (running && running.epoch === epoch) return running.promise
+    const startedEpoch = epoch
+    const promise = pickCandidate(npcId, request.originX, request.originZ, speaker, Math.floor(request.requestedAtDays))
+    research.set(npcId, { epoch: startedEpoch, promise })
+    promise.then(
+      (topId) => {
+        if (startedEpoch !== epoch || research.get(npcId)?.promise !== promise) return
+        const current = byNpc.get(npcId)
+        if (!current || current.requestedAtDays !== request.requestedAtDays) return
+        byNpc.set(npcId, { ...current, status: 'resolved', selectedIds: topId ? [topId] : [] })
+      },
+      () => {
+        // A failed query is not a diegetic "nothing found": drop it so the
+        // next ask retries the research.
+        if (research.get(npcId)?.promise === promise) research.delete(npcId)
+      },
+    )
+    return promise
+  }
+
+  /** The answer for one candidate, re-validated now (cap, already known, stale id). */
+  const answer = (npcId: NpcId, topId: string | null, originX: number, originZ: number, speaker: RumourSpeaker): string => {
+    const seed = deps.getWorldSeed()
+    const variant = hashSeed(seed, [npcId, Math.floor(deps.getElapsedDays()), 'variant'])
+    const top = topId ? deps.getLocation(topId) : null
+    if (!top || !isRumourKind(top.kind)) return rumourOutcomeLine('none', speaker, variant)
+    if (deps.locationKnowledge.has(top.id)) return rumourOutcomeLine('daily', speaker, variant)
+    if (countOpenRumourLeads(deps.locationKnowledge, { getById: deps.getLocation }) >= RUMOUR_LEAD_CAP) {
+      return rumourOutcomeLine('cap', speaker, variant)
+    }
+    const leadTier = speaker === 'adult' ? undefined : 'expert'
+    // Same projection the map uses (`mapData.project`), so speech never
+    // reveals more than the marker does. Bearing/hours are from where the
+    // player stands when the NPC actually answers.
+    const area = rumourLeadAreaForEntry(seed, { id: top.id, leadTier }, top)
+    const bearing = rumourBearing(area.x - originX, area.z - originZ)
+    if (!bearing) return rumourOutcomeLine('none', speaker, variant)
+    const hours = worldUnitsToHours(Math.hypot(area.x - originX, area.z - originZ))
+    deps.locationKnowledge.reveal(top.id, 'estimated', 'npc', leadTier)
+    return rumourSuccessLine(top.kind, speaker, bearing, rumourTravelTime(hours), variant)
+  }
+
   return {
     async askAboutArea(npcId, originX, originZ, speaker, trust) {
-      const seed = deps.getWorldSeed()
-      const day = Math.floor(deps.getElapsedDays())
-      const variant = hashSeed(seed, [npcId, day, 'variant'])
-      const expert = speaker !== 'adult'
+      const now = deps.getElapsedDays()
+      const today = Math.floor(now)
+      const variant = hashSeed(deps.getWorldSeed(), [npcId, today, 'variant'])
       if (trust < RUMOUR_TRUST_MIN) return rumourOutcomeLine('trust', speaker, variant)
 
-      const homeId = deps.homeLocationId()
-      const found = await deps.landmarksInRange(
-        originX,
-        originZ,
-        RUMOUR_BAND_MIN_HOURS,
-        expert ? RUMOUR_EXPERT_BAND_MAX_HOURS : RUMOUR_BAND_MAX_HOURS,
-      )
-      // Ordering ignores knowledge state, so asking again / reloading the same
-      // day yields the same top candidate and cannot farm extra leads.
-      const pool = found
-        .filter((location) => isRumourKind(location.kind) && location.id !== homeId)
-        .map((location) => ({ location, rank: hashSeed(seed, [npcId, day, location.id]) }))
-        .sort((a, b) => a.rank - b.rank || a.location.id.localeCompare(b.location.id))
-      const top = pool[0]?.location
-      if (!top || !isRumourKind(top.kind)) return rumourOutcomeLine('none', speaker, variant)
-      if (deps.locationKnowledge.has(top.id)) return rumourOutcomeLine('daily', speaker, variant)
+      const pending = byNpc.get(npcId)
+      if (pending) {
+        if (now < pending.revealAtDays) {
+          void launch(npcId, pending, speaker)
+          return rumourWaitLine('pending', speaker)
+        }
+        // Delay elapsed: deliver. Normally the research finished long ago;
+        // after a reload it is recomputed here (cooperative, option disabled
+        // in the dialogue meanwhile).
+        let topId: string | null
+        if (pending.status === 'resolved') {
+          topId = pending.selectedIds[0] ?? null
+        } else {
+          const startedEpoch = epoch
+          topId = await launch(npcId, pending, speaker)
+          // World rebuilt mid-research: that pick belongs to the old terrain.
+          if (startedEpoch !== epoch) topId = await launch(npcId, pending, speaker)
+        }
+        const current = byNpc.get(npcId)
+        if (!current || current.requestedAtDays !== pending.requestedAtDays) {
+          // Reset (new world) while waiting — nothing from the old world is delivered.
+          return rumourOutcomeLine('none', speaker, variant)
+        }
+        byNpc.delete(npcId)
+        research.delete(npcId)
+        answeredDay.set(npcId, today)
+        return answer(npcId, topId, originX, originZ, speaker)
+      }
+
+      if (answeredDay.get(npcId) === today) {
+        return answer(npcId, await pickCandidate(npcId, originX, originZ, speaker, today), originX, originZ, speaker)
+      }
+      // Nothing to think over while the player still has every slot full.
       if (countOpenRumourLeads(deps.locationKnowledge, { getById: deps.getLocation }) >= RUMOUR_LEAD_CAP) {
         return rumourOutcomeLine('cap', speaker, variant)
       }
-
-      const leadTier = expert ? 'expert' : undefined
-      // Same projection the map uses (`mapData.project`), so speech never
-      // reveals more than the marker does.
-      const area = rumourLeadAreaForEntry(seed, { id: top.id, leadTier }, top)
-      const bearing = rumourBearing(area.x - originX, area.z - originZ)
-      if (!bearing) return rumourOutcomeLine('none', speaker, variant)
-      const hours = worldUnitsToHours(Math.hypot(area.x - originX, area.z - originZ))
-      deps.locationKnowledge.reveal(top.id, 'estimated', 'npc', leadTier)
-      return rumourSuccessLine(top.kind, speaker, bearing, rumourTravelTime(hours), variant)
+      const request: PendingRequest = {
+        status: 'requested',
+        requestedAtDays: now,
+        revealAtDays: now + RUMOUR_RESEARCH_DELAY_DAYS,
+        originX,
+        originZ,
+      }
+      byNpc.set(npcId, request)
+      void launch(npcId, request, speaker)
+      return rumourWaitLine('start', speaker)
     },
-    restore() {},
+    restore(saved) {
+      epoch += 1
+      byNpc.clear()
+      research.clear()
+      answeredDay.clear()
+      if (!saved) return
+      for (const [npcId, entry] of Object.entries(saved)) {
+        const { requestedAtDays, revealAtDays, originX, originZ } = entry
+        byNpc.set(npcId, { status: 'requested', requestedAtDays, revealAtDays, originX, originZ })
+      }
+    },
     serialize() {
-      return undefined
+      if (byNpc.size === 0) return undefined
+      const out: SaveGuardLocalKnowledgeByNpc = {}
+      for (const [npcId, entry] of byNpc) out[npcId] = entry.status === 'resolved' ? { ...entry, selectedIds: [...entry.selectedIds] } : { ...entry }
+      return out
     },
-    reset() {},
-    invalidate() {},
+    reset() {
+      epoch += 1
+      byNpc.clear()
+      research.clear()
+      answeredDay.clear()
+    },
+    invalidate() {
+      epoch += 1
+      research.clear()
+      answeredDay.clear()
+      for (const [npcId, entry] of byNpc) {
+        const { requestedAtDays, revealAtDays, originX, originZ } = entry
+        byNpc.set(npcId, { status: 'requested', requestedAtDays, revealAtDays, originX, originZ })
+      }
+    },
   }
 }
 

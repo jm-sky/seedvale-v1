@@ -833,6 +833,24 @@ describe('abandoned cemetery scan (plan world-022)', () => {
     for (let i = 1; i < progress.length; i++) expect(progress[i]!).toBeGreaterThanOrEqual(progress[i - 1]!)
   })
 
+  it('zero-budget async path (yield after every settlement, probe and scan row) matches sync (Q172)', async () => {
+    const pass = findRollChunk(SEED, true, (cx, cz) => {
+      const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR
+      return hours > MEDIUM_RANGE_HOURS && hours <= FAR_RANGE_HOURS
+    })
+    const fixtures = [cemeteryAtChunk(pass.cx, pass.cz)]
+    const sync = catalogFor(fixtures).landmarksInRange(0, 0, 0, FAR_RANGE_HOURS).map((l) => l.id)
+    let yields = 0
+    const asyncResult = await catalogFor(fixtures).landmarksInRangeAsync(0, 0, 0, FAR_RANGE_HOURS, {
+      probeBudgetMs: 0,
+      yieldToPaint: async () => {
+        yields++
+      },
+    })
+    expect(asyncResult.map((l) => l.id)).toEqual(sync)
+    expect(yields).toBeGreaterThan(10)
+  })
+
   it('yields do not expose a prefix result — the promise resolves with the full set once', async () => {
     const pass = findRollChunk(SEED, true, (cx, cz) => {
       const hours = Math.hypot(cx * CHUNK, cz * CHUNK) / WORLD_UNITS_PER_HOUR

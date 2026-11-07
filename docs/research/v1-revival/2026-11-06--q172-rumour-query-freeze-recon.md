@@ -1,6 +1,6 @@
 # Q172 — "Opowiedz mi coś o okolicy" main-thread stall: recon (2026-11-06, Opus)
 
-Status: **static recon + one headless timing + history check, not a runtime profile.** Input: a GPT static-recon finding (author paste, 2026-11-06). Priority: low — after the geography main path (author 2026-11-06).
+Status: recon 2026-11-06 (static + headless timing + history); **browser measurement, wait restore and cooperative query landed 2026-11-07** (sections at the end); worker prewarm = Q189. Input: a GPT static-recon finding (author paste, 2026-11-06). Priority: low — after the geography main path (author 2026-11-06).
 
 ## Symptom (author)
 
@@ -51,3 +51,29 @@ Before either, measure as in step 1 below. Do **not** narrow the 25 h expert ban
 **(a) Restore the wait.** The rumour ask answers at once with the approved Q137 §6 `RUM.WAIT.START.*` line. The pool is computed in the background, and the lead is delivered later through the npc-050 follow-up seam (`RUM.WAIT.READY.*`, re-resolved at delivery). Still open for the S/O row: how the pool is computed, (i) extended worker or (ii) cooperative main-thread, chosen after the step 1 measurement.
 
 Verification: the async result must equal the sync result (existing test plus a test for the cooperative variant), and there must be no change in `pnpm worldgen:outcomes:census` / catalog output. For the browser check, the worst long frame during an ask should be under about 50 ms on a cold cache (WSL; record it, no FPS claims), and Windows confirmation goes to queue §4.
+
+## Measurement (2026-11-07, Opus) — WSL2 Chrome, not a performance claim
+
+`?fly&seed=415424794&worldgenFixture=0`, fresh Chrome profile (cold IndexedDB caches), Vite dev, band 4–25 h from the home spawn via `window.__seedvaleLandmarkQuery`; frame gaps from a rAF loop (the `longtask` observer misses work started from CDP `Runtime.evaluate`). Script: session scratchpad, not kept.
+
+| | wall | worst frame | notes |
+| --- | --- | --- | --- |
+| cold, before | 4.6 s | **4008 ms** | one freeze |
+| cold, cooperative | 4.8 s | **1102 ms** | 100–600 ms frames around it |
+| warm (reload, same profile) | 52 ms | < 50 ms | all cache hits |
+| same session, 2nd query | 5–25 ms | < 50 ms | |
+
+Cold split: settlement-cemetery resolves **3.0 s** (12 settlements, max 1.1 s each — CPU profile: road A* `findRoute` ← `findRouteAvoidingVillages` ← `segmentsNear` ← `paramsFor`), settlement def lookups 0.65 s (max 0.14 s), 185 abandoned probes 0.9 s (max 0.27 s), coarse lake/peak scan ~60 ms. So the recon's ranking was wrong: the coarse scan is negligible, and the settlement cemeteries — not the abandoned probes — dominate. Both cemetery kinds pay `paramsFor` (roads), the same worldgen the player pays later when walking there; warm worlds are fine.
+
+**Conclusion:** (ii) alone cannot reach < 50 ms — one cold item is up to 1.1 s of synchronous road routing. Landed (ii) as the first step (4 s freeze → ≤ 1.1 s frames, during the one-hour wait instead of on click), plus the restored wait (author Q172-a). The cold items go to the worker in Q189.
+
+## Worker prewarm contract (Q189)
+
+Goal: on a cold world, the rumour band query never runs `paramsFor` on the main thread. **Prewarm, do not fork the resolver:** the worker only fills the two main-thread caches the catalog already reads; the cooperative main-thread `landmarksInRangeAsync` then runs unchanged on cache hits (the measured 50 ms warm path), so output and order stay identical by construction.
+
+1. **Job.** New `WorldKnowledgeQueryKind` `'band-cemeteries'` on the existing `worldKnowledge` worker job (`chunkHeightmap.worker.ts` → `worldKnowledgeScan.ts`, `requestChunkWorldKnowledge` in `chunkWorkerPool.ts`, wrapper in `WorldKnowledgeResearch`). Params: the existing `WorldKnowledgeTerrainSnapshot` + epoch, plus `settlementIds: string[]` (the ≤ 12 nearest, chosen on main) and `abandonedChunks: {cx, cz}[]` (post-roll misses from `collectAbandonedChunksToProbe` minus `abandonedCemeteryCache` hits). Result: `settlementCemeteries: {settlementId, found: {id, x, z, cemeterySize} | null}[]` and `abandoned: {cx, cz, result: CachedAbandonedCemeteryResult}[]`. Plain data only.
+2. **Worker side.** Settlement cemetery = the body of `ChunkManager.resolveCemeteryForSettlement` with `chunkParamsForWorldKnowledgeScan(coord, terrain, roadCtx, {includeCorridors: true, includeCemetery: true})` in place of `paramsFor(coord, [])`, then `resolveCemeteryTopologyForSettlement` + `resolvePlacementForTopology` (check they are realm-pure; if they read ChunkManager state, pass it in the snapshot). Abandoned = `resolveAbandonedCemeteryAfterRoll(coord, seed, () => ({ params, terrain: createLocalTerrainSampler(coord, params) }))` with the same params builder. Bounded: one job per rumour request, cancellable through `WorldKnowledgeResearch` (dedupe by origin cell + band, invalidate on epoch).
+3. **Main side.** New catalog method `prewarmBand(x, z, minHours, maxHours): Promise<void>` (owner: `worldLocationCatalog.ts`): picks the settlement ids (needs the settlement def lookups — see 5), posts the job, and on reply writes `cemeteryCache` (via `cemeteryLocationFromResolved`) and `abandonedCemeteryCache.remember(...)`. Never writes a result whose epoch changed. `guardLocalKnowledge.launch` awaits `prewarmBand` before `landmarksInRange`; a worker failure falls back to the cooperative main-thread path (today's behaviour), never to "nothing found".
+4. **Parity guard (required).** Node test on seed 415424794 (and one more): for a sample of settlements and post-roll chunks, worker-side resolution equals `ChunkManager.resolveCemeteryForSettlement` / `probeAbandonedCemeteryAtChunk`; plus the existing sync/async catalog equivalence. Precedent: world-030 already resolves `cemetery` kinds in the worker from the same reconstruction.
+5. **Known remainder.** Main-thread settlement def lookups stay (0.65 s total, max ~0.14 s per cold def, already yielding per cell). Moving them too means sending the candidate cells to the worker and returning only ids — but `cemeteryCache` is keyed by the main-thread `SettlementDef` the sync path builds, so keep it out of Q189 unless the measurement after Q189 still shows > 100 ms frames.
+6. **Done when.** Same browser measurement as above: cold worst frame during the rumour wait ≲ 150 ms (def lookups) with no 1 s item; warm unchanged; parity + equivalence tests green; no worldgen cache version bump needed (no output change). Windows confirm → queue §4.

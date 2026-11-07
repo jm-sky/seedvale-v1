@@ -118,6 +118,15 @@ export type LocationScanDiagnostics = {
   cemeteryExpensiveProbes: number
   /** Abandoned cemeteries actually returned from those probes. */
   cemeteryAbandonedResolved: number
+  /** Slowest single `probeAbandonedCemeteryAtChunk` this session (queue Q172). */
+  cemeteryProbeMaxMs: number
+  /** Time in settlement-cemetery candidates (settlement def lookups) this session. */
+  settlementCemeteryMs: number
+  /** Part of `settlementCemeteryMs` spent in `lookupSettlement` (cold def builds). */
+  settlementLookupMs: number
+  /** Slowest single `lookupSettlement` / `resolveCemeteryForSettlement` call this session. */
+  settlementLookupMaxMs: number
+  settlementCemeteryResolveMaxMs: number
 }
 
 export function emptyLocationScanDiagnostics(): LocationScanDiagnostics {
@@ -139,6 +148,11 @@ export function emptyLocationScanDiagnostics(): LocationScanDiagnostics {
     cemeteryChunksRejectedByAbandonedRoll: 0,
     cemeteryExpensiveProbes: 0,
     cemeteryAbandonedResolved: 0,
+    cemeteryProbeMaxMs: 0,
+    settlementCemeteryMs: 0,
+    settlementLookupMs: 0,
+    settlementLookupMaxMs: 0,
+    settlementCemeteryResolveMaxMs: 0,
   }
 }
 
@@ -147,15 +161,12 @@ export function emptyLocationScanDiagnostics(): LocationScanDiagnostics {
 export type LandmarkQueryOptions = {
   onProgress?: (progress: number) => void
   yieldToPaint?: () => Promise<void>
-  /** Wall-clock budget per batch of expensive probes before yielding. */
+  /** Wall-clock budget per slice of expensive work (probes, settlement
+   *  cemeteries, coarse-scan rows) before yielding a frame. */
   probeBudgetMs?: number
   /** Yield after this many probes (overrides `probeBudgetMs`). Tests use `1`. */
   yieldEveryProbes?: number
 }
-
-/** Probe counts above this use cooperative yielding on the async path so Far
- *  Map can paint BusyOverlay progress; Near/Guard stay in one sync stretch. */
-export const COOPERATIVE_ABANDONED_PROBE_THRESHOLD = 24
 
 export type WorldLocationCatalog = {
   /** Resolves a stable `WorldLocation.id` back to its (deterministic)
@@ -271,6 +282,40 @@ function defaultYieldToPaint(): Promise<void> {
     if (typeof requestAnimationFrame === 'function') requestAnimationFrame(() => resolve())
     else setTimeout(resolve, 0)
   })
+}
+
+/** A catalog work unit that `yield`s after each expensive step (queue Q172).
+ *  One implementation serves both paths: the sync driver ignores the yields,
+ *  the async driver may hand the frame back at each one, so both produce the
+ *  same result in the same order. */
+type CatalogWork<T> = Generator<void, T, void>
+
+function runWorkSync<T>(work: CatalogWork<T>): T {
+  for (;;) {
+    const step = work.next()
+    if (step.done) return step.value
+  }
+}
+
+async function runWorkCooperative<T>(work: CatalogWork<T>, tick: () => Promise<void>): Promise<T> {
+  for (;;) {
+    const step = work.next()
+    if (step.done) return step.value
+    await tick()
+  }
+}
+
+/** Budgeted yield: hands the frame back only once `budgetMs` of work has run
+ *  since the last yield, so warm (cached) queries finish in one stretch. */
+function createCooperativeTick(options: LandmarkQueryOptions | undefined): () => Promise<void> {
+  const yieldToPaint = options?.yieldToPaint ?? defaultYieldToPaint
+  const budgetMs = options?.probeBudgetMs ?? 8
+  let sliceStart = performance.now()
+  return async () => {
+    if (performance.now() - sliceStart < budgetMs) return
+    await yieldToPaint()
+    sliceStart = performance.now()
+  }
 }
 
 function hashLocationId(seed: number, id: string): number {
@@ -604,19 +649,45 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     minHours: number,
     maxHours: number,
   ): { seen: Set<string>, out: WorldLocation[] } {
+    return runWorkSync(settlementCemeteryWork(x, z, minHours, maxHours))
+  }
+
+  /** Settlement cemeteries of the nearest settlements. Yields after every
+   *  settlement lookup and cemetery resolve — on a cold world each can build
+   *  a settlement def / chunk params for hundreds of ms (Q172 measurement). */
+  function* settlementCemeteryWork(
+    x: number,
+    z: number,
+    minHours: number,
+    maxHours: number,
+  ): CatalogWork<{ seen: Set<string>, out: WorldLocation[] }> {
     const center = worldToCell(x, z)
     const searchMarginHours = 5
     const radiusCells = Math.ceil(hoursToWorldUnits(maxHours + searchMarginHours) / SETTLEMENT_GRID_STEP) + 1
-    const settlements = cellsWithinRadius(center, radiusCells)
-      .map((cell) => lookupSettlement(cell))
-      .filter((def): def is SettlementDef => def != null)
+    const defs: SettlementDef[] = []
+    for (const cell of cellsWithinRadius(center, radiusCells)) {
+      const t = performance.now()
+      const def = lookupSettlement(cell)
+      const ms = performance.now() - t
+      diagnostics.settlementLookupMs += ms
+      diagnostics.settlementCemeteryMs += ms
+      diagnostics.settlementLookupMaxMs = Math.max(diagnostics.settlementLookupMaxMs, ms)
+      if (def) defs.push(def)
+      yield
+    }
+    const settlements = defs
       .sort((a, b) => distanceHours(x, z, a.x, a.z) - distanceHours(x, z, b.x, b.z))
       .slice(0, MAX_CEMETERY_SETTLEMENTS_SEARCHED)
 
     const seen = new Set<string>()
     const out: WorldLocation[] = []
     for (const def of settlements) {
+      const t = performance.now()
       const loc = cemeteryForSettlement(def)
+      const ms = performance.now() - t
+      diagnostics.settlementCemeteryMs += ms
+      diagnostics.settlementCemeteryResolveMaxMs = Math.max(diagnostics.settlementCemeteryResolveMaxMs, ms)
+      yield
       if (!loc || seen.has(loc.id)) continue
       const hours = distanceHours(x, z, loc.x, loc.z)
       if (hours > maxHours || hours <= minHours) continue
@@ -692,7 +763,9 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
       return
     }
     diagnostics.cemeteryExpensiveProbes++
+    const probeStart = performance.now()
     const abandoned = getChunkManager().probeAbandonedCemeteryAtChunk(coord)
+    diagnostics.cemeteryProbeMaxMs = Math.max(diagnostics.cemeteryProbeMaxMs, performance.now() - probeStart)
     const result: CachedAbandonedCemeteryResult = abandoned && isAbandonedCemeteryId(abandoned.id)
       ? { status: 'found', id: abandoned.id, x: abandoned.x, z: abandoned.z }
       : { status: 'none' }
@@ -731,8 +804,8 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     const yieldToPaint = options?.yieldToPaint ?? defaultYieldToPaint
     const yieldEvery = options?.yieldEveryProbes
     const budgetMs = options?.probeBudgetMs ?? 8
-    const cooperate = total > COOPERATIVE_ABANDONED_PROBE_THRESHOLD
-      || yieldEvery != null
+    // Always cooperative (Q172): one cold probe can take ~0.3 s, so even a
+    // short list must hand the frame back between budgeted batches.
     let i = 0
     while (i < total) {
       const batchStart = performance.now()
@@ -747,7 +820,7 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
         && (yieldEvery != null || performance.now() - batchStart < budgetMs)
       )
       onProgress?.(i / total)
-      if (cooperate && i < total) await yieldToPaint()
+      if (i < total) await yieldToPaint()
     }
     onProgress?.(1)
   }
@@ -948,6 +1021,11 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
    *  pitfalls) — a gameplay discovery aid, not a cartography-grade
    *  hydrology/orography system. */
   function scanLakesAndPeaks(x: number, z: number, minHours: number, maxHours: number): WorldLocation[] {
+    return runWorkSync(scanLakesAndPeaksWork(x, z, minHours, maxHours))
+  }
+
+  /** `scanLakesAndPeaks` body; yields after every classified annulus row. */
+  function* scanLakesAndPeaksWork(x: number, z: number, minHours: number, maxHours: number): CatalogWork<WorldLocation[]> {
     const params = getSampleParams()
     const haloHours = worldUnitsToHours(PEAK_SCAN_HALO_CELLS * LOCATION_SCAN_STEP)
     const outerHours = maxHours + haloHours
@@ -959,10 +1037,10 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     const minCz = Math.floor((z - outerWorld) / LOCATION_SCAN_STEP)
     const maxCz = Math.floor((z + outerWorld) / LOCATION_SCAN_STEP)
 
-    const classifyStart = performance.now()
     const waterSeeds = new Set<number>()
     const mountainCandidates: { gx: number, gz: number, h: number }[] = []
     for (let gz = minCz; gz <= maxCz; gz++) {
+      const rowStart = performance.now()
       for (let gx = minCx; gx <= maxCx; gx++) {
         const hours = cellCenterHours(x, z, gx, gz)
         if (hours > outerHours || hours < innerHours) continue
@@ -970,8 +1048,9 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
         if (cell.kind === CELL_WATER) waterSeeds.add(cellKeyOf(gx, gz))
         else if (cell.kind === CELL_MOUNTAIN) mountainCandidates.push({ gx, gz, h: cell.height })
       }
+      diagnostics.classificationMs += performance.now() - rowStart
+      yield
     }
-    diagnostics.classificationMs += performance.now() - classifyStart
 
     const lakeStart = performance.now()
     const lakes = floodFillLakes(x, z, minHours, maxHours, waterSeeds, params)
@@ -1021,8 +1100,9 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     maxHours: number,
     options?: LandmarkQueryOptions,
   ): Promise<WorldLocation[]> {
+    const tick = createCooperativeTick(options)
     const cemeteryStart = performance.now()
-    const { seen, out } = settlementCemeteryCandidates(x, z, minHours, maxHours)
+    const { seen, out } = await runWorkCooperative(settlementCemeteryWork(x, z, minHours, maxHours), tick)
     await abandonedCemeteryCache?.ready()
     const toProbe = collectAbandonedChunksToProbe(x, z, minHours, maxHours)
     const remaining: { cx: number, cz: number }[] = []
@@ -1033,10 +1113,11 @@ export function createWorldLocationCatalog(deps: WorldLocationCatalogDeps): Worl
     }
     await appendAbandonedProbesAsync(remaining, x, z, minHours, maxHours, seen, out, options)
     diagnostics.cemeteryMs += performance.now() - cemeteryStart
+    const lakesAndPeaks = await runWorkCooperative(scanLakesAndPeaksWork(x, z, minHours, maxHours), tick)
     return [
       ...caveCandidates(x, z, minHours, maxHours),
       ...out,
-      ...scanLakesAndPeaks(x, z, minHours, maxHours),
+      ...lakesAndPeaks,
       ...abandonedMineCandidate(x, z, minHours, maxHours),
       ...landformCandidates(x, z, minHours, maxHours),
     ]

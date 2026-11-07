@@ -3057,6 +3057,7 @@ Generated from TypeScript imports.
 
 **Imports**
 
+- `ai/rumourLines.ts`
 - `world/locations/guardLocalKnowledge.ts`
 - `world/locations/locationKnowledge.ts`
 - `world/locations/rumourLead.ts`
@@ -3067,6 +3068,7 @@ Generated from TypeScript imports.
 **Imports**
 
 - `ai/rumourLines.ts`
+- `quests/quests.ts`
 - `settlement/npcState.ts`
 - `world/locations/locationConfig.ts`
 - `world/locations/locationKnowledge.ts`
