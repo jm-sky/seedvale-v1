@@ -1,5 +1,5 @@
 import { openSeedvaleDb, SAVES_STORE } from './db'
-import { isSaveData, type SaveData } from './saveData'
+import { isSaveData, type SaveData, upperTierOrphanClaimsFromSave } from './saveData'
 import {
   ACTIVE_SAVE_ID_KEY,
   assertCanCreateSave,
@@ -54,7 +54,7 @@ let pendingNewSaveName: string | null = null
 
 type SaveDiagnosticKind =
   | 'missing' | 'invalid' | 'migration-failed' | 'unsupported-version' | 'incompatible-world'
-  | 'read-error' | 'write-error' | 'invalid-outgoing'
+  | 'read-error' | 'write-error' | 'invalid-outgoing' | 'upper-tier-orphan-claim'
 
 /** Dev-console-only breadcrumb for a persistence anomaly. Never pass the
  *  `SaveData`/envelope value itself — `context` should be an operation +
@@ -313,6 +313,7 @@ export async function writeSave(data: SaveData, id?: string, reason: SaveReason 
     logSaveDiagnostic('invalid-outgoing', `writeSave:${id ?? 'active'}:${reason}`)
     return { ok: false, error: 'invalid-outgoing-snapshot' }
   }
+  for (const orphan of upperTierOrphanClaimsFromSave(data)) logSaveDiagnostic('upper-tier-orphan-claim', `writeSave:${id ?? 'active'}`, orphan)
   try {
     await migrateLegacyIfNeeded()
     const targetId = id ?? getActiveSaveId()

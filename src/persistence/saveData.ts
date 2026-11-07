@@ -49,7 +49,7 @@ import { ARMOR_KIND_LIST, isArmorKind, isArmorQuality, isRangedWeaponKind, isTra
 import { ITEM_DEFS, type ItemKind } from '../items/items'
 import { type SavePrimaryWeaponChoice } from '../items/primaryWeapons'
 import { isTradeGrievanceList, type TradeGrievance } from '../items/tradeGrievance'
-import { diagnoseUpperTierOwnerRows, isUpperTierIdentity, isUpperTierIssuanceSnapshot } from '../items/upperTierIdentities'
+import { diagnoseUpperTierOwnerRows, findUpperTierOrphanClaims, isUpperTierIdentity, isUpperTierIssuanceSnapshot } from '../items/upperTierIdentities'
 import { QUEST_STATES, type QuestProgressEntry } from '../quests/quests'
 import {
   isArtisanOrderStatus,
@@ -1634,59 +1634,44 @@ function isSaveItemInstancesField(value: unknown): value is SaveItemInstance[] {
 export type UpperTierOwnerRow = { owner: string, instance: { id: string, kind: string } }
 
 /** Enumerates durable instance owners used by A8 load/write integrity and migration.
- *  It intentionally names owner domains instead of recursively treating arbitrary
- *  `{ id, kind }` records as physical specimens.
+ *  Structural recursive walk (review 042 R3): every `instances: [{ id, kind }]` array and
+ *  every dropped-item `instance` payload anywhere in the save is an owner, so a new
+ *  instance-bearing domain (animal packs, economies, future pickups) is covered without
+ *  a hand-maintained list. Held/equipment fields hold ID references only and have no
+ *  `instances` arrays. Runs at load/write/migration, never per frame.
  *
  * @domain persistence
  * @system save-schema
  */
 export function upperTierOwnerRowsFromSave(value: unknown): UpperTierOwnerRow[] {
   const rows: UpperTierOwnerRow[] = []
+  const pushRow = (owner: string, raw: unknown): void => {
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return
+    const row = raw as Record<string, unknown>
+    if (typeof row.id === 'string' && typeof row.kind === 'string') rows.push({ owner, instance: { id: row.id, kind: row.kind } })
+  }
+  const visit = (node: unknown, path: string): void => {
+    if (!node || typeof node !== 'object') return
+    if (Array.isArray(node)) {
+      node.forEach((child, i) => visit(child, `${path}[${i}]`))
+      return
+    }
+    for (const [key, child] of Object.entries(node as Record<string, unknown>)) {
+      const childPath = path ? `${path}.${key}` : key
+      if (key === 'instances' && Array.isArray(child)) child.forEach((row, i) => pushRow(`${childPath}[${i}]`, row))
+      else if (key === 'instance') pushRow(childPath, child)
+      else visit(child, childPath)
+    }
+  }
   const root = value as Record<string, unknown>
-  const addInstances = (owner: string, contents: unknown): void => {
-    if (!contents || typeof contents !== 'object' || Array.isArray(contents)) return
-    const instances = (contents as Record<string, unknown>).instances
-    if (!Array.isArray(instances)) return
-    for (let i = 0; i < instances.length; i++) {
-      const row = instances[i]
-      if (!row || typeof row !== 'object' || Array.isArray(row)) continue
-      const instance = row as Record<string, unknown>
-      if (typeof instance.id === 'string' && typeof instance.kind === 'string') {
-        rows.push({ owner: `${owner}.instances[${i}]`, instance: { id: instance.id, kind: instance.kind } })
-      }
-    }
-  }
-  addInstances('player', { instances: root.inventoryInstances })
-  for (const [id, raw] of Object.entries((root.npcStates ?? {}) as Record<string, unknown>)) {
-    if (!raw || typeof raw !== 'object') continue
-    const npc = raw as Record<string, unknown>
-    addInstances(`npc:${id}:personalInventory`, npc.personalInventory)
-    addInstances(`npc:${id}:transportCargo`, npc.transportCargo)
-    addInstances(`npc:${id}:merchantStock`, npc.merchantStock)
-    const death = npc.postDeath as Record<string, unknown> | null
-    if (death && typeof death === 'object') addInstances(`npc:${id}:corpse`, death.loot)
-  }
-  for (const [id, raw] of Object.entries((root.households ?? {}) as Record<string, unknown>)) {
-    if (raw && typeof raw === 'object') addInstances(`household:${id}`, (raw as Record<string, unknown>).items)
-  }
-  for (const key of ['placedContainers', 'worldGeneratedContainers'] as const) {
-    const containers = root[key]
-    if (Array.isArray(containers)) containers.forEach((container, i) => addInstances(`${key}:${i}`, container))
-  }
-  addInstances('carriedContainer', root.carriedContainer)
-  for (const [id, raw] of Object.entries((root.resourceSiteInventories ?? {}) as Record<string, unknown>)) {
-    addInstances(`resourceSite:${id}`, raw)
-  }
-  if (Array.isArray(root.droppedItems)) root.droppedItems.forEach((raw, i) => {
-    if (!raw || typeof raw !== 'object') return
-    const instance = (raw as Record<string, unknown>).instance
-    if (!instance || typeof instance !== 'object' || Array.isArray(instance)) return
-    const row = instance as Record<string, unknown>
-    if (typeof row.id === 'string' && typeof row.kind === 'string') {
-      rows.push({ owner: `drop:${i}`, instance: { id: row.id, kind: row.kind } })
-    }
-  })
+  visit({ ...root, inventoryInstances: undefined, inventory: undefined }, '')
+  if (Array.isArray(root.inventoryInstances)) root.inventoryInstances.forEach((row, i) => pushRow(`player.instances[${i}]`, row))
   return rows
+}
+
+/** Live upper-tier claims whose specimen is in no persisted owner (accepted; diagnostic only). */
+export function upperTierOrphanClaimsFromSave(save: SaveData): string[] {
+  return findUpperTierOrphanClaims(save.upperTierIssuanceLedger, upperTierOwnerRowsFromSave(save))
 }
 
 function isUpperTierIssuanceLedgerField(value: unknown): value is Record<string, { instanceId: string, issuanceKey: string, status: 'live' | 'destroyed' }> {

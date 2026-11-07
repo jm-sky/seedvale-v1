@@ -309,6 +309,7 @@ describe('writeSave/createSave — outgoing snapshot integrity (plan persistence
     if (!created.ok) return
     const outgoing: SaveData = {
       ...makeSaveData({ elapsedDays: 99 }),
+      inventoryInstances: [{ id: 'other:specimen', kind: 'yewmaster_longbow' }] as SaveData['inventoryInstances'],
       upperTierIssuanceLedger: {
         yewmaster_longbow: { instanceId: 'missing:specimen', issuanceKey: 'fixture:reward', status: 'live' },
       },
@@ -320,6 +321,25 @@ describe('writeSave/createSave — outgoing snapshot integrity (plan persistence
       warnSpy.mockRestore()
     }
     expect(await readSave(created.id)).toEqual(previous)
+  })
+
+  it('accepts an orphan live claim (no owner) and round-trips it without reissue (063 R2)', async () => {
+    const created = await createSave('Orphan', makeSaveData({ elapsedDays: 3 }))
+    expect(created.ok).toBe(true)
+    if (!created.ok) return
+    const outgoing: SaveData = {
+      ...makeSaveData({ elapsedDays: 5 }),
+      upperTierIssuanceLedger: {
+        yewmaster_longbow: { instanceId: 'gone:specimen', issuanceKey: 'fixture:reward', status: 'live' },
+      },
+    }
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      expect(await writeSave(outgoing, created.id)).toEqual({ ok: true })
+    } finally {
+      warnSpy.mockRestore()
+    }
+    expect((await readSave(created.id))?.upperTierIssuanceLedger).toEqual(outgoing.upperTierIssuanceLedger)
   })
 
   it('refuses to overwrite a valid slot with a runtime-invalid outgoing snapshot, leaving it untouched', async () => {

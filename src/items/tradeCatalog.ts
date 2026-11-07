@@ -10,6 +10,7 @@ import {
 } from './itemInstances'
 import { ITEM_DEFS, type ItemKind } from './items'
 import { trapConditionRatio } from './trapItemInstances'
+import { isUpperTierIdentity } from './upperTierIdentities'
 
 /**
  * Central merchant price list (plan 090, unit = `coin` since issue 035) —
@@ -524,7 +525,7 @@ export function resolveInstanceSellPrice(
   instance: ItemInstance,
   context: SellPriceContext = NEUTRAL_SELL_PRICE_CONTEXT,
 ): number | null {
-  if (!canSell(instance.kind)) return null
+  if (!canSell(instance.kind) || isUpperTierIdentity(instance.kind)) return null
   if (isArmorItemInstance(instance)) {
     const raw = instanceNominalValue(instance) * fullConditionSellFactor(context)
     return roundSellPrice(capInstanceBuyback(instance, raw))

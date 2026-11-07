@@ -85,7 +85,9 @@ export function diagnoseUpperTierOwnerRows(
   for (const [kind, claim] of Object.entries(ledger)) {
     const owners = byKind.get(kind) ?? []
     if (claim.status === 'live') {
-      if (owners.length !== 1 || owners[0] !== claim.instanceId) return `live claim ${kind}:${claim.instanceId} has ${owners.length} matching owners`
+      // Zero owners is an orphan claim (missing owner != destruction): accepted, see
+      // `findUpperTierOrphanClaims`. Any owner that is not exactly the claimed ID is duplication.
+      if (owners.length > 1 || (owners.length === 1 && owners[0] !== claim.instanceId)) return `live claim ${kind}:${claim.instanceId} has ${owners.length} matching owners`
     } else if (owners.length !== 0) return `destroyed claim ${kind}:${claim.instanceId} still has an owner`
   }
   for (const [kind, owners] of byKind) {
@@ -94,4 +96,18 @@ export function diagnoseUpperTierOwnerRows(
     if (claim.status !== 'live' || owners.length !== 1 || owners[0] !== claim.instanceId) return `owner ${kind}:${owners[0]} contradicts ledger claim ${claim.instanceId}`
   }
   return null
+}
+
+/** Kinds with a `live` claim but no persisted owner. Accepted by validation (the
+ *  claim stays `live`, never reissued, never auto-tombstoned); callers log a diagnostic.
+ *
+ * @domain items-player
+ * @system equipment
+ */
+export function findUpperTierOrphanClaims(
+  ledger: UpperTierIssuanceSnapshot,
+  ownerRows: readonly { owner: string, instance: { id: string, kind: string } }[],
+): string[] {
+  const owned = new Set(ownerRows.filter(({ instance }) => isUpperTierIdentity(instance.kind)).map(({ instance }) => instance.kind))
+  return Object.entries(ledger).filter(([kind, claim]) => claim.status === 'live' && !owned.has(kind)).map(([kind]) => kind)
 }

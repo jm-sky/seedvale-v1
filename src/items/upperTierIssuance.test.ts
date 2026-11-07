@@ -3,7 +3,8 @@ import type { ItemKind } from './items'
 import { upperTierOwnerRowsFromSave } from '../persistence/saveData'
 import { Inventory } from './Inventory'
 import { ITEM_DEFS } from './items'
-import { createAcquiredInstance } from './trade'
+import { createAcquiredInstance, sellInstancesForCoins } from './trade'
+import { resolveInstanceSellPrice } from './tradeCatalog'
 import { UPPER_TIER_IDENTITY_LIST } from './upperTierIdentities'
 import { claimUpperTierInstance, markUpperTierDestroyed, type UpperTierIssuanceLedger } from './upperTierIssuance'
 
@@ -145,5 +146,41 @@ describe('upper-tier issuance ledger', () => {
     const rows = upperTierOwnerRowsFromSave(domain)
     expect(rows).toHaveLength(1)
     expect(rows[0]?.instance).toEqual({ id: 'a', kind })
+  })
+})
+
+describe('upper-tier owner coverage (review 042 R3)', () => {
+  const specimen = { id: 'a', kind }
+  const pack = { equipment: 'saddlebags', contents: { counts: {}, instances: [specimen] } }
+  it.each([
+    ['settlement economy food', { settlementEconomies: { s: { stock: {}, food: { counts: {}, instances: [specimen] } } } }],
+    ['livestock animal pack', { livestock: [{ id: 'cow', pack }] }],
+    ['wild fauna pack', { wildFauna: { animals: [{ id: 'horse', pack }] } }],
+    ['persistent habitat occupant pack', { persistentHabitatOccupants: [{ id: 'o', pack }] }],
+    ['rat record pack', { rats: [{ id: 'r', pack }] }],
+    ['arbitrary future nested domain', { someFutureDomain: { nested: [{ holder: { instances: [specimen] } }] } }],
+  ])('finds a restricted owner in %s', (_label, domain) => {
+    const rows = upperTierOwnerRowsFromSave(domain)
+    expect(rows).toHaveLength(1)
+    expect(rows[0]?.instance).toEqual(specimen)
+  })
+
+  it('does not treat count-only player inventory or held references as owners', () => {
+    expect(upperTierOwnerRowsFromSave({ inventory: { [kind]: 1 }, heldTool: kind, playerEquipment: { weapon: 'a' } })).toEqual([])
+  })
+})
+
+describe('upper-tier sale refusal (review 042 R1)', () => {
+  it('never sells a claimed specimen into the void', () => {
+    registerTestBow()
+    const ledger: UpperTierIssuanceLedger = {}
+    const inv = new Inventory()
+    const source = { eligible: true, coins: 20 }
+    const instance = claimUpperTierInstance({ ledger, kind, issuanceKey: 'fixture', destination: inv, ...sourceTxn(source) })
+    expect(instance).not.toBeNull()
+    expect(resolveInstanceSellPrice(instance!)).toBeNull()
+    expect(sellInstancesForCoins(inv, [instance!.id])).toEqual({ result: 'not_sold' })
+    expect(inv.getInstance(instance!.id)).not.toBeNull()
+    expect(ledger[kind]?.status).toBe('live')
   })
 })

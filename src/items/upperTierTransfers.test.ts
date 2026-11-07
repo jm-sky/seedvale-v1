@@ -78,7 +78,7 @@ describe('063 exact-instance ownership integration', () => {
     expect(player.getInstance(instance.id)).toEqual(instance)
     expect(ledger[reserved]?.instanceId).toBe(instance.id)
     expect(diagnoseUpperTierOwnerRows(ledger, ownerRows({ player }))).toBeNull()
-    expect(diagnoseUpperTierOwnerRows(ledger, [])).toMatch(/live claim/)
+    expect(diagnoseUpperTierOwnerRows(ledger, [])).toBeNull() // orphan live claim: accepted (review 042 R2)
   })
 
   it('reloads an issued drop and picks up that exact specimen, retaining its source on capacity failure', () => {
