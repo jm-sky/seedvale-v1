@@ -51,3 +51,13 @@ Format: `kind | source owner | eligibility | quantity | price | restock/init | N
 - Adding 5 premium candidates dilutes the existing premium weighting and changes premium picks for **new** worlds only.
 - Test: `merchantStage4Sources.test.ts` O3 block (≤1 per settlement, all five reachable, scarce, instances seed once).
 - `yewmaster_longbow` and the U-tier blades remain slice U.
+
+## Slice record — O4 (2026-11-07, Sonnet; technically verified, not browser-verified)
+
+| Kind(s) | Source owner | Eligibility | Quantity | Price | Init | NPC fit |
+| --- | --- | --- | --- | --- | --- | --- |
+| `wooden_shield`, `iron_rimmed_shield`, `buckler` | Trader (`STAGE4_SHIELD_KINDS`) | `weapons-tools` (pref 2); `general` acceptable for `wooden_shield` only; metal shields in `METAL_KINDS` | ≤ 2 per Trader (import = 1) | 25 / 55 / 35 (`MERCHANT_PRICES`) | existing latch, count-backed | none — inventory-only (A7), no NPC use |
+
+- `iron_rimmed_shield` keyed quest-reward source: **not added**. No existing quest owner was investigated/hosted for it in this slice, so it stays without a keyed source; it is still buyable from `weapons-tools` Traders. Revisit only if the author wants a quest hook.
+- Shields have category `other`, so `merchantTrade.test.ts` weapons-tools coverage helper now counts `STAGE4_SHIELD_KINDS` as weapon-shop goods.
+- Tests: O4 block in `merchantStage4Sources.test.ts`.

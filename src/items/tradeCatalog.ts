@@ -31,6 +31,9 @@ export const MERCHANT_PRICES: Readonly<Partial<Record<ItemKind, number>>> = {
   club: 12,
   war_hammer: 45,
   staff: 15,
+  wooden_shield: 25,
+  iron_rimmed_shield: 55,
+  buckler: 35,
   ashgrove_dagger: 160,
   millbrook_shortsword: 220,
   fenmoor_sword: 300,
@@ -181,6 +184,10 @@ export const MERCHANT_STOCK: readonly ItemKind[] = [
   'war_hammer',
   'club',
   'staff',
+  // Plan items-player-064 O4 — inventory-only shields (affinity-gated in merchantTrade).
+  'wooden_shield',
+  'iron_rimmed_shield',
+  'buckler',
   'leather_armor',
   'chainmail',
   'leather_pauldron',
@@ -280,9 +287,6 @@ const RESOURCE_TRADE_VALUE: Partial<Record<ItemKind, number>> = {
   // Plan items-player-047 — quest/exceptional reward, not Kupiec stock; keeps
   // inventory-value/barter semantics without making it purchasable.
   masterwork_hunting_bow: 220,
-  wooden_shield: 25,
-  iron_rimmed_shield: 55,
-  buckler: 35,
   yewmaster_longbow: 1300,
   signet_ring: 40,
   bandit_ledger: 15,

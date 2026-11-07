@@ -19,6 +19,7 @@ import {
   seedMerchantStockIfNeeded,
   settlementHasPremiumOffer,
   specializationAffinity,
+  STAGE4_SHIELD_KINDS,
 } from './merchantTrade'
 
 function ctx(overrides: Partial<MerchantAssortmentContext> = {}): MerchantAssortmentContext {
@@ -556,6 +557,7 @@ describe('general merchant coverage (plan settlements-npcs-042)', () => {
       return assortmentKinds(stock).filter((kind) => (
         kind === 'arrow'
         || kind === 'broadhead_arrow'
+        || STAGE4_SHIELD_KINDS.includes(kind as ItemKind) // category 'other' but weapons-tools shop goods (064 O4)
         || hasItemKindCategory(kind as ItemKind, 'weapon')
         || hasItemKindCategory(kind as ItemKind, 'tool')
         || hasItemKindCategory(kind as ItemKind, 'armor')

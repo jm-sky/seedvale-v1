@@ -11,6 +11,7 @@ import {
   specializationAffinity,
   STAGE4_AMMO_KINDS,
   STAGE4_ORDINARY_WEAPON_KINDS,
+  STAGE4_SHIELD_KINDS,
 } from './merchantTrade'
 
 const SPECS = ['general', 'weapons-tools', 'food-materials', 'imports-luxury', 'horses'] as const
@@ -122,5 +123,49 @@ describe('items-player-064 O3 masterwork Trader sources', () => {
     expect(merchantStockQuantity(stock, 'ashgrove_dagger')).toBe(1)
     expect(merchantStockQuantity(stock, 'marlow_longbow')).toBe(1)
     expect(isInstanceBackedKind('ashgrove_dagger')).toBe(true)
+  })
+})
+
+describe('items-player-064 O4 shield goods', () => {
+  it('are priced stock candidates gated to weapons-tools (wooden also general)', () => {
+    for (const kind of STAGE4_SHIELD_KINDS) {
+      expect(MERCHANT_STOCK).toContain(kind)
+      expect(MERCHANT_PRICES[kind]).toBeGreaterThan(0)
+      for (const spec of SPECS) {
+        const expected = spec === 'weapons-tools' ? 2 : spec === 'general' && kind === 'wooden_shield' ? 1 : 0
+        expect(specializationAffinity(kind, spec)).toBe(expected)
+      }
+    }
+  })
+
+  it('are stocked finitely, deterministically, never by other specializations', () => {
+    const seen = new Set<string>()
+    for (const terrain of ['ocean', 'forest', 'swamp', 'mountain', 'desert'] as const) {
+      const profiles = resolveMerchantProfiles(['m0', 'm1', 'm2', 'm3'], terrain)
+      for (const size of ['SM', 'MD', 'LG', 'XL'] as const) {
+        for (let offset = 0; offset < 30; offset++) {
+          const stock = generateMerchantAssortment({ terrain, size, seed: REFERENCE_SEED + offset }, profiles)
+          for (const profile of profiles) {
+            for (const kind of STAGE4_SHIELD_KINDS) {
+              const qty = stock.get(profile.npcId)![kind] ?? 0
+              if (qty === 0) continue
+              seen.add(kind)
+              expect(qty).toBeLessThanOrEqual(2)
+              expect(specializationAffinity(kind, profile.specialization)).toBeGreaterThan(0)
+            }
+          }
+        }
+      }
+    }
+    for (const kind of STAGE4_SHIELD_KINDS) expect(seen.has(kind)).toBe(true)
+  })
+
+  it('seeds count-backed stock once', () => {
+    const stock = new Inventory(undefined, Infinity, undefined, undefined, Infinity)
+    const latch = { merchantStockInitialized: false }
+    seedMerchantStockIfNeeded(stock, latch, { wooden_shield: 2 })
+    stock.remove('wooden_shield', 2)
+    seedMerchantStockIfNeeded(stock, latch, { wooden_shield: 2 })
+    expect(merchantStockQuantity(stock, 'wooden_shield')).toBe(0)
   })
 })

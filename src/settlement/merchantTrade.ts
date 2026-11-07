@@ -155,12 +155,22 @@ export const STAGE4_ORDINARY_WEAPON_KINDS: readonly ItemKind[] = [
 export const STAGE4_AMMO_KINDS: readonly ItemKind[] = ['sling_stone', 'bolt_heavy', 'bolt_blunt']
 
 const STAGE4_ORDINARY_WEAPON_SET = new Set<ItemKind>(STAGE4_ORDINARY_WEAPON_KINDS)
+/**
+ * Plan items-player-064 O4: inventory-only shields as ordinary trade goods.
+ * `weapons-tools` Traders only; `wooden_shield` is also acceptable at `general`.
+ *
+ * @domain items-player
+ */
+export const STAGE4_SHIELD_KINDS: readonly ItemKind[] = ['wooden_shield', 'iron_rimmed_shield', 'buckler']
+
 const STAGE4_AMMO_SET = new Set<ItemKind>(STAGE4_AMMO_KINDS)
+const STAGE4_SHIELD_SET = new Set<ItemKind>(STAGE4_SHIELD_KINDS)
 
 const METAL_KINDS = new Set<ItemKind>([
   'ashgrove_dagger',
   'axe',
   'battle_axe',
+  'buckler',
   'chainmail',
   'dagger',
   'damascus_knife',
@@ -168,6 +178,7 @@ const METAL_KINDS = new Set<ItemKind>([
   'fenmoor_sword',
   'halberd',
   'hatchet',
+  'iron_rimmed_shield',
   'iron_rod',
   'knife',
   'long_sword',
@@ -354,9 +365,9 @@ export function specializationAffinity(kind: ItemKind, spec: MerchantSpecializat
   const luxury = IMPORT_FLAVOR_KINDS.has(kind) || isPremiumMerchantGood(kind)
 
   // Plan items-player-064: Stage 4 goods are never offered by every specialization.
-  if (STAGE4_ORDINARY_WEAPON_SET.has(kind) || STAGE4_AMMO_SET.has(kind)) {
+  if (STAGE4_ORDINARY_WEAPON_SET.has(kind) || STAGE4_AMMO_SET.has(kind) || STAGE4_SHIELD_SET.has(kind)) {
     if (spec === 'weapons-tools') return 2
-    if (spec === 'general' && kind === 'sling_stone') return 1
+    if (spec === 'general' && (kind === 'sling_stone' || kind === 'wooden_shield')) return 1
     return 0
   }
 
@@ -432,7 +443,7 @@ function quantityFor(
   }
   const base = size === 'SM' ? 1 : size === 'MD' ? 2 : size === 'LG' ? 3 : 4
   // Stage 4 ordinary weapons stay scarce: at most 2 specimens per Trader.
-  if (STAGE4_ORDINARY_WEAPON_SET.has(kind)) return region === 'import' ? 1 : Math.min(2, Math.max(1, base - 1))
+  if (STAGE4_ORDINARY_WEAPON_SET.has(kind) || STAGE4_SHIELD_SET.has(kind)) return region === 'import' ? 1 : Math.min(2, Math.max(1, base - 1))
   if (region === 'import') return 1
   if (region === 'local') return base
   return Math.max(1, base - 1)
