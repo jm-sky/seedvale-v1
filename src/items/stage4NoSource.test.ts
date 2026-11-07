@@ -4,7 +4,7 @@ import { ITEM_CATALOG } from './itemCatalog'
 import { MERCHANT_STOCK } from './tradeCatalog'
 
 // Extend with each 062 batch; 064 removes entries only when enabling their sources.
-const unsourcedKinds = ['ashgrove_dagger', 'millbrook_shortsword', 'fenmoor_sword', 'stonebridge_longsword', 'pinewatch_longsword', 'kestrel_dagger', 'harrow_shortsword', 'ironvale_sword', 'greywatch_longsword', 'marlow_longbow', 'yewmaster_longbow', 'wooden_shield', 'iron_rimmed_shield', 'buckler'] as const
+const unsourcedKinds = ['pinewatch_longsword', 'kestrel_dagger', 'harrow_shortsword', 'ironvale_sword', 'greywatch_longsword', 'yewmaster_longbow', 'wooden_shield', 'iron_rimmed_shield', 'buckler'] as const
 
 describe('062 registered goods remain unavailable from world sources before 064', () => {
   it('excludes each kind from catalog spawn and every merchant candidate pool', () => {

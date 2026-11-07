@@ -40,3 +40,14 @@ Format: `kind | source owner | eligibility | quantity | price | restock/init | N
 - Adding kinds to `MERCHANT_STOCK` changes the weapons-tools shuffle stream, so **new** worlds' Trader stock differs from before; latched/existing stock is untouched. No worldgen epoch or save-version change.
 - Tests: `merchantStage4Sources.test.ts`, `householdProfessionStock.test.ts` (064 block), `stage4NoSource.test.ts` shrunk to the still-unsourced kinds.
 - Not done: O3 (masterwork), O4 (shields), N1, U; manual browse/buy/save-reload on seed `415424794` pending (queue §2).
+
+## Slice record — O3 (2026-11-07, Sonnet; technically verified, not browser-verified)
+
+| Kind(s) | Source owner | Eligibility | Quantity | Price | Init | NPC fit |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ashgrove_dagger`, `millbrook_shortsword`, `fenmoor_sword`, `stonebridge_longsword`, `marlow_longbow` | Trader premium roll (`PREMIUM_MERCHANT_KINDS`) — the existing single settlement-level premium offer, owner by best specialization affinity | settlement premium chance by size; regional weight via `METAL_KINDS` (blades) / `HUNTING_KINDS` (bow) | exactly 1 per premium offer; different settlements can each hold a different specimen | 160 / 220 / 300 / 320 / 280 | existing latch | N1 pending |
+
+- No regular-assortment path (premium kinds are skipped there); no household/artisan source; no rarity inferred from ID prefix.
+- Adding 5 premium candidates dilutes the existing premium weighting and changes premium picks for **new** worlds only.
+- Test: `merchantStage4Sources.test.ts` O3 block (≤1 per settlement, all five reachable, scarce, instances seed once).
+- `yewmaster_longbow` and the U-tier blades remain slice U.

@@ -4,6 +4,7 @@ import { isInstanceBackedKind } from '../items/itemInstances'
 import { MERCHANT_PRICES, MERCHANT_STOCK } from '../items/tradeCatalog'
 import {
   generateMerchantAssortment,
+  isPremiumMerchantGood,
   merchantStockQuantity,
   resolveMerchantProfiles,
   seedMerchantStockIfNeeded,
@@ -77,5 +78,49 @@ describe('items-player-064 O1/O2 Trader sources', () => {
     }
     seedMerchantStockIfNeeded(stock, latch, { halberd: 2 })
     expect(merchantStockQuantity(stock, 'halberd')).toBe(0)
+  })
+})
+
+describe('items-player-064 O3 masterwork Trader sources', () => {
+  const O3 = ['ashgrove_dagger', 'millbrook_shortsword', 'fenmoor_sword', 'stonebridge_longsword', 'marlow_longbow'] as const
+
+  it('are priced premium stock candidates', () => {
+    for (const kind of O3) {
+      expect(MERCHANT_STOCK).toContain(kind)
+      expect(isPremiumMerchantGood(kind)).toBe(true)
+      expect(MERCHANT_PRICES[kind]).toBeGreaterThan(0)
+    }
+  })
+
+  it('appear only as the single premium unit, scarcely, and reach multiple settlements', () => {
+    const seen = new Map<string, number>()
+    let settlements = 0
+    for (const terrain of ['forest', 'mountain', 'swamp'] as const) {
+      const profiles = resolveMerchantProfiles(['m0', 'm1', 'm2', 'm3'], terrain)
+      for (let offset = 0; offset < 200; offset++) {
+        settlements++
+        const stock = generateMerchantAssortment({ terrain, size: 'XL', seed: REFERENCE_SEED + offset }, profiles)
+        let o3InSettlement = 0
+        for (const goods of stock.values()) {
+          for (const kind of O3) {
+            const qty = goods[kind] ?? 0
+            expect(qty).toBeLessThanOrEqual(1)
+            if (qty > 0) { o3InSettlement++; seen.set(kind, (seen.get(kind) ?? 0) + 1) }
+          }
+        }
+        expect(o3InSettlement).toBeLessThanOrEqual(1)
+      }
+    }
+    for (const kind of O3) expect(seen.get(kind) ?? 0).toBeGreaterThan(0)
+    expect([...seen.values()].reduce((a, b) => a + b, 0)).toBeLessThan(settlements)
+  })
+
+  it('seeds as durable instances (maintenance weapons / bow) once', () => {
+    const stock = new Inventory(undefined, Infinity, undefined, undefined, Infinity)
+    const latch = { merchantStockInitialized: false }
+    seedMerchantStockIfNeeded(stock, latch, { ashgrove_dagger: 1, marlow_longbow: 1 })
+    expect(merchantStockQuantity(stock, 'ashgrove_dagger')).toBe(1)
+    expect(merchantStockQuantity(stock, 'marlow_longbow')).toBe(1)
+    expect(isInstanceBackedKind('ashgrove_dagger')).toBe(true)
   })
 })

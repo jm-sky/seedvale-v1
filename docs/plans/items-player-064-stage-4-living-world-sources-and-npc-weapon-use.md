@@ -1,7 +1,7 @@
 # Plan: Stage 4 living-world sources and NPC weapon use
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🚧 (O1/O2 implemented and technically verified 2026-11-07; O3, O4, N1, U open)
+**Status:** `in progress` 🚧 (O1/O2/O3 implemented and technically verified 2026-11-07; O4, N1, U open)
 **Type:** feature
 **Priority:** medium · **Effort:** L
 **Depends on:** items-player-062, items-player-063
