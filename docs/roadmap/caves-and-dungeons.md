@@ -55,20 +55,20 @@ The V2 cave implementation exists in `jm-sky/seedvales-v2`, notably:
 
 V3 retained both render looks: `src/game/world/caves-v1/*`, `src/game/world/caveShape.ts`, `src/game/render/caveChunks.ts`. V3's design decision **D-M1-12** favors V1 appearance for natural caves and retaining V2 geometry as a dungeon option. This is a donor/reference precedent; V3's default test-scene look does **not** establish automatic per-archetype dungeon assignment.
 
-A V2 donor snapshot in V1 documentation was discussed separately. **Do not assume it has already been copied**; verify current repository contents before referencing a local snapshot.
+**V2 donor snapshot already copied into V1 (reference only):** [donor README](../research/v1-revival/donors/seedvales-v2/caves/README.md) · [snapshot directory](../research/v1-revival/donors/seedvales-v2/caves/) · [source snapshot commit](https://github.com/jm-sky/seedvale-v1/commit/2a91795d927d722d7182aebf73350ba89c4d9eca). It contains 12 byte-identical files from V2 commit `9ba54815493b886eb1bdce032f5209aeb2856c37`, including geometry, field, generator, renderer, materials, rocks and dependencies; **not connected to V1 runtime**.
 
 ### `dungeon:small` — cemetery on an isolated hill
 
 - Place a cemetery and entrance to a small dungeon at the existing isolated rocky-hill landform (`crag`).
 - Inside: many dangerous rats, treasures, potentially a quest item.
 - Cemetery layout, entrance integration, encounter balancing, quest ownership and generation frequency are not yet specified.
-- Relevant existing V1 terrain: `src/terrain/landformDescriptors.ts` (`crag`) and `src/world/locations/landformLandmarks.ts`. Presence of a landform is **not** evidence that cemetery+dungeon placement exists.
+- Relevant existing V1 landmark kind: **`crag`** (isolated rocky hill). Source: [`landformDescriptors.ts`](../../src/terrain/landformDescriptors.ts) (landform kind, generation and footprint) and [`landformLandmarks.ts`](../../src/world/locations/landformLandmarks.ts) (world-location landmark catalog). Presence of a landform is **not** evidence that cemetery+dungeon placement exists.
 
 ### `dungeon:large` — ruined castle underground
 
 - Larger built dungeon associated with castle ruins; exploration, treasure and quests are primary content.
 - **Exact location remains undecided**. Candidate: a mountain pass or suitable basin/space between mountains.
-- V1 has deterministic range spines and traversable passes in `src/terrain/rangeSpines.ts` (60 m intended pass corridor), but a pass **does not guarantee** a buildable castle-ruin footprint or an enclosed basin.
+- V1 has deterministic **`RangePass`** descriptors from [`rangeSpines.ts`](../../src/terrain/rangeSpines.ts) (60 m intended pass corridor), with related terrain design in [world-terrain-060](../plans/world-terrain-060-macro-relief-ranges-passes-and-landforms.md). A pass **does not guarantee** a buildable castle-ruin footprint or an enclosed basin.
 - Investigate actual terrain footprint, access, roads, settlement/structure separation and entrance placement before choosing the location.
 
 ## Quest and content principles
