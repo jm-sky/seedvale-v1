@@ -52,6 +52,8 @@ function fakeBridgeSpec(overrides: Partial<RoadBridgeSpec> = {}): RoadBridgeSpec
     span: 40,
     width: 6,
     deckY: 5,
+    deckY0: 5,
+    deckY1: 5,
     deckThickness: 0.3,
     ...overrides,
   }
@@ -648,14 +650,14 @@ describe('sampleResidentSurfaceGround (plan world-terrain-044)', () => {
 
   it('returns the declared bridge deck Y inside its footprint instead of terrain-under-bridge', () => {
     const tile = fakeTile(7, 6)
-    const spec = fakeBridgeSpec({ deckY: 11 })
+    const spec = fakeBridgeSpec({ deckY: 11, deckY0: 11, deckY1: 11 })
     const ready: ResidentChunkSnapshot = { ready: true, tile, bridgeSpecs: [spec] }
     expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 0, 0)).toBe(11)
   })
 
   it('falls through to the runtime tile outside the bridge footprint on the same ready chunk', () => {
     const tile = fakeTile(7, 6)
-    const spec = fakeBridgeSpec({ deckY: 11, span: 4, width: 4 })
+    const spec = fakeBridgeSpec({ deckY: 11, deckY0: 11, deckY1: 11, span: 4, width: 4 })
     const ready: ResidentChunkSnapshot = { ready: true, tile, bridgeSpecs: [spec] }
     // Far outside the small deck footprint declared above, on the same chunk.
     expect(sampleResidentSurfaceGround(ready, COORD, CHUNK_SIZE, RESOLUTION, 24, 24)).toBeCloseTo(6, 5)

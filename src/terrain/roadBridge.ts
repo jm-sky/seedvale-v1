@@ -37,9 +37,14 @@ export type RoadBridgeSpec = {
   span: number
   /** Full deck width across the road. */
   width: number
-  /** Deck walking-surface elevation — the one Y every consumer (presentation,
-   *  movement ground, terrain-mask ownership) agrees on. */
+  /** Deck walking-surface elevation at the deck centre (mean of both ends) —
+   *  kept for readers that only need one representative Y. */
   deckY: number
+  /** Q193: walking-surface elevation at the `-dir` deck end (`along = -span/2`). The deck is a
+   *  plane sloped linearly between `deckY0` and `deckY1`, so each end meets its own approach road. */
+  deckY0: number
+  /** Q193: walking-surface elevation at the `+dir` deck end (`along = +span/2`). */
+  deckY1: number
   /** Visual deck slab thickness (world units), presentation-only. */
   deckThickness: number
 }
@@ -65,13 +70,20 @@ export function isOnBridgeDeck(spec: RoadBridgeSpec, x: number, z: number): bool
   return Math.abs(along) <= spec.span * 0.5 && Math.abs(across) <= spec.width * 0.5
 }
 
+/** Deck walking-surface Y at `along` metres from the deck centre (clamped to the deck): linear
+ *  between the two end heights. The one height function presentation and movement share. */
+export function deckYAtAlong(spec: RoadBridgeSpec, along: number): number {
+  const t = Math.max(0, Math.min(1, along / spec.span + 0.5))
+  return spec.deckY0 + (spec.deckY1 - spec.deckY0) * t
+}
+
 /** First matching deck Y among `specs` at `(x, z)`, or `null` outside every
  *  footprint — the shared movement-ground query (plan world-terrain-033 §7).
  *  Specs never meaningfully overlap (bridges don't stack), so first-match is
  *  as good as strongest-match and needs no extra bookkeeping. */
 export function bridgeDeckYAt(specs: readonly RoadBridgeSpec[], x: number, z: number): number | null {
   for (const spec of specs) {
-    if (isOnBridgeDeck(spec, x, z)) return spec.deckY
+    if (isOnBridgeDeck(spec, x, z)) return deckYAtAlong(spec, deckLocalCoords(spec, x, z).along)
   }
   return null
 }

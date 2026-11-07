@@ -14,6 +14,8 @@ import type { VillagePlot } from '../../src/settlement/villagePlan'
 // - bridges (Q97): declared bridge decks (`bridgeSpecOf`); bridgeOff = decks whose axis drifts > 1 m from the
 //   road centreline anywhere along the deck; bridgeOffMax = worst lateral offset (m); bridgeTurnMax = worst angle
 //   (°) between the deck axis and the road heading at a deck end.
+//   Q193: bridgeStepMax = worst |approach road profile - deck end height| over both deck ends (m);
+//   bridgeGradeMax = steepest deck slope (%, end-to-end rise over span). `--bridges` prints the worst deck.
 // Village paths (`def.plan.paths`):
 // - pathPlot: paths crossing a non-plaza plot disc that is not the path's own endpoint (per-class breakdown incl. plaza);
 // - pathYard: path segments crossing a house yard rectangle (Q35 fences).
@@ -205,6 +207,10 @@ function measure(seed: number): Row {
   let bridgeOff = 0
   let bridgeOffMax = 0
   let bridgeTurnMax = 0
+  let bridgeStepMax = 0
+  let bridgeGradeMax = 0
+  let worstStep = { step: 0, id: '' }
+  let worstGrade = { grade: 0, id: '', x: 0, z: 0 }
   const polyDist = (p: P, pts: readonly P[]) => {
     let best = Infinity
     for (let i = 0; i < pts.length - 1; i++) best = Math.min(best, segPointDist(p, pts[i]!, pts[i + 1]!))
@@ -239,6 +245,31 @@ function measure(seed: number): Row {
         const c = Math.abs(h.x * spec.dirX + h.z * spec.dirZ)
         turn = Math.max(turn, (Math.acos(Math.min(1, c)) * 180) / Math.PI)
       }
+      // Q193: step between each deck end and the approach road surface (route profile `hs` interpolated
+      // along the polyline), and the deck grade (end-to-end rise over span).
+      const profileAt = (q: P) => {
+        let best = Infinity
+        let hh = 0
+        for (let i = 0; i < route.points.length - 1; i++) {
+          const a = route.points[i]!
+          const b = route.points[i + 1]!
+          const dx = b.x - a.x
+          const dz = b.z - a.z
+          const l2 = dx * dx + dz * dz
+          const t = l2 > 0 ? Math.max(0, Math.min(1, ((q.x - a.x) * dx + (q.z - a.z) * dz) / l2)) : 0
+          const d = Math.hypot(a.x + dx * t - q.x, a.z + dz * t - q.z)
+          if (d < best) { best = d; hh = a.hs + (b.hs - a.hs) * t }
+        }
+        return hh
+      }
+      const step0 = Math.abs(profileAt({ x: spec.x - spec.dirX * half, z: spec.z - spec.dirZ * half }) - spec.deckY0)
+      const step1 = Math.abs(profileAt({ x: spec.x + spec.dirX * half, z: spec.z + spec.dirZ * half }) - spec.deckY1)
+      const step = Math.max(step0, step1)
+      const grade = (Math.abs(spec.deckY1 - spec.deckY0) / spec.span) * 100
+      bridgeStepMax = Math.max(bridgeStepMax, step)
+      bridgeGradeMax = Math.max(bridgeGradeMax, grade)
+      if (step > worstStep.step) worstStep = { step, id: crossing.id }
+      if (grade > worstGrade.grade) worstGrade = { grade, id: crossing.id, x: spec.x, z: spec.z }
       if (off > 1) bridgeOff++
       bridgeOffMax = Math.max(bridgeOffMax, off)
       bridgeTurnMax = Math.max(bridgeTurnMax, turn)
@@ -246,6 +277,9 @@ function measure(seed: number): Row {
         console.error(`bridge seed ${seed} ${crossing.id} at ${spec.x.toFixed(0)},${spec.z.toFixed(0)} span ${spec.span.toFixed(1)} off ${off.toFixed(2)} m turn ${turn.toFixed(0)}°`)
       }
     }
+  }
+  if (process.argv.includes('--bridges')) {
+    console.error(`Q193 seed ${seed} worst step ${worstStep.step.toFixed(2)} m (${worstStep.id}); steepest deck ${worstGrade.grade.toFixed(1)} % (${worstGrade.id} at ${worstGrade.x.toFixed(0)},${worstGrade.z.toFixed(0)})`)
   }
 
   // road × road crossings and parallel overlap away from settlements
@@ -307,6 +341,8 @@ function measure(seed: number): Row {
     bridgeOff,
     bridgeOffMax: bridgeOffMax.toFixed(1),
     bridgeTurnMax: Math.round(bridgeTurnMax),
+    bridgeStepMax: bridgeStepMax.toFixed(2),
+    bridgeGradeMax: `${bridgeGradeMax.toFixed(1)}%`,
     paths,
     pathPlot,
     pathYard,

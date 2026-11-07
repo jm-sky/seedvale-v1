@@ -718,6 +718,8 @@ describe('chunkHeightmap road x river bridge', () => {
     span: 22,
     width: 12,
     deckY: groundH + 1,
+    deckY0: groundH + 1,
+    deckY1: groundH + 1,
     deckThickness: 0.3,
   }
 

@@ -1374,25 +1374,28 @@ const BRIDGE_WATER_CLEARANCE = 0.6
  *  equivalent since a ford has no deck to draw. */
 const BRIDGE_DECK_THICKNESS = 0.3
 
-/** Smoothed route-profile height at the route point nearest `(x, z)` — the
- *  crossing anchor is inserted into the final polyline by `world-terrain-023`,
- *  so the nearest point is the crossing itself (or immediately adjacent on a
- *  very short edge). Reading the already-built profile instead of re-sampling
- *  terrain/water avoids a renderer-time `sampleHeight()` feedback loop, since
- *  chunk terrain shaping itself depends on the bridge mask. */
-function routeProfileHeightAt(route: RoadRoute, x: number, z: number): number {
-  let best: RoutePoint | undefined
+/** Route profile height (`hs`) interpolated along the polyline at the point nearest `(x, z)` — the
+ *  height the road corridor shapes the terrain to there (`applyTerrainCorridors` interpolates
+ *  `ah → bh` along each segment the same way). */
+function routeProfileInterpolatedAt(route: RoadRoute, x: number, z: number): number {
   let bestDistSq = Infinity
-  for (const p of route.points) {
-    const dx = p.x - x
-    const dz = p.z - z
-    const distSq = dx * dx + dz * dz
-    if (distSq < bestDistSq) {
-      bestDistSq = distSq
-      best = p
+  let h = 0
+  for (let i = 0; i < route.points.length - 1; i++) {
+    const a = route.points[i]!
+    const b = route.points[i + 1]!
+    const dx = b.x - a.x
+    const dz = b.z - a.z
+    const l2 = dx * dx + dz * dz
+    const t = l2 > 0 ? Math.max(0, Math.min(1, ((x - a.x) * dx + (z - a.z) * dz) / l2)) : 0
+    const ex = a.x + dx * t - x
+    const ez = a.z + dz * t - z
+    const d2 = ex * ex + ez * ez
+    if (d2 < bestDistSq) {
+      bestDistSq = d2
+      h = a.hs + (b.hs - a.hs) * t
     }
   }
-  return best?.hs ?? 0
+  return h
 }
 
 /** Canonical bridge crossing + final route profile -> deterministic
@@ -1409,8 +1412,16 @@ export function bridgeSpecOf(
   const dir = directionFromYaw(crossing.angle)
   const halfWidth = (route.kind === 'road' ? rn.roadHalfWidth : rn.pathHalfWidth)
     * (1 + Math.max(0, rn.edgeWobbleAmplitude))
-  const profileH = routeProfileHeightAt(route, crossing.x, crossing.z)
-  const deckY = Math.max(profileH, crossing.waterH + BRIDGE_WATER_CLEARANCE)
+  const span = crossing.span + BRIDGE_APPROACH_MARGIN * 2
+  // Q193: sloped deck — each end takes the road profile where the road meets the deck, so asymmetric
+  // banks produce a tilted deck, not a floating/buried flat slab. If the plane would dip below the
+  // water clearance at the channel, both ends are raised equally (the census reports the resulting step).
+  let deckY0 = routeProfileInterpolatedAt(route, crossing.x - dir.x * span / 2, crossing.z - dir.z * span / 2)
+  let deckY1 = routeProfileInterpolatedAt(route, crossing.x + dir.x * span / 2, crossing.z + dir.z * span / 2)
+  const lift = Math.max(0, crossing.waterH + BRIDGE_WATER_CLEARANCE - (deckY0 + deckY1) / 2)
+  deckY0 += lift
+  deckY1 += lift
+  const deckY = (deckY0 + deckY1) / 2
   return {
     id: crossing.id,
     x: crossing.x,
@@ -1418,9 +1429,11 @@ export function bridgeSpecOf(
     yaw: crossing.angle,
     dirX: dir.x,
     dirZ: dir.z,
-    span: crossing.span + BRIDGE_APPROACH_MARGIN * 2,
+    span,
     width: halfWidth * 2,
     deckY,
+    deckY0,
+    deckY1,
     deckThickness: BRIDGE_DECK_THICKNESS,
   }
 }

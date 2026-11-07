@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import type { RoadBridgeSpec } from '../terrain/roadBridge'
 import { disposeObject3D } from '../assets/loadGltf'
+import { deckYAtAlong, type RoadBridgeSpec } from '../terrain/roadBridge'
 
 /**
  * @domain world-terrain
@@ -63,20 +63,29 @@ export function createBridge(spec: RoadBridgeSpec): BridgePresentation {
   group.position.set(spec.x, 0, spec.z)
   group.rotation.y = spec.yaw
 
+  // Q193: the deck is a plane sloped from `deckY0` (-dir end) to `deckY1` (+dir end). Deck + rails sit
+  // in a tilted sub-group pivoting at the deck centre; piers hang straight down from the sloped underside.
+  const rise = spec.deckY1 - spec.deckY0
+  const tilt = new THREE.Group()
+  tilt.position.y = spec.deckY
+  tilt.rotation.z = Math.atan2(rise, spec.span)
+  group.add(tilt)
+  const length = Math.hypot(spec.span, rise)
+
   const deck = new THREE.Mesh(UNIT_BOX, DECK_MATERIAL)
-  deck.scale.set(spec.span, spec.deckThickness, spec.width)
-  deck.position.y = spec.deckY - spec.deckThickness * 0.5
+  deck.scale.set(length, spec.deckThickness, spec.width)
+  deck.position.y = -spec.deckThickness * 0.5
   deck.castShadow = true
   deck.receiveShadow = true
-  group.add(deck)
+  tilt.add(deck)
 
   const railOffsetZ = spec.width * 0.5 - RAIL_THICKNESS * 0.5
   for (const side of [-1, 1] as const) {
     const rail = new THREE.Mesh(UNIT_BOX, RAIL_MATERIAL)
-    rail.scale.set(spec.span, RAIL_HEIGHT, RAIL_THICKNESS)
-    rail.position.set(0, spec.deckY + RAIL_HEIGHT * 0.5, side * railOffsetZ)
+    rail.scale.set(length, RAIL_HEIGHT, RAIL_THICKNESS)
+    rail.position.set(0, RAIL_HEIGHT * 0.5, side * railOffsetZ)
     rail.castShadow = true
-    group.add(rail)
+    tilt.add(rail)
   }
 
   const pierAlong = spec.span * 0.5 * (1 - PIER_INSET_FRACTION)
@@ -84,7 +93,7 @@ export function createBridge(spec: RoadBridgeSpec): BridgePresentation {
   for (const side of [-1, 1] as const) {
     const pier = new THREE.Mesh(UNIT_BOX, PIER_MATERIAL)
     pier.scale.set(pierWidth, PIER_DROP, pierWidth)
-    pier.position.set(side * pierAlong, spec.deckY - spec.deckThickness - PIER_DROP * 0.5, 0)
+    pier.position.set(side * pierAlong, deckYAtAlong(spec, side * pierAlong) - spec.deckThickness - PIER_DROP * 0.5, 0)
     pier.castShadow = true
     group.add(pier)
   }

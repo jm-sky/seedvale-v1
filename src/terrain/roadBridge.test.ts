@@ -12,6 +12,8 @@ function makeSpec(overrides: Partial<RoadBridgeSpec> = {}): RoadBridgeSpec {
     span: 20,
     width: 6,
     deckY: 12,
+    deckY0: 12,
+    deckY1: 12,
     deckThickness: 0.3,
     ...overrides,
   }
@@ -52,8 +54,17 @@ describe('isOnBridgeDeck', () => {
 
 describe('bridgeDeckYAt', () => {
   it('returns the matching spec deck Y inside its footprint', () => {
-    const spec = makeSpec({ deckY: 42 })
+    const spec = makeSpec({ deckY: 42, deckY0: 42, deckY1: 42 })
     expect(bridgeDeckYAt([spec], spec.x, spec.z)).toBe(42)
+  })
+
+  it('Q193: slopes linearly between the end heights so both approaches meet the deck without a step', () => {
+    // makeSpec: centre (100, 200), dir (0, 1), span 20 -> ends at z = 190 (-dir) and z = 210 (+dir).
+    const spec = makeSpec({ deckY: 13, deckY0: 10, deckY1: 16 })
+    expect(bridgeDeckYAt([spec], 100, 190)).toBeCloseTo(10, 6)
+    expect(bridgeDeckYAt([spec], 100, 200)).toBeCloseTo(13, 6)
+    expect(bridgeDeckYAt([spec], 100, 210)).toBeCloseTo(16, 6)
+    expect(bridgeDeckYAt([spec], 100, 195)).toBeCloseTo(11.5, 6)
   })
 
   it('returns null outside every spec footprint', () => {

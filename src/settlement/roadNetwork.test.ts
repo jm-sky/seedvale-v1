@@ -313,6 +313,8 @@ describe('bridgeSpecOf', () => {
       roadNetworkParams.roadHalfWidth * 2 * (1 + roadNetworkParams.edgeWobbleAmplitude),
     )
     expect(spec.deckY).toBeGreaterThan(crossing.waterH)
+    // Q193: both ends carry their own height; the centre is their mean and clears the water.
+    expect(spec.deckY).toBeCloseTo((spec.deckY0 + spec.deckY1) / 2)
   })
 
   it('is deeply equal on repeated derivation from the same crossing/route', () => {
