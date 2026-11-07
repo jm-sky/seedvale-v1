@@ -283,6 +283,13 @@ function measure(seed: number): Row {
   }
 
   // road × road crossings and parallel overlap away from settlements
+  // Q194: an intersection within 1 m of a shared point (a vertex of one road lying on the other, < 0.05 m) is a
+  // junction, not a crossing; points lying on another road's polyline (< 0.05 m, shared trunk) are not parallel.
+  const polyDistTo = (p: P, pts: readonly P[]) => {
+    let best = Infinity
+    for (let i = 0; i < pts.length - 1; i++) best = Math.min(best, segPointDist(p, pts[i]!, pts[i + 1]!))
+    return best
+  }
   let crossings = 0
   let parallelM = 0
   for (let i = 0; i < roadList.length; i++) {
@@ -291,14 +298,35 @@ function measure(seed: number): Row {
       const B = roadList[j]!.route.points
       for (let s = 0; s < A.length - 1; s++) {
         for (let t = 0; t < B.length - 1; t++) {
-          if (segIntersect(A[s]!, A[s + 1]!, B[t]!, B[t + 1]!) && awayFromSettlements(A[s]!)) crossings++
+          if (!segIntersect(A[s]!, A[s + 1]!, B[t]!, B[t + 1]!) || !awayFromSettlements(A[s]!)) continue
+          const shared = [A[s]!, A[s + 1]!].some((v) => polyDistTo(v, B) < 0.05) || [B[t]!, B[t + 1]!].some((v) => polyDistTo(v, A) < 0.05)
+          if (!shared) crossings++
         }
       }
       for (const p of densify(A, 3)) {
         if (!awayFromSettlements(p)) continue
         let near = false
-        for (let t = 0; t < B.length - 1 && !near; t++) near = segPointDist(p, B[t]!, B[t + 1]!) < roadHalf * 2
-        if (near) parallelM += 3
+        let onB = false
+        for (let t = 0; t < B.length - 1; t++) {
+          const d = segPointDist(p, B[t]!, B[t + 1]!)
+          if (d < 0.05) onB = true
+          if (d < roadHalf * 2) near = true
+        }
+        if (near && !onB) parallelM += 3
+      }
+    }
+  }
+  // Q194: crossing records of different roads (different ids) within 15 m of each other.
+  let dupCrossings = 0
+  const allCrossings = roadList.flatMap(({ route }) => route.crossings)
+  for (let i = 0; i < allCrossings.length; i++) {
+    for (let j = i + 1; j < allCrossings.length; j++) {
+      const c = allCrossings[i]!
+      const d = allCrossings[j]!
+      if (c.id === d.id || c.id.split('#')[0] === d.id.split('#')[0]) continue
+      if (dist(c, d) < 15) {
+        dupCrossings++
+        console.error(`dupCrossing seed ${seed} ${c.id} (${c.kind}) vs ${d.id} (${d.kind}) at ${c.x.toFixed(0)},${c.z.toFixed(0)} ${dist(c, d).toFixed(1)} m`)
       }
     }
   }
@@ -335,6 +363,7 @@ function measure(seed: number): Row {
     entranceMis,
     crossings,
     parallelM: Math.round(parallelM),
+    dupCrossings,
     sinuosity: `${pct(sinuosity, 0.5).toFixed(2)}/${pct(sinuosity, 0.9).toFixed(2)}`,
     sharpPerKm: (sharpTurns / Math.max(totalKm, 1e-6)).toFixed(1),
     bridges,

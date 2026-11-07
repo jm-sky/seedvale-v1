@@ -26,6 +26,7 @@ import {
   evaluateRoadRiverCrossing,
   riverHitsOnEdge,
 } from './roadRiverCrossing'
+import { snapRouteToTrunks, type TrunkPartner } from './roadTrunks'
 import { ROUTE_WATER_CLEARANCE } from './routeConstants'
 import { buildRouteObstacles, type RouteObstacles } from './routeObstacles'
 import { polylineIsClear, roundCorners, type RouteShapeEnv, straightChordAround, stringPull } from './routeShape'
@@ -107,6 +108,8 @@ export type RoadRoute = {
 // Settlement defs resolve through the shared `settlementPlanCache` (plan 047
 // §9.14–15) — do not keep a second authoritative layout/def cache here.
 const routeCache = new Map<string, RoadRoute | null>()
+/** Q194: final (trunk-snapped) inter-settlement roads by pair key; derived from `routeCache`, in memory only. */
+const trunkCache = new Map<string, RoadRoute>()
 
 /**
  * Optional IndexedDB adapter (plan world-terrain-029). Main thread attaches
@@ -191,6 +194,7 @@ export function clearRoadNetworkMemoryCaches(): void {
   clearSettlementDefCache()
   clearMinorLocationCaches()
   routeCache.clear()
+  trunkCache.clear()
   clearCemeteryCaches()
   clearCemeteryPlacementCaches()
 }
@@ -1055,20 +1059,7 @@ function orientedFrom(route: RoadRoute, def: { x: number, z: number }): RoutePoi
  *  from multiple nearby chunks is cheap after the first A* search. */
 export function roadRoutesForSettlement(def: SettlementDef, ctx: RoadNetworkContext): RoadRoute[] {
   const out: RoadRoute[] = []
-  const maxRoads = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads)
-
-  // Walk candidates nearest-first, but count *successful* routes toward the
-  // cap — a nearby candidate blocked by open water shouldn't leave this
-  // settlement with fewer roads than a farther-but-reachable one would give.
-  let connected = 0
-  for (const neighbor of neighborsFor({ gx: def.gx, gz: def.gz }, ctx)) {
-    if (connected >= maxRoads) break
-    const route = routeBetween(def, neighbor, ctx)
-    if (route) {
-      out.push(route)
-      connected++
-    }
-  }
+  for (const { key, route, other } of rawRoadsOf(def, ctx)) out.push(finalRoad(key, route, def, other, ctx))
 
   const locations = minorLocationsFor(
     def,
@@ -1083,6 +1074,84 @@ export function roadRoutesForSettlement(def: SettlementDef, ctx: RoadNetworkCont
   }
 
   return out
+}
+
+type RawRoad = { key: string, route: RoadRoute, other: SettlementDef }
+
+/** The raw (A* output) inter-settlement roads of one settlement: nearest neighbours first, counting
+ *  *successful* routes toward the cap — a nearby candidate blocked by open water shouldn't leave this
+ *  settlement with fewer roads than a farther-but-reachable one would give. */
+function rawRoadsOf(def: SettlementDef, ctx: RoadNetworkContext): RawRoad[] {
+  const out: RawRoad[] = []
+  const maxRoads = Math.max(0, ctx.region.roadNetwork.maxNeighborRoads)
+  let connected = 0
+  for (const neighbor of neighborsFor({ gx: def.gx, gz: def.gz }, ctx)) {
+    if (connected >= maxRoads) break
+    const route = routeBetween(def, neighbor, ctx)
+    if (route) {
+      out.push({ key: pairKey(def.id, neighbor.id), route, other: neighbor })
+      connected++
+    }
+  }
+  return out
+}
+
+/** Q194: the road as the world sees it — the raw route snapped onto lower-key roads of either endpoint
+ *  (shared trunks + junctions). Memoized per pair; identical whichever endpoint asks first. */
+function finalRoad(
+  key: string,
+  raw: RoadRoute,
+  a: SettlementDef,
+  b: SettlementDef,
+  ctx: RoadNetworkContext,
+): RoadRoute {
+  const cached = trunkCache.get(key)
+  if (cached) return cached
+  const partners = new Map<string, TrunkPartner>()
+  for (const end of [a, b]) {
+    for (const road of rawRoadsOf(end, ctx)) {
+      if (road.key < key) partners.set(road.key, { key: road.key, route: road.route })
+    }
+  }
+  let result = raw
+  if (partners.size > 0) {
+    let minX = Infinity
+    let maxX = -Infinity
+    let minZ = Infinity
+    let maxZ = -Infinity
+    for (const p of raw.points) {
+      minX = Math.min(minX, p.x)
+      maxX = Math.max(maxX, p.x)
+      minZ = Math.min(minZ, p.z)
+      maxZ = Math.max(maxZ, p.z)
+    }
+    const riverSegments = worldRiverQuery()?.segmentsNear(
+      (minX + maxX) / 2,
+      (minZ + maxZ) / 2,
+      Math.max(maxX - minX, maxZ - minZ) + RIVER_ENVELOPE_PADDING,
+    ) ?? []
+    const env = {
+      sampleHeight: ctx.sampleHeight,
+      sampleMountainRidge: ctx.terrainSamplers.sampleMountainRidge,
+      waterLevel: ctx.waterLevel,
+      waterClearance: ROUTE_WATER_CLEARANCE,
+      elevationWeight: 0,
+      mountainCostWeight: 0,
+      riverSegments,
+    }
+    const snapped = snapRouteToTrunks(key, raw, [...partners.values()], {
+      connectorIsClear: (p, q) => polylineIsClear([
+        { x: p.x, z: p.z, h: 0 },
+        { x: q.x, z: q.z, h: 0 },
+      ], env) && riverHitsOnEdge(p.x, p.z, q.x, q.z, riverSegments).length === 0,
+    })
+    if (snapped.points !== raw.points) {
+      const points: RoutePoint[] = snapped.points
+      result = { points, segments: toSegments(points, raw.kind), kind: raw.kind, crossings: snapped.crossings }
+    }
+  }
+  trunkCache.set(key, result)
+  return result
 }
 
 // Lives in `math/segment.ts` so `roadRiverCrossing.ts` can use the same
