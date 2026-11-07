@@ -1067,8 +1067,12 @@ function applyTerrainCorridors(
   roadNetwork: RoadNetworkParams,
 ): { floorH: number; tint: number } {
   let bestRoadFalloff = 0
-  let bestRoadTargetH = 0
-  let bestRoadHeightStrength = 0
+  // Q63 junction blend: overlapping road corridors (shared trunk meeting a
+  // secondary, crossings) average their target height / strength by falloff²
+  // instead of winner-takes-all, so a junction has no height step or seam.
+  let roadWeightSum = 0
+  let roadTargetHSum = 0
+  let roadHeightStrengthSum = 0
   let bestClearingFalloff = 0
   let bestClearingTargetH = 0
   let bestClearingHeightStrength = 0
@@ -1077,13 +1081,15 @@ function applyTerrainCorridors(
   for (const seg of roadSegments) {
     const candidate = roadCandidate(wx, wz, seg, roadNoise, roadNetwork)
     if (!candidate) continue
-    if (candidate.falloff > bestRoadFalloff) {
-      bestRoadFalloff = candidate.falloff
-      bestRoadTargetH = candidate.targetH
-      bestRoadHeightStrength = candidate.heightStrength
-    }
+    if (candidate.falloff > bestRoadFalloff) bestRoadFalloff = candidate.falloff
+    const w = candidate.falloff * candidate.falloff
+    roadWeightSum += w
+    roadTargetHSum += w * candidate.targetH
+    roadHeightStrengthSum += w * candidate.heightStrength
     if (candidate.tint > bestTint) bestTint = candidate.tint
   }
+  const bestRoadTargetH = roadWeightSum > 0 ? roadTargetHSum / roadWeightSum : 0
+  const bestRoadHeightStrength = roadWeightSum > 0 ? roadHeightStrengthSum / roadWeightSum : 0
   for (const seg of clearingSegments) {
     const candidate = clearingCandidate(wx, wz, seg)
     if (!candidate) continue

@@ -281,7 +281,7 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
         swampThreshold: 0.72,
         swampThresholdWidth: 0.15,
         roadNetwork: {
-          roadHalfWidth: 5,
+          roadHalfWidth: 3.75, // Q63/D2: ~7.5 m main road (was 5 = 10 m)
           roadHeightStrength: 0.85,
           roadTintStrength: 0.8,
           pathHalfWidth: 1.5,
@@ -302,10 +302,10 @@ function baseConfig(seed: number, resolution: number): WorldConfig {
           // micro-roughness, recognisable at normal gameplay camera distance.
           // Not tuned for realism; narrower `rutWidthFraction` than before so
           // the two grooves read as distinct ruts rather than one wide dip.
-          rutDepth: 0.15,
+          rutDepth: 0.115, // Q63/D2: slight reduction (was 0.15), ruts stay clearly visible
           rutOffsetFraction: 0.42,
           rutWidthFraction: 0.1,
-          microBumpStrength: 0.2,
+          microBumpStrength: 0.15, // Q63/D2 (was 0.2)
           microBumpScale: 0.6,
         },
         village: {
