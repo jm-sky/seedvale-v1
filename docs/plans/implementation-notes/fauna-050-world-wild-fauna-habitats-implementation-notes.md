@@ -241,9 +241,9 @@ Callers, all on **one** path:
 - The next respawn event is at `lastRespawn + respawnIntervalDays`. Events are processed in order `(atDays, habitatId, key)` across all habitats advanced in one call.
 - At each event, if the live count of habitat members `< ordinaryHabitatCapacity`:
   - **birth** if an alive adult female of the kind exists in the habitat (pick by `birth:<habitatId>:<seq>` over candidates sorted by id) → juvenile with `motherId`, placed near the mother;
-  - otherwise **immigration** of an adult at the spawner, but **only if the habitat has no living member** (author rule);
+  - otherwise (no living adult female) **immigration** of an adult at the spawner (Q160-a (b));
   - otherwise no event.
-- ❓ **Queue §3 Q160-a (open):** under the strict rule, a habitat left with only males stays below capacity until they die, which is less replenishment than today. Options: strict / immigration also when no adult female (recommended) / immigration whenever no birth is possible. C3 implements whichever the author picks; it is not changed silently.
+- ✅ **Q160-a (b), author 2026-11-07:** immigration of an adult happens when the habitat has **no living adult female** of the kind (empty habitat included), so a male-only remnant never blocks recovery. Birth when an adult female exists. Live respawn and `advanceWildHabitat` share this rule.
 - The **recovery predicate** (`disabled`/`recovering`) counts alive records of the kind within `SPAWNER_RADIUS` of the spawner (active + dormant), the same predicate as live. This fixes the R3 bound-vs-nearby divergence. Daily checks run at integer `dayIndex` boundaries, as live.
 - Depletion: the same `deathsThisCycle` rules (only bubble deaths can occur dormant).
 - **No 120-day cap.** The work is bounded by capacity: once full, no events. A > 120-day test is required.
