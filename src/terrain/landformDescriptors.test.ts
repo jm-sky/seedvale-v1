@@ -117,3 +117,16 @@ describe('crater river exclusion + crag rock (author look 2)', () => {
     expect(landformRockAt(index, d.centreX + d.radius * 0.7, d.centreZ)).toBe(0)
   })
 })
+
+describe('lake island closure (Q166)', () => {
+  const base = { waterLevel: 0.45, halfExtent: 4000 }
+  const lakeIslands = (floorH: (x: number, z: number) => number) => generateLandforms(42, { ...base, floorH }).filter((d) => d.kind === 'lakeIsland')
+
+  it('places no lake island on a steep sawtooth lowland (the rim spills downhill, no water is held)', () => {
+    expect(lakeIslands((x) => 6 + 0.012 * (((x % 800) + 800) % 800))).toHaveLength(0)
+  })
+
+  it('places a lake island on flat lowland with a closed rim, and never reads hydrology', () => {
+    expect(lakeIslands(() => 10).length).toBe(1)
+  })
+})

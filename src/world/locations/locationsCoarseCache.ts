@@ -25,7 +25,7 @@ export const LOCATIONS_COARSE_NAMESPACE = 'locations-coarse'
 // v6 (2026-11-05): C¹ relief: smooth range-spine crest/blend/unions, C¹ Worley ridge, bicubic hydrology correction (plan world-terrain-065).
 // v7 (2026-11-06, queue Q124): climate-driven biomes + borders (plan world-terrain-062 B1) move colour/vegetation/settlement terrain class.
 // v8 (2026-11-07, queue Q186): settlement layout drops off-mainland / waterfall-reserve / landform-footprint sites (plan world-terrain-063 V1).
-export const LOCATIONS_COARSE_VERSION = 19
+export const LOCATIONS_COARSE_VERSION = 20
 
 export type CoarseTilePayload = { state: Uint8Array, height: Float32Array }
 

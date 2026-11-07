@@ -236,3 +236,10 @@ Re-run after caches chunk tile 36 / hydrology 10 / settlements 34 / roads 22 (pl
 ## Close-out (Opus, 2026-11-06)
 
 Plan `done`: R0–R4 landed, author accepted R2 (2026-11-05) and the R3/R4 browser review (2026-11-06; queue Q119 archived). Hand-offs: seed 42 routed components 4 and the steep `6_-7:0` pass → road close-out Q61–Q64; ore-under-plate → re-check if it recurs; plates in the far-tile colour → world-terrain-066 if the author asks.
+
+## Q166 — lake islands only where the basin holds water (Sonnet, 2026-11-07)
+
+- `generateLandforms` now draws the lake-island `depth`/`knoll` **before** the pick and, per relax step, tests candidates best-score first with `lakeIslandHoldsWater` (local, acyclic: base relief + island profile, never hydrology). Rules: rim spill (min of 48 rim points at `radius`) minus 0.4 m margin must stand ≥ 1.5 m above the basin floor; wet area (24 m probe grid, `t ≤ 0.95`) ≥ 40 000 m² (hydrology `lakeMinCells` 600 × 8 m² = 3.84 ha); the knoll centre must clear the water level. Profile extracted to `lakeIslandDelta` (no change to the height formula).
+- Census (`pnpm worldgen:outcomes:census --seeds=42,415424794,7,1234,99,2024,31337`): every placed island holds a lake (`OK`, 6–8/8 rim samples wet): 415424794 `lf:lakeIsland:9_9` (1707, 1681), 1234 `lf:lakeIsland:-16_11`, 2024 `lf:lakeIsland:7_19`. **No island** (shortfall reported, not forced) on seeds 42, 7, 99, 31337 — no flat-lowland candidate has a closed rim ≥ 1.5 m deep and ≥ 3.84 ha wet. Total landform counts (crag + crater + island): 42 → 2, 415424794 → 3, 7 → 3, 1234 → 5, 99 → 2, 2024 → 4, 31337 → 2, so the "3–5 on every seed" aim is missed on 3 of 7 seeds (all because the island is omitted and only 1 crag was drawn). Author decision if more are wanted: a deeper `depth` range (3.5–4.5 m today) or a wider flat-lowland tolerance.
+- Old island coordinates in this file (`lf:lakeIsland:16_7`, `-1_13`) are stale for seeds 415424794 / 42.
+- Caches bumped: `WORLD_HYDROLOGY_VERSION` 14→15, chunk tiles 41→42, settlement-def, road-route, caves, cemetery, locations-coarse (+1 each). No epoch bump (epoch-1 test saves disposable per roadmap cross-plan rules).

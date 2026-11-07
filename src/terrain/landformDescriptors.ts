@@ -113,6 +113,16 @@ const SALT = 0x4c464d31
 /** Deterministic relaxation steps of the flatness / height tolerances when a kind finds no candidate. */
 const RELAX_STEPS = [1, 1.6, 2.4] as const
 
+/** Lake-island closure test (Q166): wet sample step, rim ring density, margins. Local on the base relief — never hydrology. */
+const LAKE_PROBE_STEP_M = 24
+const LAKE_RIM_DIRECTIONS = 48
+/** The rim spill must clear the basin floor by this much (hydrology keeps a pit only above `lakeMinDepthM` 0.3 m). */
+const LAKE_MIN_DEPTH_M = 1.5
+/** Wet area the basin must hold: `lakeMinCells` 600 × (8 m)² = 3.84 ha, rounded up; the spill margin below covers rim noise. */
+const LAKE_MIN_WET_AREA_M2 = 40_000
+/** Spill margin: the rim minimum is read from 48 directions, the real pass can be a little lower. */
+const LAKE_SPILL_MARGIN_M = 0.4
+
 type Candidate = { gx: number, gz: number, x: number, z: number, range: number, ground: number }
 
 /** Rise of the crater floor from its centre to the edge of the dish (m): a clearly concave bowl, lowest in the middle (author 2026-11-06 look 2). */
@@ -127,6 +137,43 @@ function craterParams(ground: number, waterLevel: number, rand: () => number): R
 const smooth = (a: number, b: number, v: number): number => {
   const t = Math.min(1, Math.max(0, (v - a) / (b - a)))
   return t * t * (3 - 2 * t)
+}
+
+/** Lake-island profile at normalised radius `t` (0 centre … 1 footprint edge): basin with a central knoll, faded at the edge. */
+function lakeIslandDelta(t: number, depth: number, knoll: number): number {
+  const basin = -depth * (1 - smooth(0.4, 0.95, t))
+  const u = t / 0.2
+  return (basin + knoll * Math.exp(-u * u)) * (1 - smooth(0.88, 1, t))
+}
+
+/**
+ * Whether a lake island at `(x, z)` really holds water, judged locally on the base relief + the island profile (acyclic —
+ * no hydrology): the lowest rim point (spill) must stand ≥ `LAKE_MIN_DEPTH_M` above the basin floor, the area below the
+ * spill must cover `LAKE_MIN_WET_AREA_M2`, and the knoll must clear the spill (an island, not a shoal).
+ */
+function lakeIslandHoldsWater(ctx: LandformGenContext, x: number, z: number, radius: number, depth: number, knoll: number): boolean {
+  let spill = Infinity
+  for (let k = 0; k < LAKE_RIM_DIRECTIONS; k++) {
+    const a = (k / LAKE_RIM_DIRECTIONS) * Math.PI * 2
+    spill = Math.min(spill, ctx.floorH(x + Math.cos(a) * radius, z + Math.sin(a) * radius))
+  }
+  const level = spill - LAKE_SPILL_MARGIN_M
+  let wet = 0
+  let floor = Infinity
+  const n = Math.floor(radius / LAKE_PROBE_STEP_M)
+  for (let j = -n; j <= n; j++) {
+    for (let i = -n; i <= n; i++) {
+      const dx = i * LAKE_PROBE_STEP_M
+      const dz = j * LAKE_PROBE_STEP_M
+      const t = Math.hypot(dx, dz) / radius
+      if (t > 0.95) continue
+      const h = ctx.floorH(x + dx, z + dz) + lakeIslandDelta(t, depth, knoll)
+      if (h < level) wet++
+      if (h < floor) floor = h
+    }
+  }
+  const centre = ctx.floorH(x, z) + lakeIslandDelta(0, depth, knoll)
+  return level - floor >= LAKE_MIN_DEPTH_M && wet * LAKE_PROBE_STEP_M * LAKE_PROBE_STEP_M >= LAKE_MIN_WET_AREA_M2 && centre > level
 }
 
 function probeRange(ctx: LandformGenContext, x: number, z: number, r: number): { range: number, ground: number, min: number, max: number } {
@@ -173,10 +220,12 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
   for (const { kind, count } of kinds) {
     for (let n = 0; n < count; n++) {
       const radius = kind === 'crag' ? 70 + rand() * 50 : kind === 'crater' ? 30 + rand() * 30 : 200 + rand() * 70
+      const lakeParams = kind === 'lakeIsland' ? { depth: 3.5 + rand() * 1, knoll: 4 + rand() * 2 } : null
       let picked: (Candidate & { score: number }) | null = null
       for (const relax of RELAX_STEPS) {
         const maxRange = (kind === 'lakeIsland' ? 2.5 : 4) * relax
         let best: (Candidate & { score: number }) | null = null
+        const lakeCandidates: Array<Candidate & { score: number }> = []
         for (let gz = -half; gz <= half; gz++) {
           for (let gx = -half; gx <= half; gx++) {
             const c = cell(gx, gz)
@@ -189,8 +238,15 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
             const pr = probeRange(ctx, c.x, c.z, radius)
             if (pr.min < ctx.waterLevel + (kind === 'lakeIsland' ? 4 : kind === 'crater' ? 7 : 2.5) || pr.max > 14 || pr.range > maxRange) continue
             const score = -pr.range + c.j * 1.5
-            if (!best || score > best.score) best = { gx, gz, x: c.x, z: c.z, range: pr.range, ground, score }
+            const cand = { gx, gz, x: c.x, z: c.z, range: pr.range, ground, score }
+            if (lakeParams) lakeCandidates.push(cand)
+            else if (!best || score > best.score) best = cand
           }
+        }
+        if (lakeParams) {
+          // Best-scored candidate whose basin really holds water (Q166); costly probe runs lazily, best first.
+          lakeCandidates.sort((a, b) => b.score - a.score)
+          best = lakeCandidates.find((c) => lakeIslandHoldsWater(ctx, c.x, c.z, radius, lakeParams.depth, lakeParams.knoll)) ?? null
         }
         if (best) { picked = best; break }
       }
@@ -200,7 +256,7 @@ export function generateLandforms(seed: number, ctx: LandformGenContext): readon
         ? { amplitude: CRAG_MIN_HEIGHT_M + rand() * (CRAG_MAX_HEIGHT_M - CRAG_MIN_HEIGHT_M) }
         : kind === 'crater'
           ? craterParams(picked.ground, ctx.waterLevel, rand)
-          : { depth: 3.5 + rand() * 1, knoll: 4 + rand() * 2 }
+          : lakeParams!
       out.push({
         id: `lf:${kind}:${picked.gx}_${picked.gz}`,
         kind,
@@ -261,9 +317,7 @@ export function landformHeightDeltaAt(index: LandformIndex, x: number, z: number
       const u = (t - 0.8) / 0.1
       delta += (dish - baseH) * w + (d.params.rim ?? 2.5) * Math.exp(-u * u) * fade
     } else if (d.kind === 'lakeIsland') {
-      const basin = -(d.params.depth ?? 5) * (1 - smooth(0.4, 0.95, t))
-      const u = t / 0.2
-      delta += (basin + (d.params.knoll ?? 5) * Math.exp(-u * u)) * fade
+      delta += lakeIslandDelta(t, d.params.depth ?? 5, d.params.knoll ?? 5)
     }
   }
   return delta

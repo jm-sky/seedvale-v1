@@ -42,7 +42,7 @@ describe('landformLandmarksOf', () => {
 
   it('maps descriptor ids `lf:<kind>:<cell>` to `landform:<kind>:<cell>` and summit ids to `<spine cell>:<index>`', () => {
     const ids = landformLandmarksOf(continentParams()).map((l) => l.id)
-    expect(ids).toContain('landform:lakeIsland:16_7')
+    expect(ids).toContain('landform:lakeIsland:9_9')
     expect(ids).toContain('landform:spineSummit:6_-7:0')
     expect(ids.filter((id) => id.startsWith('landform:crater:')).length).toBeLessThanOrEqual(1)
   })
