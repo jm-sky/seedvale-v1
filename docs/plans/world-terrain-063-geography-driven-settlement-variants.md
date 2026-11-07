@@ -1,7 +1,7 @@
 # Plan: Geography-driven settlement pattern — variant comparison and author selection
 
 **Created:** 2026-11-04
-**Status:** `in progress` 🔄 — V0 done (Q126); Q127 recon + router fix + V1 contract done 2026-11-07 ([notes](./implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md)); next Q186 V1 impl → Q187 V2 → V3 (amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
+**Status:** `in progress` 🔄 — V0 done (Q126); Q127 recon + router fix + V1 contract done 2026-11-07 ([notes](./implementation-notes/world-terrain-063-geography-driven-settlement-variants-implementation-notes.md)); Q186 V1 impl + Q187 V2 done; **V3 shortlist done 2026-11-07** ([note](../research/v1-revival/2026-11-07--063-v3-settlement-variant-shortlist.md)) → waiting for author G5 (queue §3 Q127-G5) → V4 (amended per [review 031](../reviews/2026-11-04--031--geography-revival-g1-g9-critical-architecture-review.md) 2026-11-04)
 **Type:** feature
 **Priority:** high · **Effort:** L
 **Depends on:** tools-026, world-terrain-061

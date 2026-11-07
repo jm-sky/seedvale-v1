@@ -168,3 +168,7 @@ Land runs out at **≈ 43 sites (seed 42) / 40 (seed 415424794)** at the 720 m f
 **A→B→A:** `pnpm worldgen:variants --seeds=42,415424794 --variants=22@1150/none,28@950/none --abca` passed (exit 0, A again identical on both seeds).
 
 **Not done / caveats:** clustered variants (plan V2 (ii)) intentionally out of scope; timed author walk, simulation-workload timing and browser look not performed; previews are static PNGs, unreviewed by the author (→ queue §2). All numbers headless.
+
+## V3 shortlist (Opus, 2026-11-07, Q127)
+
+[Shortlist note](../../research/v1-revival/2026-11-07--063-v3-settlement-variant-shortlist.md): A 22@1050 · B 25@950 (recommended) · C 35@850, weight `none`; author question queue §3 Q127-G5. Re-census found: the author route improves to 1400 m on every row with start spacing ≤ 1050 although home and `4_-1` keep their positions (different home access point, route stays north of the inlet — cause not isolated 🟡, V4 confirms by walk); land cover outside belts is practically density-independent; spot seeds 7 / 1234 fail connectivity for every row including today → Q188.
