@@ -79,12 +79,12 @@ describe('CarriedSpawnerStore', () => {
     expect(store.has('g:thicket')).toBe(false)
   })
 
-  it('carry() keeps runtime data out of the persisted rows', () => {
+  it('carry() persists the respawn timer (C1.7) but keeps bound counts out of the rows', () => {
     const store = new CarriedSpawnerStore()
     store.carry(makeSpawner({ daysSinceLastRespawn: 1.5 }), 3, 10)
     const [row] = store.snapshot([])
     expect(Object.keys(row).sort()).not.toContain('boundCount')
-    expect(Object.keys(row)).not.toContain('daysSinceLastRespawn')
+    expect(row.daysSinceLastRespawn).toBe(1.5)
     expect(store.take('g:thicket')?.runtime).toEqual({ atDays: 10, boundCount: 3, daysSinceLastRespawn: 1.5 })
   })
 })

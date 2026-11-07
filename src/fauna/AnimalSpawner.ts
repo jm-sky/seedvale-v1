@@ -87,6 +87,10 @@ export type PreySpawner = {
    *  Held at 0 while bound live count is at cap so a vacancy starts a full
    *  interval instead of firing on the next frame. */
   daysSinceLastRespawn: number
+  /** Next `b<seq>` durable id at this spawner (fauna-050 C1.2); monotonic, never reused. Absent = 0. */
+  nextBirthSeq?: number
+  /** World-days up to which this lifecycle was advanced (dormant catch-up cursor, C1.7). */
+  advancedAtDays?: number
   state: SpawnPointState
   /** Animals bound to this spawn point (`AnimalAgent.spawnPointId`) that
    *  have died since the current `active` cycle started — reset to 0 when
@@ -335,6 +339,12 @@ export type SavedSpawnPointState = {
   lastSettlementTripOpportunityDay?: number | null
   /** Partial natural-recovery progress while `depleted` (plan fauna-047). */
   depletedRecoveryDays?: number
+  /** Next `b<seq>` id for a generated individual at this spawner (fauna-050 C1.2). Absent = 0. */
+  nextBirthSeq?: number
+  /** Respawn timer, persisted since fauna-050 C2 (absent in older saves = 0). */
+  daysSinceLastRespawn?: number
+  /** World-days up to which the lifecycle has been advanced (dormant catch-up cursor). */
+  advancedAtDays?: number
 }
 
 /** Pure snapshot for `SaveData` — pairs with `restoreSpawnPointState`. */
@@ -348,6 +358,9 @@ export function snapshotSpawnPointState(spawner: PreySpawner): SavedSpawnPointSt
     canRecover: spawner.canRecover,
     lastSettlementTripOpportunityDay: spawner.lastSettlementTripOpportunityDay,
     depletedRecoveryDays: spawner.depletedRecoveryDays,
+    ...(spawner.nextBirthSeq ? { nextBirthSeq: spawner.nextBirthSeq } : {}),
+    ...(spawner.daysSinceLastRespawn ? { daysSinceLastRespawn: spawner.daysSinceLastRespawn } : {}),
+    ...(spawner.advancedAtDays !== undefined ? { advancedAtDays: spawner.advancedAtDays } : {}),
   }
 }
 
@@ -367,6 +380,9 @@ export function restoreSpawnPointState(spawner: PreySpawner, saved: SavedSpawnPo
     spawner.lastSettlementTripOpportunityDay = saved.lastSettlementTripOpportunityDay
   }
   spawner.depletedRecoveryDays = saved.depletedRecoveryDays ?? 0
+  spawner.nextBirthSeq = saved.nextBirthSeq ?? 0
+  spawner.daysSinceLastRespawn = saved.daysSinceLastRespawn ?? 0
+  if (saved.advancedAtDays !== undefined) spawner.advancedAtDays = saved.advancedAtDays
 }
 
 /** Default scenario fields for a freshly constructed habitat spawner. */

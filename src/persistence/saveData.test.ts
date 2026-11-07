@@ -2963,3 +2963,24 @@ describe('world-041 Q138 v60 to v61 rumour lead tier', () => {
     }
   })
 })
+
+describe('fauna-050 C2 v61 to v62 durable wild fauna', () => {
+  const old = { ...validSave, version: 61 }
+
+  it('migrates by identity: no wildFauna, spawn rows untouched', () => {
+    const result = loadStoredSave(old)
+    expect(result.status).toBe('ok')
+    if (result.status !== 'ok') return
+    expect(result.data.version).toBe(CURRENT_SAVE_VERSION)
+    expect(result.data.wildFauna).toBeUndefined()
+  })
+
+  it('accepts new spawn-row fields and a wildFauna snapshot, rejects malformed ones', () => {
+    const base = { ...validSave, version: CURRENT_SAVE_VERSION }
+    const row = { id: 'g:cave', state: 'active', deathsThisCycle: 0, disabledAtDay: null, nextBirthSeq: 3, daysSinceLastRespawn: 0.5 }
+    expect(loadStoredSave({ ...base, spawnPoints: [row] }).status).toBe('ok')
+    expect(loadStoredSave({ ...base, spawnPoints: [{ ...row, nextBirthSeq: 'x' }] }).status).not.toBe('ok')
+    expect(loadStoredSave({ ...base, wildFauna: { groups: [{ id: 'g', initializedAtDays: 1 }], records: [] } }).status).toBe('ok')
+    expect(loadStoredSave({ ...base, wildFauna: { groups: [{ id: 'g' }], records: [] } }).status).not.toBe('ok')
+  })
+})

@@ -22,6 +22,8 @@ export type AnimalSociability = 'wild' | 'domestic'
  *  (`JUVENILE_SCALE_FACTOR`) until it ages past `JUVENILE_MATURITY_SECONDS`
  *  (plan 118). Only assigned by herding-species spawn logic. */
 export type AnimalLifeStage = 'adult' | 'juvenile'
+/** Fixed at creation of a wild individual (fauna-050 C1.4); only gates births later. */
+export type WildAnimalSex = 'female' | 'male'
 /** wolf/fox/deer/stag/bear/boar/rabbit + livestock (chicken/sheep/cow/horse/donkey)
  *  have GLBs under `public/models/fauna/`; duck stays procedural.
  *  `boar` keeps `createBoarModel` as a feature-flag / load-failure fallback;

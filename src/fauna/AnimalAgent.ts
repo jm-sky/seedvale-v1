@@ -115,6 +115,7 @@ import {
   type AnimalKind,
   type AnimalLifeStage,
   type AnimalRole,
+  type WildAnimalSex,
 } from './animalDefs'
 import {
   applySourceRelief,
@@ -802,6 +803,12 @@ export type AnimalSaveState = {
   x: number
   z: number
   yaw: number
+  /** Juvenile marker (fauna-050 C1.3) — absent = adult. Re-applies the juvenile scale on `hydrate()`. */
+  lifeStage?: 'juvenile'
+  /** Seconds lived as a juvenile (fauna-050 C1.3); only written with `lifeStage`. */
+  ageSec?: number
+  /** Mother's `animalId` while juvenile (fauna-050 C1.3). */
+  motherId?: string
   health: { current: number, max: number, dead: boolean }
   life: { hunger: number, thirst: number, stamina: number }
   productionReadyAtDays: number | null
@@ -1071,6 +1078,8 @@ export type AnimalAgentDeps = {
   herdId?: string
   lifeStage?: AnimalLifeStage
   motherId?: string
+  /** Fixed at creation (fauna-050 C1.4); no behaviour change yet. Default `female`. */
+  sex?: WildAnimalSex
   household?: Household | null
   spawnPointId?: string
   /** Inherited from an active wolf-den spawner at spawn time (plan
@@ -1769,6 +1778,8 @@ export class AnimalAgent {
   /** `motherId`/`age` are only meaningful while `lifeStage === 'juvenile'`
    *  (plan 118) — cleared/reset once the animal matures. */
   private lifeStage: AnimalLifeStage
+  /** Fixed at creation (fauna-050 C1.4). */
+  readonly sex: WildAnimalSex
   private motherId?: string
   private age = 0
   /** This frame's live agent array, refreshed at the top of every `update()`
@@ -1818,6 +1829,7 @@ export class AnimalAgent {
       herdId,
       lifeStage = 'adult',
       motherId,
+      sex = 'female',
       household,
       spawnPointId,
       humanTaste = false,
@@ -1835,6 +1847,7 @@ export class AnimalAgent {
     this.herdId = herdId
     this.lifeStage = lifeStage
     this.motherId = motherId
+    this.sex = sex
     this._owner = ownerFromHouseId(ownerHouseId)
     this._household = household ?? null
     this.spawnPointId = spawnPointId
@@ -1964,6 +1977,25 @@ export class AnimalAgent {
    *  `resolveTimeSkip()` (plan fauna-017 step 10 / D3) so a skip uses the
    *  same transition as live `update()`, not a separate catch-up. The
    *  one-time `lifeStage` transition is its own guard; no-op for adults. */
+  /** Aligns juvenile/adult state (and the matching mesh scale) with a saved snapshot
+   *  (fauna-050 C1.3). A legacy snapshot without `lifeStage` is left as constructed. */
+  private hydrateLifeStage(state: AnimalSaveState): void {
+    const factor = JUVENILE_SCALE_FACTOR[this.def.kind] ?? 1
+    if (state.lifeStage === 'juvenile') {
+      if (this.lifeStage !== 'juvenile') {
+        this.lifeStage = 'juvenile'
+        this.mesh.scale.multiplyScalar(factor)
+      }
+      this.age = Math.max(0, state.ageSec ?? 0)
+      this.motherId = state.motherId
+    } else if (this.lifeStage === 'juvenile') {
+      // Constructed juvenile, saved adult: matured while dormant.
+      this.lifeStage = 'adult'
+      this.motherId = undefined
+      this.mesh.scale.multiplyScalar(1 / factor)
+    }
+  }
+
   private advanceAge(seconds: number): void {
     if (this.lifeStage !== 'juvenile') return
     this.age += seconds
@@ -3092,6 +3124,9 @@ export class AnimalAgent {
       x: this.mesh.position.x,
       z: this.mesh.position.z,
       yaw: this.mesh.rotation.y,
+      ...(this.lifeStage === 'juvenile'
+        ? { lifeStage: 'juvenile' as const, ageSec: this.age, ...(this.motherId ? { motherId: this.motherId } : {}) }
+        : {}),
       health: { current: this.health.currentHp, max: this.health.maxHp, dead: this.health.dead },
       // Persisted as a ratio, not the raw scalar (plan fauna-010 §2) — species
       // now have different `staminaCapacity`, so the raw current value alone
@@ -3138,6 +3173,7 @@ export class AnimalAgent {
    *  from the restored `deathAtDays` — see `advanceAnimalCorpse()`. Never
    *  reports `onDeath` — that already fired, before this save was taken. */
   hydrate(state: AnimalSaveState): void {
+    this.hydrateLifeStage(state)
     this.mesh.position.x = state.x
     this.mesh.position.z = state.z
     this.mesh.rotation.y = state.yaw

@@ -10,6 +10,7 @@ import type {
 import type { AnimalKind } from '../fauna/AnimalAgent'
 import type { SpawnPointState } from '../fauna/AnimalSpawner'
 import type { PersistentOccupantSaveRecord } from '../fauna/persistentOccupants'
+import type { WildFaunaSnapshot } from '../fauna/wildFaunaRecords'
 import type { ContainerKind } from '../items/container'
 import type { InventoryContentsSnapshot, SaveItemInstance } from '../items/Inventory'
 import type { SkillId } from '../player/PlayerSkills'
@@ -358,6 +359,12 @@ export type SaveSpawnPoint = {
   humanTaste?: boolean
   canRecover?: boolean
   lastSettlementTripOpportunityDay?: number | null
+  /** Per-spawner birth cursor (fauna-050 C1.2): next `b<seq>` id; never reused. Absent = 0. */
+  nextBirthSeq?: number
+  /** Respawn timer (fauna-050 C1.7) — previously lost on every save. Absent = 0. */
+  daysSinceLastRespawn?: number
+  /** World-days up to which the spawner lifecycle was advanced (dormant catch-up cursor). */
+  advancedAtDays?: number
 }
 
 /** Persistent drying rack (`world/dryingRacks.ts`'s `DryingRackRecord`) —
@@ -772,7 +779,7 @@ export type SaveWorkContract =
  *  representation or semantics of `SaveData` change — see the plan's
  *  "Future schema-change workflow". Never duplicate this number elsewhere;
  *  `saveState.ts` imports it instead of declaring its own constant. */
-export const CURRENT_SAVE_VERSION = 61
+export const CURRENT_SAVE_VERSION = 62
 
 /** Canonical save contract for the current schema version. This module
  *  intentionally carries no history of schemas from before the v1 hard cut
@@ -978,6 +985,9 @@ export type SaveData = {
   persistentHabitatOccupants?: PersistentOccupantSaveRecord[]
   /** `habitatId:occupantKey` tombstones for persistent habitat occupants. */
   removedPersistentOccupantSlots?: string[]
+  /** Generated wild individuals + initialised-group markers (fauna-050 C1.7, v62).
+   *  Absent = no durable wild population yet: groups run today's deterministic build once. */
+  wildFauna?: WildFaunaSnapshot
   /** Settlement rat infestation state per settlement id (plan
    *  quests-progression-006 / quests-progression-013) — independent
    *  storage-damage and nest-destroyed facts. */
@@ -1561,7 +1571,38 @@ function isSpawnPointsField(value: unknown): value is SaveSpawnPoint[] {
       typeof s.id === 'string' &&
       typeof s.state === 'string' && SPAWN_POINT_STATES.has(s.state) &&
       typeof s.deathsThisCycle === 'number' &&
-      (s.disabledAtDay === null || typeof s.disabledAtDay === 'number')
+      (s.disabledAtDay === null || typeof s.disabledAtDay === 'number') &&
+      (s.nextBirthSeq === undefined || isFiniteNumber(s.nextBirthSeq)) &&
+      (s.daysSinceLastRespawn === undefined || isFiniteNumber(s.daysSinceLastRespawn)) &&
+      (s.advancedAtDays === undefined || isFiniteNumber(s.advancedAtDays))
+    )
+  })
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value)
+}
+
+const WILD_RECORD_ORIGINS: ReadonlySet<string> = new Set(['birth', 'fill', 'immigrant', 'ring'])
+
+function isWildFaunaField(value: unknown): value is WildFaunaSnapshot {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  if (!Array.isArray(v.groups) || !Array.isArray(v.records)) return false
+  const groupsOk = v.groups.every((g) => {
+    if (!g || typeof g !== 'object') return false
+    const r = g as Record<string, unknown>
+    return typeof r.id === 'string' && isFiniteNumber(r.initializedAtDays)
+  })
+  if (!groupsOk) return false
+  return v.records.every((rec) => {
+    if (!isPersistentOccupantSaveRecord(rec)) return false
+    const r = rec as unknown as Record<string, unknown>
+    return (
+      typeof r.origin === 'string' && WILD_RECORD_ORIGINS.has(r.origin) &&
+      (r.sex === 'female' || r.sex === 'male') &&
+      isFiniteNumber(r.advancedAtDays) &&
+      (r.herdId === undefined || typeof r.herdId === 'string')
     )
   })
 }
@@ -3091,6 +3132,7 @@ export function isSaveData(value: unknown): value is SaveData {
   if (v.rats !== undefined && !isRatsField(v.rats)) return false
   if (v.removedRatIds !== undefined && !isRemovedRatIdsField(v.removedRatIds)) return false
   if (v.ratReconcileBuckets !== undefined && !isRatReconcileBucketsField(v.ratReconcileBuckets)) return false
+  if (v.wildFauna !== undefined && !isWildFaunaField(v.wildFauna)) return false
   if (v.persistentHabitatOccupants !== undefined && !isPersistentHabitatOccupantsField(v.persistentHabitatOccupants)) return false
   if (v.removedPersistentOccupantSlots !== undefined && !isRemovedPersistentOccupantSlotsField(v.removedPersistentOccupantSlots)) return false
   if (v.storageInfestation !== undefined && !isStorageInfestationField(v.storageInfestation)) return false
@@ -4605,6 +4647,7 @@ const SAVE_MIGRATIONS: Readonly<Record<number, SaveMigration>> = {
   58: migrateSaveV58ToV59,
   59: migrateSaveV59ToV60,
   60: migrateSaveV60ToV61,
+  61: migrateSaveV61ToV62,
 }
 
 /** v56 → v57 (plan persistence-008): `config.worldgenEpoch = 0` — every save
@@ -4648,6 +4691,14 @@ function migrateSaveV57ToV58(data: unknown): unknown {
  *  `estimated` entry already was — nothing to rewrite, the version only moves. */
 function migrateSaveV60ToV61(data: unknown): unknown {
   return { ...(data as Record<string, unknown>), version: 61 }
+}
+
+/** v61 → v62 (fauna-050 C2): `wildFauna` and the spawn-point `nextBirthSeq` /
+ *  `daysSinceLastRespawn` / `advancedAtDays` fields are new and optional. A group
+ *  without an `initialized` row runs today's deterministic initial build once (one
+ *  last resurrection at migration), after which records are durable. Identity step. */
+function migrateSaveV61ToV62(data: unknown): unknown {
+  return { ...(data as Record<string, unknown>), version: 62 }
 }
 
 /** v59 → v60 (items-player-065, proposal §10.1): `playerEquipment` slot keys →

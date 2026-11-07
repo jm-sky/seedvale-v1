@@ -328,6 +328,31 @@ describe('AnimalAgent', () => {
     })
   })
 
+  describe('juvenile state round-trip (fauna-050 C1.3)', () => {
+    it('carries lifeStage/ageSec/motherId and re-applies the juvenile scale', () => {
+      const adultScale = new AnimalAgent(makeDeps({ animalId: 'deer-adult' })).mesh.scale.x
+      const young = new AnimalAgent(makeDeps({ animalId: 'deer-j', lifeStage: 'juvenile', motherId: 'deer-m' }))
+      // The mother link may already be dropped at construction (no mother among `others`);
+      // the saved link is what `hydrate` restores.
+      const snap = { ...young.snapshot(), motherId: 'deer-m', ageSec: 42 }
+      expect(snap).toMatchObject({ lifeStage: 'juvenile' })
+      const loaded = new AnimalAgent(makeDeps({ animalId: 'deer-j' }))
+      loaded.hydrate(JSON.parse(JSON.stringify(snap)))
+      expect(loaded.mesh.scale.x).toBeCloseTo(young.mesh.scale.x)
+      expect(loaded.snapshot()).toMatchObject({ lifeStage: 'juvenile', motherId: 'deer-m', ageSec: 42 })
+      expect(adultScale).toBeGreaterThan(young.mesh.scale.x - 1e-9)
+    })
+
+    it('an adult snapshot omits the juvenile fields and matures a constructed juvenile', () => {
+      const adult = new AnimalAgent(makeDeps({ animalId: 'deer-a' })).snapshot()
+      expect(adult.lifeStage).toBeUndefined()
+      const grown = new AnimalAgent(makeDeps({ animalId: 'deer-g', lifeStage: 'juvenile', motherId: 'deer-m' }))
+      grown.hydrate(adult)
+      expect(grown.snapshot().lifeStage).toBeUndefined()
+      expect(grown.mesh.scale.x).toBeCloseTo(new AnimalAgent(makeDeps({ animalId: 'x' })).mesh.scale.x)
+    })
+  })
+
   describe('horse given name on player ownership', () => {
     it('assigns a deterministic name to an unnamed horse on transfer', () => {
       const animal = new AnimalAgent(makeDeps({ animalId: 'merchant-horse-home' }))
