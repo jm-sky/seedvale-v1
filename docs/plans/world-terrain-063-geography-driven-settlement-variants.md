@@ -50,7 +50,7 @@ Author field evidence (not a measured baseline): walking the **left-hand road fr
 ## Done when
 
 - Author selected a variant; implemented constants reproduce its census numbers on both seeds.
-- 0 roadless settlements and 1 component of **successfully routed** roads (failed crossings cannot pass; or the author accepted an explained exception) — on non-reference seeds only the Q188-a classes `inlet-detour` / `unresolved` count as explained exceptions; `separate-landmass` must be 0, progression/home-growth guarantees and authored quest hosts hold, access 0 unreachable.
+- 0 roadless settlements and 1 component of **successfully routed** roads (failed crossings cannot pass; or the author accepted an explained exception) — on non-reference seeds only the Q188-a classes `inlet-detour` / `unresolved` count as explained exceptions, **at most 1 settlement per seed** (author 2026-11-07); `separate-landmass` must be 0, progression/home-growth guarantees and authored quest hosts hold, access 0 unreachable.
 - Tests at the existing owners: A → B → A variant identity; main / worker / cold / hydrated settlement defs match.
 - Author route (the road confirmed in queue Q132) reported before/after (hours, ratio, detour causes, timed walk).
 - Caches bumped; notes + `docs/state/` settlement/world docs updated; queue Q61 un-deferred.

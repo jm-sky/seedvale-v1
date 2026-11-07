@@ -191,6 +191,7 @@ Seeds 7 / 1234 at today's 22@1150 have 4 / 3 routed components (V2 spot seeds). 
 
 - **Q127-G5 → variant B:** 25 settlements, start spacing 950 m, suitability weight `none`. Priority **balance** — a living world with reachable settlements while keeping exploration and wild land. The neighbour-median drop of **−8…−12 %** is accepted in place of the earlier −25…−40 % target (plan §Goal / §V3 priority 2 are superseded by this). **Lipowy Parów need not keep its location or name.** Hard constraint: no loss of correctness of quests, NPCs, relationships and identity of existing entities.
 - **Q188-a → (a):** remove incidental settlements on islands detached from the home landmass; **no multi-kilometre road detours** (no 900 m / 1800 m router rung); geographically justified exceptions may stay but must be **explicitly classified**; no additional transport systems now.
+- **Q188-a tolerance (author, 2026-11-07, follow-up):** „Dopuszczam 1 osadę bez drogi, ale raczej nie na wyspie, bo jest za mała” → at most **1 settlement per world** outside the home routed component (an explained `inlet-detour` / `unresolved` exception); islands stay excluded (`separate-landmass` = 0). A two-site inlet component counts as 2.
 - **Q186-a → delegated** to the agent: choose the island-detection technique; keep correctness and determinism; avoid unnecessary worldgen cost. Choice below (§Q186-a).
 
 ### Q186-a — chosen technique (Opus)
@@ -208,7 +209,7 @@ Rejected: **(b) 36 m step** (can bridge < 36 m straits → wrong verdicts, viola
 
 ### Q188-a — exception classes (census, explicit)
 
-`census-travel` / `settlement-variants` report every routed component other than home's with a class per unrouted layout pair: **`separate-landmass`** (must be **0** after the new filter — otherwise stop), **`inlet-detour`** (same landmass, route only in a > 450 m box — explained exception, stays; not routed by a wider box), **`unresolved`** (same landmass, no route ≤ 1800 m — explained exception, listed with ids), plus **`unproven`** rejections from §Q186-a 3. Reference seeds 42 / 415424794: expected 0 in every class (verify); spot seeds 7 / 1234 listed in the V4 notes. No router change, no transport system.
+`census-travel` / `settlement-variants` report every routed component other than home's with a class per unrouted layout pair: **`separate-landmass`** (must be **0** after the new filter — otherwise stop), **`inlet-detour`** (same landmass, route only in a > 450 m box — explained exception, stays; not routed by a wider box), **`unresolved`** (same landmass, no route ≤ 1800 m — explained exception, listed with ids), plus **`unproven`** rejections from §Q186-a 3. **Limit (author follow-up): ≤ 1 settlement per seed** outside the home routed component, summed over `inlet-detour` + `unresolved`. If a census seed exceeds it after V4, the excess is fixed **layout-side** (deterministic, cost-bounded rejection/replacement of the site — e.g. prefer a cell on the home-connected shore), never by a wider router box or a multi-km detour; V4 stops and hands that design to O. Reference seeds 42 / 415424794: expected 0 in every class (verify); spot seeds 7 / 1234 listed in the V4 notes. No router change, no transport system.
 
 ### V4 pre-check — compatibility with existing contracts and performance (Opus, 2026-11-07)
 
