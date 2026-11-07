@@ -1505,7 +1505,7 @@ export async function createSettlementsManager(
 
   function resolveTravelAndTransportCheckpoints(nowDays: number, dayLengthSec: number): void {
     if (transportOrders) resolveOffscreenTransportArrivals(transportOrders, offscreenTransportLookup, nowDays)
-    npcStates.forEach((state) => resolveNpcTravelCheckpoint(state, nowDays, dayLengthSec))
+    npcStates.forEach((state) => resolveNpcTravelCheckpoint(state, nowDays, dayLengthSec, destinationThreat?.offscreenTravel))
     if (transportOrders) {
       resolveTransportTravelArrivals(
         transportOrders,
@@ -1546,7 +1546,7 @@ export async function createSettlementsManager(
       }
       animalCollections.push(detachedLivestock)
       visitUniqueAnimalsById(animalCollections, (animal) => animal.resolveTimeSkip(elapsedSeconds))
-      npcStates.forEach((state) => resolveNpcTravelCheckpoint(state, nowDays, dayLengthSec))
+      npcStates.forEach((state) => resolveNpcTravelCheckpoint(state, nowDays, dayLengthSec, destinationThreat?.offscreenTravel))
       if (transportOrders) {
         resolveTransportTravelArrivals(
           transportOrders,

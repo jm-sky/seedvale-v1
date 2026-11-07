@@ -18,7 +18,7 @@ export function lerp(a: number, b: number, t: number): number {
 }
 
 /** Effective population cap while `pressure > 0`; baseline config unchanged. */
-export function effectiveMaxPreyCount(spawner: PreySpawner): number {
+export function effectiveMaxPreyCount(spawner: Pick<PreySpawner, 'type' | 'pressure' | 'maxPreyCount'>): number {
   if (spawner.type !== 'wolfDen' || spawner.pressure <= 0) return spawner.maxPreyCount
   return spawner.maxPreyCount + Math.round(spawner.pressure * 4)
 }

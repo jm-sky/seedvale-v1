@@ -1,3 +1,4 @@
+import type { OffscreenTravelThreats } from '../ai/npcTravelCheckpoint'
 import type { HumanDangerConfig } from './animalDefs'
 import type { Fauna } from './createFauna'
 import { resolveHumanDangerProjection } from './animalHumanDanger'
@@ -27,6 +28,9 @@ export type SettlementDestinationThreatHooks = {
    *  animals and any animal whose projected `humanDanger` resolves to `0`
    *  (harmless prey/livestock) — callers never need their own filtering. */
   queryThreats: (centerX: number, centerZ: number, radius: number) => readonly DestinationAnimalThreat[]
+  /** Offscreen travel threat bubble over dormant wild records (fauna-050 C3), consumed by
+   *  `resolveNpcTravelCheckpoint`. Same late-bound fauna accessor as `queryThreats`. */
+  offscreenTravel?: OffscreenTravelThreats
 }
 
 /** Pure filter/map step factored out of `createDestinationThreatHooks` for
@@ -73,6 +77,13 @@ export function createDestinationThreatHooks(getFauna: () => Fauna | null): Sett
       const fauna = getFauna()
       if (!fauna) return []
       return collectDestinationThreats(fauna.getAgents(), centerX, centerZ, radius)
+    },
+    offscreenTravel: {
+      resolve(query) {
+        const fauna = getFauna()
+        if (!fauna) return { partyDamage: 0, settledAtDays: query.toDays }
+        return fauna.resolveOffscreenTravelThreats(query)
+      },
     },
   }
 }

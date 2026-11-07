@@ -2501,6 +2501,7 @@ function isNpcTravelContinuity(value: unknown): boolean {
     }
   }
   if (t.survivalResolvedAtDays !== undefined && typeof t.survivalResolvedAtDays !== 'number') return false
+  if (t.threatResolvedAtDays !== undefined && typeof t.threatResolvedAtDays !== 'number') return false
   if (t.arrival !== undefined && t.arrival !== 'reached') return false
   if (t.blocked !== undefined && typeof t.blocked !== 'boolean') return false
   return true

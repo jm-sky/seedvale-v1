@@ -1250,6 +1250,7 @@ function createEmptyFauna(): Fauna {
     update: () => {},
     dispose: () => {},
     resolveTimeSkip: () => {},
+    resolveOffscreenTravelThreats: (query) => ({ partyDamage: 0, settledAtDays: query.toDays }),
     getAgents: () => [],
     getSpawners: () => [],
     snapshotSpawnPoints: () => [],

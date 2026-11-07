@@ -40,6 +40,9 @@ export type NpcTravelContinuity = {
   purpose?: NpcTravelPurpose
   /** Last world-days the generic off-screen survival checkpoint settled. */
   survivalResolvedAtDays?: number
+  /** Last world-days the off-screen threat bubble settled (fauna-050 C3) — idempotent cursor,
+   *  same role as `survivalResolvedAtDays`; absent = since departure. */
+  threatResolvedAtDays?: number
   /** Logical arrival waiting for an idempotent caller observation. */
   arrival?: 'reached'
   /** Neutral stall: authoritative state cannot continue this journey. */
@@ -84,6 +87,7 @@ export function cloneNpcTravel(
       : undefined,
     purpose: cloneNpcTravelPurpose(travel.purpose),
     survivalResolvedAtDays: travel.survivalResolvedAtDays,
+    threatResolvedAtDays: travel.threatResolvedAtDays,
     arrival: travel.arrival,
     blocked: travel.blocked,
   }
@@ -95,11 +99,12 @@ function lerp(from: number, to: number, t: number): number {
 
 function copyMeta(travel: NpcTravelContinuity | null | undefined): Pick<
   NpcTravelContinuity,
-  'purpose' | 'survivalResolvedAtDays' | 'arrival' | 'blocked'
+  'purpose' | 'survivalResolvedAtDays' | 'threatResolvedAtDays' | 'arrival' | 'blocked'
 > {
   return {
     purpose: cloneNpcTravelPurpose(travel?.purpose),
     survivalResolvedAtDays: travel?.survivalResolvedAtDays,
+    threatResolvedAtDays: travel?.threatResolvedAtDays,
     arrival: travel?.arrival,
     blocked: travel?.blocked,
   }
@@ -171,6 +176,7 @@ export function beginOffscreenNpcTravel(
       lastPosition: { ...from },
       ...meta,
       survivalResolvedAtDays: meta.survivalResolvedAtDays ?? nowDays,
+      threatResolvedAtDays: meta.threatResolvedAtDays ?? nowDays,
       arrival: meta.purpose ? 'reached' : meta.arrival,
     }
   }
@@ -184,6 +190,7 @@ export function beginOffscreenNpcTravel(
     },
     ...meta,
     survivalResolvedAtDays: meta.survivalResolvedAtDays ?? nowDays,
+    threatResolvedAtDays: meta.threatResolvedAtDays ?? nowDays,
   }
 }
 
@@ -233,6 +240,7 @@ export function markNpcTravelReached(travel: NpcTravelContinuity): NpcTravelCont
     lastPosition: { ...travel.destination },
     purpose: cloneNpcTravelPurpose(travel.purpose),
     survivalResolvedAtDays: travel.survivalResolvedAtDays,
+    threatResolvedAtDays: travel.threatResolvedAtDays,
     arrival: 'reached',
     blocked: travel.blocked,
   }
@@ -248,6 +256,7 @@ export function blockNpcTravel(
     lastPosition: { ...lastPosition },
     purpose: cloneNpcTravelPurpose(travel.purpose),
     survivalResolvedAtDays: travel.survivalResolvedAtDays,
+    threatResolvedAtDays: travel.threatResolvedAtDays,
     arrival: travel.arrival,
     blocked: true,
   }

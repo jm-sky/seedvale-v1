@@ -1,5 +1,6 @@
 import { Group, type Object3D, type Scene, type Vector3 } from 'three'
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js'
+import type { OffscreenTravelThreatQuery, OffscreenTravelThreatResult } from '../ai/npcTravelCheckpoint'
 import type { ColliderSource, HeightSampler, RuntimeGroundSampler } from '../player/PlayerController'
 import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { LocalWaterSample } from '../terrain/waterSample'
@@ -30,7 +31,8 @@ import { DRY_WATER_SAMPLE } from '../terrain/waterSample'
 import { labelOpacityForDistance } from '../ui/labelDistance'
 import { skyParamsFromTime } from '../world/dayNight'
 import { createSeededRandom } from '../world/parseSeed'
-import { gameHoursToRealSeconds } from '../world/timeConversion'
+import { gameHoursToGameDays, gameHoursToRealSeconds } from '../world/timeConversion'
+import { DEFAULT_DAY_LENGTH_SEC } from '../world/travelUnits'
 import {
   ANIMAL_DEFS,
   AnimalAgent,
@@ -47,6 +49,7 @@ import {
   type AnimalHabitatBinding,
   resolveAnimalCaveHabitat,
 } from './animalCaveHabitat'
+import { resolveHumanDangerProjection } from './animalHumanDanger'
 import { findSettlementOutskirtsDestination } from './animalRoaming'
 import {
   defaultSpawnPointScenarioFields,
@@ -69,10 +72,10 @@ import {
   type ClosedSettlementSite,
   resolveClosedPredatorPressure,
 } from './closedPredatorPressure'
+import { damageVsHuman } from './faunaCombat'
 import { faunaEventRandom } from './faunaEventRandom'
 import {
   CarriedSpawnerStore,
-  catchUpSpawnerLifecycle,
   ENGAGED_DEMATERIALIZE_TIMEOUT_SEC,
   type FaunaHabitatGroupInput,
   isGroupEngaged,
@@ -85,6 +88,14 @@ import {
   type HabitatPressureSnapshot,
   resolveHabitatPressure,
 } from './habitatPressure'
+import {
+  resolveOffscreenTravelEncounter,
+  THREAT_BUBBLE_RADIUS,
+  THREAT_MAX_ENGAGED,
+  THREAT_STEP_DAYS,
+  threatEncounterChance,
+  threatStepIndices,
+} from './offscreenTravelThreats'
 import {
   createPersistentOccupantRegistry,
   ordinaryHabitatCapacity,
@@ -123,6 +134,15 @@ import {
   wildSexFromRoll,
 } from './wildFaunaRecords'
 import {
+  advanceWildHabitat,
+  type AdvanceWildHabitatInput,
+  advanceWildRecords,
+  freshWildAnimalState,
+  planWildCreation,
+  type WildCreationMember,
+  type WildFaunaEvent,
+} from './wildHabitatAdvance'
+import {
   activateWolfDenProblem,
   canOfferSettlementTrip,
   effectiveMaxPreyCount,
@@ -159,8 +179,6 @@ type HabitatGroupRecord = {
   materialized: boolean
   spawnerIds: Set<string>
   ringAnimalIds: Set<string>
-  /** Virtual bound counts from the lazy catch-up, consumed by the population fill. */
-  virtualBounds: Map<string, number>
   /** True when this group's initial ring/fill already exists as durable records (fauna-050 C2):
    *  the build then replays nothing and dormant records are promoted instead. */
   fromRecords: boolean
@@ -256,6 +274,10 @@ export type Fauna = {
    *  period — see `AnimalAgent.resolveTimeSkip`'s own doc for why a single
    *  one-shot call (not a stepped replay like NPC's) is sufficient here. */
   resolveTimeSkip: (hours: number, dayLengthSec: number) => void
+  /** Offscreen travel threat bubble (fauna-050 C3): resolves the dormant wild records near a
+   *  traveller's path for one interval and writes predator outcomes back (HP, death with spawner
+   *  accounting, position). Loaded animals use the live threat path and are never touched here. */
+  resolveOffscreenTravelThreats: (query: OffscreenTravelThreatQuery) => OffscreenTravelThreatResult
   getAgents: () => AnimalAgent[]
   /** LIVE spawners only (materialized groups). Use `snapshotSpawnPoints()` for saving. */
   getSpawners: () => readonly PreySpawner[]
@@ -725,6 +747,31 @@ export async function createFauna(
    *  `spawnPointId`. Cause-independent (player, predator, life-need
    *  starvation): `AnimalAgent.collapse()` is the single call site regardless
    *  of what triggered it. */
+  /** Spawner death accounting (plan 125 §4) — the ONE body shared by a live death
+   *  (`handleAnimalDeath`) and a dormant bubble death (fauna-050 C3, C1.5). A spawner that is not live is
+   *  updated in its carried state, using the group plan's spec for the capacity. */
+  const accountSpawnerDeath = (spawnerId: string): void => {
+    const spawner = spawnerById.get(spawnerId)
+    if (spawner) {
+      if (spawner.state === 'active') {
+        spawner.deathsThisCycle++
+        if (shouldDeplete(spawner.deathsThisCycle, effectiveMaxPreyCount(spawner))) spawner.state = 'depleted'
+      }
+      return
+    }
+    const entry = carried.peek(spawnerId)
+    if (!entry || entry.saved.state !== 'active') return
+    let spec: { type: PreySpawner['type'], maxPreyCount: number } | undefined
+    for (const group of groups.values()) {
+      const planned = group.plan?.spawners.find((p) => p.id === spawnerId)
+      if (planned) spec = planned.spec
+    }
+    if (!spec) return
+    entry.saved.deathsThisCycle++
+    const view = { type: spec.type, maxPreyCount: spec.maxPreyCount, pressure: entry.saved.pressure ?? 0 }
+    if (shouldDeplete(entry.saved.deathsThisCycle, effectiveMaxPreyCount(view))) entry.saved.state = 'depleted'
+  }
+
   const handleAnimalDeath = (animalId: string): void => {
     for (const [denId, travellerId] of settlementTripAnimalBySpawner) {
       if (travellerId === animalId) settlementTripAnimalBySpawner.delete(denId)
@@ -732,11 +779,7 @@ export async function createFauna(
     const spawnerId = animalToSpawner.get(animalId)
     if (spawnerId) {
       animalToSpawner.delete(animalId)
-      const spawner = spawnerById.get(spawnerId)
-      if (spawner && spawner.state === 'active') {
-        spawner.deathsThisCycle++
-        if (shouldDeplete(spawner.deathsThisCycle, effectiveMaxPreyCount(spawner))) spawner.state = 'depleted'
-      }
+      accountSpawnerDeath(spawnerId)
     }
     onAnimalDeath?.(animalId)
   }
@@ -809,6 +852,8 @@ export async function createFauna(
    *  is authoritative otherwise. Never two agents per record. */
   const wildRegistry = new WildFaunaRegistry(initialPersistentOccupants?.wild)
   const wildMeta = new Map<string, WildMeta>()
+  /** Real seconds per game day for dormant/skip advance; learned from `resolveTimeSkip`, default otherwise. */
+  let knownDayLengthSec = DEFAULT_DAY_LENGTH_SEC
   occupantRegistry.registerDeclarations(occupantDecls)
   const reservedPersistentSlots = occupantRegistry.slotCountsByHabitatId()
   /** Fauna-owned cave habitat bindings (plan fauna-019), keyed by
@@ -882,18 +927,19 @@ export async function createFauna(
     })
   }
 
-  /** Creates the next durable `b<seq>` individual of a spawner (initial fill, respawn, birth). */
+  /** Creates the next durable `b<seq>` individual of a spawner (initial fill, respawn, birth, immigration). */
   const spawnBirth = (
     spawner: PreySpawner,
     x: number,
     z: number,
     origin: WildRecordOrigin,
     variant?: AnimalVariant,
+    juvenileOf?: string,
   ): AnimalAgent => {
     const seq = spawner.nextBirthSeq ?? 0
     spawner.nextBirthSeq = seq + 1
     return spawnAgent(
-      spawner.kind, x, z, undefined, undefined, undefined, spawner.id,
+      spawner.kind, x, z, undefined, juvenileOf ? 'juvenile' : undefined, juvenileOf, spawner.id,
       birthAnimalId(spawner.id, seq), undefined, variant,
       { habitatId: spawner.id, occupantKey: `b${seq}`, origin },
     )
@@ -988,7 +1034,7 @@ export async function createFauna(
   /** Materializes one planned habitat spawner (state restore, terrain carve/scorch,
    *  prop, label). Runs inside the planner's per-site hook so carving keeps
    *  influencing the next site's samples, as in the inline home build. */
-  const materializeSpawner = (planned: PlannedHabitatSpawner, group: HabitatGroupRecord, nowDays: number): void => {
+  const materializeSpawner = (planned: PlannedHabitatSpawner, group: HabitatGroupRecord): void => {
     const { spec } = planned
     const pos = { x: planned.x, z: planned.z }
     const spawner: PreySpawner = {
@@ -1003,15 +1049,9 @@ export async function createFauna(
       depletedRecoveryDays: 0,
       ...defaultSpawnPointScenarioFields(spec.type),
     }
-    const carriedEntry = carried.take(spawner.id)
-    restoreSpawnPointState(spawner, carriedEntry?.saved)
-    if (carriedEntry?.runtime) {
-      // Lazy day catch-up for the time this group was unloaded (plan fauna-050 F2).
-      group.virtualBounds.set(
-        spawner.id,
-        catchUpSpawnerLifecycle(spawner, carriedEntry.runtime, nowDays, occupantRegistry.slotCountFor(spawner.id)),
-      )
-    }
+    // The dormant catch-up for the time this group was unloaded runs in `restoreGroupFromRecords`
+    // (`advanceWildHabitat`, fauna-050 C3) from the cursor `advancedAtDays` restored here.
+    restoreSpawnPointState(spawner, carried.take(spawner.id)?.saved)
     group.spawnerIds.add(spawner.id)
     spawnerGroupById.set(spawner.id, group)
     spawners.push(spawner)
@@ -1132,15 +1172,14 @@ export async function createFauna(
 
   /** Fills a freshly (re)materialized group's spawners from the carried/virtual state. */
   const fillGroupPopulation = (group: HabitatGroupRecord): void => {
-    // Records already exist: `restoreGroupFromRecords` consumes the caught-up bounds instead.
+    // Records already exist: `restoreGroupFromRecords` advances and promotes them instead.
     if (group.fromRecords) return
     for (const id of group.spawnerIds) {
       const habitat = spawnerById.get(id)
       if (!habitat) continue
-      const count = materializedPopulation(habitat, group.virtualBounds.get(id), occupantRegistry.slotCountFor(id))
+      const count = materializedPopulation(habitat, occupantRegistry.slotCountFor(id))
       spawnHabitatPopulation(habitat, count, group.pinned)
     }
-    group.virtualBounds.clear()
   }
 
   /** Re-creates a dormant record's agent (fauna-050 C1.8): same durable id and constructor
@@ -1160,28 +1199,120 @@ export async function createFauna(
     if (isRing) group.ringAnimalIds.add(agent.animalId)
   }
 
-  /** Promotes every dormant record inside the group's activation disk, then tops a carried
-   *  spawner up to its caught-up population with new births (interim until C3 `advance`). */
-  const restoreGroupFromRecords = (group: HabitatGroupRecord, denRing: readonly [number, number]): void => {
+  /** Placement + initial state of one creation decided by `advanceWildHabitat` (fauna-050 C3):
+   *  a juvenile next to its mother, or an adult immigrant at the spawner. `null` = no valid dry spot. */
+  const createWildRecord: AdvanceWildHabitatInput['createRecord'] = ({ spawner, seq, origin, atDays, sex, mother, rng }) => {
+    const centre = mother ? { x: mother.state.x, z: mother.state.z } : spawner
+    const spot = resolveWildFaunaSpawnPosition(
+      findWalkableNear(centre.x, centre.z, 0, 4, undefined, 24, rng),
+      spawner,
+      drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
+    )
+    if (!spot) return null
+    const animalId = birthAnimalId(spawner.id, seq)
+    return {
+      habitatId: spawner.id,
+      occupantKey: `b${seq}`,
+      animalId,
+      kind: spawner.kind,
+      origin,
+      sex,
+      ...(spawner.humanTaste ? { humanTaste: true } : {}),
+      state: freshWildAnimalState({
+        kind: spawner.kind,
+        x: spot.x,
+        z: spot.z,
+        yaw: rng() * Math.PI * 2,
+        lifeOffset: faunaEventRandom(seed, `life:${animalId}`)(),
+        juvenileOf: mother?.animalId,
+      }),
+      advancedAtDays: atDays,
+    }
+  }
+
+  /** Alive animals of `kind` near a point from habitats other than `habitatId` (live agents + dormant
+   *  records): the recovery predicate's "neighbour" share (R3). */
+  const countKindNearOutside = (habitatId: string) => (kind: string, x: number, z: number, r: number): number => {
+    let n = 0
+    const live = new Set<string>()
+    for (const a of agents) {
+      live.add(a.animalId)
+      if (a.isDead() || a.def.kind !== kind || a.spawnPointId === habitatId) continue
+      if (Math.hypot(a.mesh.position.x - x, a.mesh.position.z - z) < r) n++
+    }
+    for (const rec of wildRegistry.all()) {
+      if (live.has(rec.animalId) || rec.habitatId === habitatId || rec.kind !== kind || rec.state.health.dead) continue
+      if (Math.hypot(rec.state.x - x, rec.state.z - z) < r) n++
+    }
+    return n
+  }
+
+  /** Applies advance events to the registry (removals have no tombstone, C1.5). */
+  const applyWildEvents = (events: readonly WildFaunaEvent[]): void => {
+    for (const e of events) {
+      if (e.kind === 'removal') wildRegistry.remove(e.animalId)
+      else if (e.kind === 'birth' || e.kind === 'immigration') wildRegistry.set(e.record)
+    }
+  }
+
+  /** ONE advance path (C3) for a set of spawners and the loose (ring) records of their groups:
+   *  `spawner.advancedAtDays ?? fromFallback` -> `toDays`. Registry records must be dormant
+   *  (live agents refreshed into it first). Returns every applied event. */
+  const advanceHabitats = (
+    set: readonly PreySpawner[],
+    looseHabitatIds: readonly string[],
+    toDays: number,
+    fromFallback: number | undefined,
+  ): WildFaunaEvent[] => {
+    const applied: WildFaunaEvent[] = []
+    for (const spawner of [...set].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+      const fromDays = spawner.advancedAtDays ?? fromFallback
+      if (fromDays === undefined) continue
+      const { events } = advanceWildHabitat({
+        spawner,
+        records: wildRegistry.forHabitat(spawner.id),
+        fromDays,
+        toDays,
+        seed,
+        dayLengthSec: knownDayLengthSec,
+        countKindNear: countKindNearOutside(spawner.id),
+        reservedPersistentSlots: occupantRegistry.slotCountFor(spawner.id),
+        createRecord: createWildRecord,
+      })
+      // Lifecycle cursor lives only while dormant: a live spawner must not carry a stale one into a save.
+      delete spawner.advancedAtDays
+      applyWildEvents(events)
+      applied.push(...events)
+    }
+    for (const id of looseHabitatIds) {
+      const loose = wildRegistry.forHabitat(id)
+      const events = advanceWildRecords(loose, toDays, knownDayLengthSec)
+      applyWildEvents(events)
+      applied.push(...events)
+    }
+    return applied
+  }
+
+  /** Advances a group's dormant records to `nowDays` (when known), then promotes every dormant record
+   *  inside the group's activation disk (fauna-050 C1.8 + C3). */
+  const restoreGroupFromRecords = (
+    group: HabitatGroupRecord,
+    denRing: readonly [number, number],
+    nowDays?: number,
+  ): void => {
+    if (nowDays !== undefined) {
+      advanceHabitats(
+        [...group.spawnerIds].flatMap((id) => spawnerById.get(id) ?? []),
+        [ringHabitatId(group.id)],
+        nowDays,
+        undefined,
+      )
+    }
     const live = new Set(agents.map((a) => a.animalId))
     const radius = group.footprintRadius + denRing[1] + ACTIVATION_MARGIN
     for (const record of wildRegistry.inDisk(group.center.x, group.center.z, radius, (id) => !live.has(id))) {
       promoteRecord(record, group)
     }
-    for (const id of group.spawnerIds) {
-      const habitat = spawnerById.get(id)
-      const virtual = group.virtualBounds.get(id)
-      if (!habitat || virtual === undefined) continue
-      const target = materializedPopulation(habitat, virtual, occupantRegistry.slotCountFor(id))
-      const alive = wildRegistry.forHabitat(id).filter((r) => !r.state.health.dead).length
-      for (let i = alive; i < target; i++) {
-        const spot = findBirthSpot(habitat, 0, 4) ?? habitat
-        const agent = spawnBirth(habitat, spot.x, spot.z, 'birth')
-        scene.add(agent.mesh)
-        agents.push(agent)
-      }
-    }
-    group.virtualBounds.clear()
   }
 
   const doMaterializeGroup = (input: FaunaHabitatGroupInput, nowDays: number): void => {
@@ -1197,7 +1328,6 @@ export async function createFauna(
         materialized: false,
         spawnerIds: new Set(),
         ringAnimalIds: new Set(),
-        virtualBounds: new Map(),
         fromRecords: wildRegistry.isGroupInitialized(input.groupId),
       }
       groups.set(input.groupId, group)
@@ -1207,7 +1337,7 @@ export async function createFauna(
     if (target.plan) {
       // Same sites as the first time: replay the cached plan, no re-sampling of (possibly carved) terrain.
       spawnRing(target.plan.ring, target)
-      for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
+      for (const planned of target.plan.spawners) materializeSpawner(planned, target)
     } else {
       // Plan against frozen inputs (no per-site hooks), then apply ring and terrain edits,
       // so a site's carving never feeds the next site's samples (review 035 R7).
@@ -1231,10 +1361,10 @@ export async function createFauna(
         denAvoidPoints,
       })
       spawnRing(target.plan.ring, target)
-      for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
+      for (const planned of target.plan.spawners) materializeSpawner(planned, target)
     }
     fillGroupPopulation(target)
-    if (target.fromRecords) restoreGroupFromRecords(target, input.denRing ?? HOME_DEN_RING)
+    if (target.fromRecords) restoreGroupFromRecords(target, input.denRing ?? HOME_DEN_RING, nowDays)
     else {
       wildRegistry.markGroupInitialized(target.id, nowDays)
       target.fromRecords = true
@@ -1254,11 +1384,7 @@ export async function createFauna(
     for (const id of group.spawnerIds) {
       const spawner = spawnerById.get(id)
       if (!spawner) continue
-      let bound = 0
-      for (const a of members) {
-        if (!a.isDead() && a.def.kind === spawner.kind && a.spawnPointId === id && !occupantRegistry.hasPersistentAnimalId(a.animalId)) bound++
-      }
-      carried.carry(spawner, bound, nowDays)
+      carried.carry(spawner, nowDays)
       const index = spawners.indexOf(spawner)
       if (index >= 0) spawners.splice(index, 1)
       spawnerById.delete(id)
@@ -1275,7 +1401,6 @@ export async function createFauna(
     agents = agents.filter((a) => !memberSet.has(a))
     group.spawnerIds.clear()
     group.ringAnimalIds.clear()
-    group.virtualBounds.clear()
     group.materialized = false
   }
 
@@ -1294,7 +1419,6 @@ export async function createFauna(
     materialized: true,
     spawnerIds: new Set(),
     ringAnimalIds: new Set(),
-    virtualBounds: new Map(),
     fromRecords: animalsOn && wildRegistry.isGroupInitialized(settlementId),
   }
   groups.set(settlementId, homeGroup)
@@ -1314,7 +1438,7 @@ export async function createFauna(
     sampleForestFactor,
     denAvoidPoints,
     onRingPlanned: (ring) => spawnRing(ring, homeGroup),
-    onSpawnerPlaced: (planned) => materializeSpawner(planned, homeGroup, 0),
+    onSpawnerPlaced: (planned) => materializeSpawner(planned, homeGroup),
   })
   homeGroup.plan = plan
   placedSpawnPoints.push(...plan.placedSpawnPoints)
@@ -1677,13 +1801,24 @@ export async function createFauna(
         }
       }
       const materializeManagedSpawnerAnimal = (spawner: PreySpawner): boolean => {
+        // Same birth-vs-immigration rule as the dormant `advanceWildHabitat` (fauna-050 C3, Q160-a (b)).
+        const members: WildCreationMember[] = []
+        const byId = new Map<string, AnimalAgent>()
+        for (const a of agents) {
+          if (a.spawnPointId !== spawner.id || occupantRegistry.hasPersistentAnimalId(a.animalId)) continue
+          byId.set(a.animalId, a)
+          members.push({ animalId: a.animalId, kind: a.def.kind, sex: a.sex, alive: !a.isDead(), juvenile: a.isJuvenile() })
+        }
+        const plan = planWildCreation(spawner, spawner.nextBirthSeq ?? 0, members, seed)
+        const mother = plan.origin === 'birth' ? byId.get(plan.mother.animalId) : undefined
+        const centre = mother ? { x: mother.mesh.position.x, z: mother.mesh.position.z } : spawner
         const pos = resolveWildFaunaSpawnPosition(
-          findBirthSpot(spawner, 0, 4),
+          findWalkableNear(centre.x, centre.z, 0, 4, undefined, 24, plan.rng),
           spawner,
           drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
         )
         if (!pos) return false
-        const agent = spawnBirth(spawner, pos.x, pos.z, 'birth')
+        const agent = spawnBirth(spawner, pos.x, pos.z, plan.origin, undefined, mother?.animalId)
         scene.add(agent.mesh)
         agents.push(agent)
         boundOccupancyCounts.set(spawner.id, (boundOccupancyCounts.get(spawner.id) ?? 0) + 1)
@@ -1734,7 +1869,7 @@ export async function createFauna(
                   drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
                 )
                 if (!spot) break
-                const agent = spawnBirth(spawner, spot.x, spot.z, 'birth')
+                const agent = spawnBirth(spawner, spot.x, spot.z, 'immigrant')
                 scene.add(agent.mesh)
                 agents.push(agent)
                 nearby++
@@ -1785,9 +1920,112 @@ export async function createFauna(
         entry.el.style.opacity = String(opacity)
       }
     },
+    resolveOffscreenTravelThreats(query) {
+      let hp = query.party.hp
+      let total = 0
+      let diedAtDays: number | undefined
+      const live = new Set(agents.map((a) => a.animalId))
+      for (const k of threatStepIndices(query.fromDays, query.toDays)) {
+        const atDays = k * THREAT_STEP_DAYS
+        const at = query.positionAt(atDays)
+        const candidates: { record: WildFaunaRecord, danger: number, distance: number }[] = []
+        for (const record of wildRegistry.all()) {
+          const state = record.state
+          if (live.has(record.animalId) || state.health.dead || state.lifeStage === 'juvenile') continue
+          const danger = resolveHumanDangerProjection({
+            humanDanger: ANIMAL_DEFS[record.kind].humanDanger,
+            aggressive: state.rabid === true,
+            dangerSignificance: 1,
+          })
+          if (danger <= 0) continue
+          const distance = Math.hypot(state.x - at.x, state.z - at.z)
+          if (distance <= THREAT_BUBBLE_RADIUS) candidates.push({ record, danger, distance })
+        }
+        if (candidates.length === 0) continue
+        candidates.sort((a, b) => a.distance - b.distance || (a.record.animalId < b.record.animalId ? -1 : 1))
+        const engaged = candidates.slice(0, THREAT_MAX_ENGAGED)
+        const rng = faunaEventRandom(seed, `threat:${query.npcId}:${k}`)
+        if (rng() >= threatEncounterChance(engaged.map((c) => c.danger))) continue
+        const outcome = resolveOffscreenTravelEncounter(
+          { hp, meleeDamage: query.party.meleeDamage, partySize: query.party.partySize },
+          engaged.map((c) => ({ id: c.record.animalId, hp: c.record.state.health.current, biteDamage: damageVsHuman(c.record.kind) })),
+          rng,
+        )
+        for (const fate of outcome.predators) {
+          const record = wildRegistry.get(fate.id)
+          if (!record) continue
+          const state = record.state
+          state.x = at.x
+          state.z = at.z
+          if (fate.damage > 0) {
+            state.health = { ...state.health, current: Math.max(0, state.health.current - fate.damage) }
+            state.physicalInjury = (state.physicalInjury ?? 0) + fate.damage
+            state.injuryRecoveryUpdatedAtDays = atDays
+          }
+          if (fate.dead) {
+            state.health = { ...state.health, current: 0, dead: true }
+            state.corpse = { deathAtDays: atDays, meatHarvested: false }
+            // Same accounting as a live death: spawner deaths/depletion, then the quest hook (C1.5).
+            if (record.origin !== 'ring') accountSpawnerDeath(record.habitatId)
+            onAnimalDeath?.(record.animalId)
+          }
+        }
+        hp -= outcome.partyDamage
+        total += outcome.partyDamage
+        if (outcome.partyDied) {
+          diedAtDays = atDays
+          break
+        }
+      }
+      return { partyDamage: total, settledAtDays: diedAtDays ?? query.toDays, ...(diedAtDays !== undefined ? { diedAtDays } : {}) }
+    },
     resolveTimeSkip(hours, dayLengthSec) {
       const elapsedSeconds = gameHoursToRealSeconds(hours, dayLengthSec)
-      for (const a of agents) a.resolveTimeSkip(elapsedSeconds)
+      knownDayLengthSec = dayLengthSec
+      if (lastWorldDays === null || !(hours > 0)) {
+        for (const a of agents) a.resolveTimeSkip(elapsedSeconds)
+        return
+      }
+      // Wild records take the ONE common transition (fauna-050 C3): snapshot -> advance -> hydrate.
+      const fromDays = lastWorldDays
+      const toDays = fromDays + gameHoursToGameDays(hours)
+      for (const a of agents) {
+        if (!wildMeta.has(a.animalId)) a.resolveTimeSkip(elapsedSeconds)
+        else if (a.isDead()) a.resolveTimeSkip(elapsedSeconds)
+      }
+      for (const a of agents) {
+        const record = recordOf(a, fromDays)
+        if (record) wildRegistry.set(record)
+      }
+      const liveSet = agents.filter((a) => wildMeta.has(a.animalId))
+      const habitatSet = spawners
+      for (const spawner of habitatSet) spawner.advancedAtDays = fromDays
+      const looseIds = [...groups.values()].filter((g) => g.materialized).map((g) => ringHabitatId(g.id))
+      const events = advanceHabitats(habitatSet, looseIds, toDays, fromDays)
+      lastWorldDays = toDays
+      // Back to the projections: hydrate survivors in place, drop removed, promote new records.
+      const removed = new Set(events.flatMap((e) => (e.kind === 'removal' ? [e.animalId] : [])))
+      for (const a of liveSet) {
+        if (removed.has(a.animalId)) continue
+        const record = wildRegistry.get(a.animalId)
+        if (record && !a.isDead()) a.hydrate(record.state)
+      }
+      if (removed.size > 0) {
+        agents = agents.filter((a) => {
+          if (!removed.has(a.animalId)) return true
+          wildMeta.delete(a.animalId)
+          animalToSpawner.delete(a.animalId)
+          disposeAgent(a)
+          return false
+        })
+      }
+      const liveIds = new Set(agents.map((a) => a.animalId))
+      for (const e of events) {
+        if (e.kind !== 'birth' && e.kind !== 'immigration') continue
+        if (liveIds.has(e.record.animalId) || !wildRegistry.has(e.record.animalId)) continue
+        const group = spawnerGroupById.get(e.habitatId) ?? groups.get(settlementId)
+        if (group) promoteRecord(e.record, group)
+      }
     },
     dispose() {
       pendingDematerialize.clear()

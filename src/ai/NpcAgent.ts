@@ -3166,6 +3166,7 @@ export class NpcAgent {
         lastPosition: { x: this.mesh.position.x, z: this.mesh.position.z },
         purpose: this.npcState.travel!.purpose,
         survivalResolvedAtDays: this.npcState.travel!.survivalResolvedAtDays,
+        threatResolvedAtDays: this.npcState.travel!.threatResolvedAtDays,
         blocked: true,
       }
     }
@@ -4030,7 +4031,7 @@ export class NpcAgent {
         travel,
       )
     }
-    resolveNpcTravelCheckpoint(this.npcState, toDays, dayLengthSec)
+    resolveNpcTravelCheckpoint(this.npcState, toDays, dayLengthSec, this.destinationThreat?.offscreenTravel, this.role)
     const after = this.npcState.travel
     if (after && after.arrival !== 'reached' && !after.blocked) {
       const reified = reifyNpcTravel(after, toDays)
