@@ -33,6 +33,8 @@
 
 **Grok evidence audits (independent workspace review corrections incorporated, 2026-11-06):** [workspace rules and index](../../grok-audits/README.md) · [candidate queue](../../grok-audits/QUEUE.md) · [report index](../../grok-audits/audits/README.md). GA-003 is the proposed first pilot, not an approved assignment. No audits authorized or executed; separate from Revival implementation and system-level reviews.
 
+**V2 cave geometry donor snapshot (2026-11-07):** [seedvales-v2 caves — reference-only copy](./donors/seedvales-v2/caves/README.md) of V2 commit `9ba54815` (12 files: cave shape/field/rocks/render/material/gen plus directly imported helpers). **Not runtime code**; nothing imports it, and V1 cave behaviour is unchanged.
+
 ## Current entry points
 
 | Need | Read |
