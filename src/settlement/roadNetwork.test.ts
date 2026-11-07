@@ -64,6 +64,31 @@ describe('meanderRoute', () => {
     expect(out[1]).toEqual(straight[1])
     expect(out[2]!.x === straight[2]!.x && out[2]!.z === straight[2]!.z).toBe(false)
   })
+
+  it('never creates a sharp turn on short edges or leaves a bend kinked (Q61)', () => {
+    // 3 m edges next to an anchor, and a 60° bend: full amplitude would kink both.
+    const route = [
+      { x: 0, z: 0, h: 0 },
+      { x: 3, z: 0, h: 0 },
+      { x: 6, z: 0, h: 0 },
+      { x: 9, z: 0, h: 0 },
+      { x: 12, z: 5.2, h: 0 },
+      { x: 15, z: 10.4, h: 0 },
+    ]
+    for (let seed = 1; seed <= 40; seed++) {
+      const out = meanderRoute(route, sampleHeight, 6, 0.3, seed, new Set([2]))
+      expect(out[3]).toEqual({ ...route[3]!, h: sampleHeight(route[3]!.x, route[3]!.z) })
+      for (let i = 1; i < out.length - 1; i++) {
+        if (i === 3) continue // the input's own 60° bend (kept exactly)
+        const ux = out[i]!.x - out[i - 1]!.x
+        const uz = out[i]!.z - out[i - 1]!.z
+        const vx = out[i + 1]!.x - out[i]!.x
+        const vz = out[i + 1]!.z - out[i]!.z
+        const cos = (ux * vx + uz * vz) / (Math.hypot(ux, uz) * Math.hypot(vx, vz))
+        expect(cos).toBeGreaterThan(Math.cos((50 * Math.PI) / 180))
+      }
+    }
+  })
 })
 
 /** Plan world-terrain-023 — a road may only meet canonical river water through

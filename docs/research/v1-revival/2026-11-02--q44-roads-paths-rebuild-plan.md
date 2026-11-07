@@ -168,6 +168,21 @@ Census `--rings=12` (22 settlements, 18/19 roads), before → after:
 
 **Done-when status: partly met.** Sharp turns ≤ 3/km met on seed 42 only (4.2 on 415424794; remaining turns are presumably at locked anchors/route ends or obstacle detours — not analysed). Sinuosity p50 moved −0.07 / −0.03 (target ±0.03): the shortening is the point of string-pulling (A* 8-direction chains carry ~7 % overhead), so the ±0.03 band looks too tight — author/Opus call. Crossing records: topology guard + unchanged crossing counts, no per-route test comparing against the pre-shape chain was added. Not browser-checked (look of curves: author §2).
 
+### Q61 retry (R5 close, Sonnet 2026-11-07, `main`, post-063 layout)
+
+**Baseline re-take** (`--rings=12`, 24/25 settlements, 30 roads each): sharp turns 3.3 / 3.5 per km (target ≤ 3), sinuosity p50/p90 1.24/1.66 and 1.18/1.68, crossings 18 / 12, plot/yard hits 0.
+
+**Cause (✅ measured by switching the meander off): `meanderRoute`, not the shaping pass.** Without the meander sharp turns were 1.4 / 1.5 per km. The wobble displaced every free vertex by up to 2 m regardless of local geometry, so vertices next to locked anchors (short edges) and vertices already on a bend were kinked. Only 16 of 61 routes land on the fully rounded rung; 36 use string-pulled-only and 9 the raw A* chain (rounded failed `polylineIsClear`), so most routes carry sparse or short edges.
+
+**Fix:** `meanderRoute` caps the lateral shift at 0.2 × the shorter adjacent edge and fades it to zero as the local turn goes 0 → 35°. Same seeds/noise, same locked anchors; wobble is only reduced where it would create a corner. Road-route cache bumped 30 → 31 (`ROAD_ROUTE_CACHE_VERSION`); `WORLDGEN_EPOCH` stays 1 (same coordinated batch).
+
+| `--rings=12` | sharp /km | sinuosity p50/p90 | crossings | parallel (m) | plot hits | bridges off-axis |
+| --- | --- | --- | --- | --- | --- | --- |
+| 42 | 3.3 → **2.6** | 1.24/1.66 → 1.24/1.66 | 18 → 18 | 1362 → 1416 | 0 → 0 | 8 → 6 |
+| 415424794 | 3.5 → **2.3** | 1.18/1.68 → 1.18/1.68 | 12 → 12 | 816 → 810 | 0 → 0 | 6 → 5 |
+
+`--rings=5` (3 / 5 roads, indicative only): 1.5 and 5.1 sharp /km (seed 415424794 has 5 roads; one bend moves the figure). **Done-when:** sharp ≤ 3/km met on the wider window; crossing records unchanged (counts); sinuosity ±0.03 vs the post-Q61 shape unchanged (the earlier −0.07 vs pre-shaping stands as the intended shortening). Technically verified (type-check, lint, full tests, new `meanderRoute` unit test). Not browser-checked — look of the road curves: author §2.
+
 ### Q97 (bridge–road alignment, Opus 2026-11-04, `main`)
 
 **Cause (✅ census):** a bridge deck is a straight slab on `crossing.angle`, which is the heading of the one polyline edge carrying the widest water hit, centred on the traversal midpoint and `span + 2 × 3 m` long. The shaped route keeps only the anchor and its two A* neighbours locked (≈ 9 m apart, up to 45° apart in heading), so the road bends at or before the bank while the deck continues straight — the deck end sits beside the road. Before the fix 12 of 15 bridges (rings ≤ 8) drifted 1.3–7.9 m off the road centreline, with up to 90° between deck axis and road heading at a deck end.

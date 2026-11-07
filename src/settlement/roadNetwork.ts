@@ -708,6 +708,11 @@ function sameCrossingTopology(
   return a.every((crossing, i) => crossing.kind === b[i]!.kind)
 }
 
+/** Turn (rad) at which the route wobble fades to zero — bends beyond this keep their exact shape. */
+const MEANDER_FADE_TURN = (35 * Math.PI) / 180
+/** Max lateral wobble as a fraction of the shorter adjacent edge, so short edges cannot be kinked. */
+const MEANDER_EDGE_FRACTION = 0.2
+
 /**
  * Offsets interior waypoints perpendicular to the local path tangent so the
  * corridor centerline isn't a ruler between A* grid cells. Endpoints stay
@@ -739,8 +744,17 @@ export function meanderRoute(
     const nx = -tz / len
     const nz = tx / len
     const n = noise(p.x * scale, p.z * scale)
-    const x = p.x + nx * n * amplitude
-    const z = p.z + nz * n * amplitude
+    // Q61: the wobble must never create the corners the shaping pass removed. Cap the lateral shift at a
+    // fraction of the shorter adjacent edge (short edges next to locked anchors) and fade it out where the
+    // route already bends.
+    const inLen = Math.hypot(p.x - prev.x, p.z - prev.z)
+    const outLen = Math.hypot(next.x - p.x, next.z - p.z)
+    const cosTurn = ((p.x - prev.x) * (next.x - p.x) + (p.z - prev.z) * (next.z - p.z)) / ((inLen * outLen) || 1)
+    const turn = Math.acos(Math.max(-1, Math.min(1, cosTurn)))
+    const straight = Math.max(0, 1 - turn / MEANDER_FADE_TURN)
+    const amp = Math.min(amplitude, Math.min(inLen, outLen) * MEANDER_EDGE_FRACTION) * straight
+    const x = p.x + nx * n * amp
+    const z = p.z + nz * n * amp
     return { x, z, h: sampleHeight(x, z) }
   })
 }
