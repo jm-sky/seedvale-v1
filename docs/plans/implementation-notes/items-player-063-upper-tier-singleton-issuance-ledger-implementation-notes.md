@@ -48,3 +48,13 @@ The app owns the mutable ledger outside `WorldBundle`; same-world rebuilds retai
 Tests cover same-kind competing/reentrant sources, failure and throwing-source rollback, capacity failure, all 14 generic no-count grants, permanent destruction tombstones, each persisted owner adapter, ledger-less migration, duplicate IDs including restricted↔ordinary collision, count-only inventory and bare drops. Root's separate transfer suite covers exact-ID movement across owners, save/rebuild and NPC death. Verification: 193 focused ledger/save tests pass; the coordinated batch passes 2425 tests across 166 files. After strengthening malformed/mismatched restricted drop validation, the four affected ledger/transfer/save suites pass all 200 tests. Vue type-check, scoped ESLint and production build pass. The side-initiative index §8 records the shared run. Browser verification is not applicable; there are no enabled sources or player-facing changes.
 
 **Acceptance boundary:** implementation is in place, but independent Opus review R-A is still required before items-player-064 U can enable a source. No A8 destruction reissue policy was selected; tombstones remain permanent.
+
+## Opus R-A — 2026-11-07
+
+[Review 042](../../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md): claim transaction, lock, rollback, capability factories, lifetime, migration and duplicate rejection PASS; issuer list empty. Required before 064 U (no save version bump):
+
+- **R1** — `sellInstancesForCoins` (`trade.ts`) sells a claimed specimen into the void (probe: `ok`, 1170 coins, ledger still `live`); refuse restricted kinds there and in `resolveInstanceSellPrice`; add to the bypass test. The "unsupported catalog sales are refused" line above was incomplete.
+- **R2** — a `live` claim with zero owners currently fails `isSaveData`, so every later save write is refused. Split: duplicates/contradicting IDs reject; orphan live claim accepted with a save diagnostic (claim stays `live`, no reissue).
+- **R3** — owner walker is hand-listed (misses `settlementEconomies[*].food.instances`); add a structural coverage test over every instance-bearing save path.
+
+Optional F7 cleanups (type dedupe, capability import test, scoped count walk) in the review. 063 completes when R1–R3 are green.

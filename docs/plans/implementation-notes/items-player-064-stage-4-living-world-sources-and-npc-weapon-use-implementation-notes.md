@@ -61,3 +61,14 @@ Format: `kind | source owner | eligibility | quantity | price | restock/init | N
 - `iron_rimmed_shield` keyed quest-reward source: **not added**. No existing quest owner was investigated/hosted for it in this slice, so it stays without a keyed source; it is still buyable from `weapons-tools` Traders. Revisit only if the author wants a quest hook.
 - Shields have category `other`, so `merchantTrade.test.ts` weapons-tools coverage helper now counts `STAGE4_SHIELD_KINDS` as weapon-shop goods.
 - Tests: O4 block in `merchantStage4Sources.test.ts`.
+
+## Slice U preconditions — Opus R-A (2026-11-07)
+
+[Review 042](../../reviews/2026-11-07--042--items-063-upper-tier-ledger-r-a-review.md) — **U is NO-GO** until 063 R1–R3 land and the author answers Q-U1 (A8 reappearance / grave goods) and Q-U2 (designated host vs first-visited). U then must provide:
+
+- **U1** — one deterministic designated host per identity per world (seed + stable eligible source keys), computed before materialization; only that source calls `claimUpperTierInstance`, with a stable `issuanceKey` (`merchant:<settlementId>:<npcId>:<kind>`, `quest:<questId>:<kind>`). The ledger is the safety net, not the selector.
+- **U2** — thread the app-owned ledger by reference through the existing composition seam (like `consumedWorldPickupIds`); no second registry.
+- **U3** — stock-init latch and claim commit together; a refused claim still sets the latch; test claim → reload → reconstruction → no second attempt.
+- **U4** — buy restricted stock only through the exact-instance purchase path (`resolveMerchantPurchaseInstances`); never route specimens through transient `carried`.
+- Armor identities: authored per-identity quality table next to `UPPER_TIER_IDENTITY_LIST` once 066 registers them (claim currently hard-codes `common`).
+- Record every enabled issuer in a `kind | source | issuanceKey | host rule` table here; Opus spot check of the first issuer.
