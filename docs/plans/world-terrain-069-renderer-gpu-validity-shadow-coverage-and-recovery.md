@@ -45,3 +45,7 @@ Mirror relevance (F16-05 → [world-terrain-056](./world-terrain-056-render-pass
 - R1 needs a larger shadow frustum or map size (visual/perf trade-off) → §3.
 - R3b: any fallback that changes water/post appearance → author (already §3 Q180-a).
 - A fix moves work into a new frame-scheduler or blocking GPU readback.
+
+## Implementation status
+
+- **R1 (Q177, Sonnet 2026-11-07) — implemented, technically verified.** `WorldLights.follow(x, z, y = 0)` anchors the shadow frustum centre at the player's height, quantized to `SHADOW_FOLLOW_Y_STEP` = 8 m (jumps never move it); texel snapping and the `legacy`/`tight` frustum fitting are unchanged; `gameLoop.ts` passes `player.mesh.position.y` (no new terrain query). Tests in `createLights.test.ts`: receivers and 30 m casters inside the shadow volume at 0/60/80 m × four sun directions × both modes, a negative control (without `y` an 80 m-high caster falls outside), world-fixed texel grid at height. Not browser-checked (queue §2).

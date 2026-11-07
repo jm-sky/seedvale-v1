@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { describe, expect, it } from 'vitest'
-import { createLights } from './createLights'
+import { createLights, SHADOW_FOLLOW_Y_STEP } from './createLights'
 
 /** Light-space (shadow camera view) x/y of the world origin after `follow`. */
 function shadowViewOrigin(lights: ReturnType<typeof createLights>): THREE.Vector3 {
@@ -87,5 +87,60 @@ describe('createLights setSunDirection', () => {
       expect(Math.abs(origin.x / texel - Math.round(origin.x / texel))).toBeLessThan(1e-3)
       expect(Math.abs(origin.y / texel - Math.round(origin.y / texel))).toBeLessThan(1e-3)
     }
+  })
+})
+
+describe('createLights elevation-aware follow (Q177)', () => {
+  /** Point in shadow-camera view space: lateral |x|,|y| ≤ half and depth within [near, far]. */
+  function insideShadowVolume(lights: ReturnType<typeof createLights>, p: THREE.Vector3): boolean {
+    const { sun } = lights
+    sun.updateMatrixWorld()
+    sun.shadow.updateMatrices(sun)
+    const cam = sun.shadow.camera
+    const v = p.clone().applyMatrix4(cam.matrixWorldInverse)
+    const depth = -v.z
+    return Math.abs(v.x) <= cam.right && Math.abs(v.y) <= cam.top && depth >= cam.near && depth <= cam.far
+  }
+
+  const sunDirs = [
+    new THREE.Vector3(0.4, 0.9, 0.3),
+    new THREE.Vector3(1, 0.5, 0),
+    new THREE.Vector3(-0.7, 0.35, 0.6),
+    new THREE.Vector3(0, 1, 0.05),
+  ]
+
+  it.each(['legacy', 'tight'] as const)('keeps player-height receivers and 30 m casters inside the %s volume at 0/60/80 m', (mode) => {
+    for (const y of [0, 60, 80]) {
+      for (const dir of sunDirs) {
+        const lights = createLights(1024, mode)
+        lights.setSunDirection(dir)
+        lights.follow(120, -45, y)
+        for (const dy of [0, 15, 30]) {
+          expect(insideShadowVolume(lights, new THREE.Vector3(120, y + dy, -45))).toBe(true)
+        }
+      }
+    }
+  })
+
+  it('without an elevation anchor a 80 m high caster falls outside (the defect being fixed)', () => {
+    const lights = createLights(1024, 'tight')
+    lights.setSunDirection(sunDirs[0]!)
+    lights.follow(120, -45)
+    expect(insideShadowVolume(lights, new THREE.Vector3(120, 110, -45))).toBe(false)
+  })
+
+  it('keeps the texel grid world-fixed at height and ignores sub-step y changes', () => {
+    const lights = createLights(1024)
+    const texel = 160 / 1024
+    for (const y of [0, 37.3, 80]) {
+      lights.follow(13.3, 7.77, y)
+      const origin = shadowViewOrigin(lights)
+      expect(Math.abs(origin.x / texel - Math.round(origin.x / texel))).toBeLessThan(1e-3)
+      expect(Math.abs(origin.y / texel - Math.round(origin.y / texel))).toBeLessThan(1e-3)
+    }
+    lights.follow(13.3, 7.77, 40)
+    const a = lights.sun.position.clone()
+    lights.follow(13.3, 7.77, 40 + SHADOW_FOLLOW_Y_STEP / 2 - 0.1)
+    expect(lights.sun.position.distanceTo(a)).toBeLessThan(1e-9)
   })
 })

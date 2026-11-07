@@ -2922,7 +2922,7 @@ export function createGameLoop(deps: GameLoopDeps): GameLoop {
           shadowCentreZ += (shadowForwardDir.z / flat) * lights.shadowForwardOffset
         }
       }
-      lights.follow(shadowCentreX, shadowCentreZ)
+      lights.follow(shadowCentreX, shadowCentreZ, player.mesh.position.y)
       bundle.ocean.follow(player.mesh.position.x, player.mesh.position.z)
       colliderDebugView?.update(player.mesh.position.x, player.mesh.position.z, bundle.chunkManager.collidersNear)
       // Computed before `settlementsManager.update` (not after, as before

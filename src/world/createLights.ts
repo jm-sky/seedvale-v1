@@ -8,8 +8,11 @@ export type WorldLights = {
   addTo: (scene: THREE.Scene) => void
   /** Recenter the sun/shadow frustum on the player — in a streamed world the
    *  frustum only needs to cover the area immediately around the camera, not
-   *  the whole loaded region, so its size stays fixed and only the target moves. */
-  follow: (x: number, z: number) => void
+   *  the whole loaded region, so its size stays fixed and only the target moves.
+   *  `y` (default 0) is the ground height under the followed point: the shadow depth range is fixed
+   *  (`near`..`far` from the sun), so on high ground the frustum must be anchored at that height or
+   *  casters above the player fall outside it (Q177). It is quantized, so jumping does not move the frustum. */
+  follow: (x: number, z: number, y?: number) => void
   /** Point the directional light along `dir` (direction *towards* the sun, e.g.
    *  `WorldSky.sunPosition`). Elevation is floored so night/horizon light stays
    *  above the ground and the shadow footprint bounded; the shadow-camera basis
@@ -37,6 +40,8 @@ const SUN_OFFSET_LENGTH = SUN_OFFSET.length()
 const MIN_SUN_DIRECTION_Y = 0.28
 /** Legacy sun shadow half-extent, centred on the player. */
 export const SHADOW_FRUSTUM_HALF = 80
+/** Vertical anchor step (m) for `follow`'s `y` — coarse enough that jumps/steps never move the frustum. */
+export const SHADOW_FOLLOW_Y_STEP = 8
 /** world-terrain-055 S1 (`?shadowFrustum=tight`): tighter half-extent... */
 export const SHADOW_FRUSTUM_TIGHT_HALF = 56
 /** ...centred this far ahead of the player along camera forward (XZ). */
@@ -99,13 +104,13 @@ export function createLights(shadowMapSize = 1024, frustumMode: ShadowFrustumMod
       scene.add(sun)
       scene.add(sun.target)
     },
-    follow(x, z) {
+    follow(x, z, y = 0) {
       // Snap the frustum centre to whole shadow-map texels in light space so
       // the texel grid stays fixed in the world while the player walks —
       // otherwise every shadow edge (and any residual acne) crawls/shimmers.
       // Depth along the light axis is left unsnapped; it doesn't move texels.
       const texel = (2 * frustumHalf) / sun.shadow.mapSize.x
-      followTarget.set(x, 0, z)
+      followTarget.set(x, Math.round(y / SHADOW_FOLLOW_Y_STEP) * SHADOW_FOLLOW_Y_STEP, z)
       const r = Math.round(followTarget.dot(shadowRight) / texel) * texel
       const u = Math.round(followTarget.dot(shadowUp) / texel) * texel
       const f = followTarget.dot(shadowForward)
