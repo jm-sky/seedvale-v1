@@ -5,6 +5,7 @@ import type { RoadCorridorSegment } from '../terrain/chunkHeightmap'
 import type { LocalWaterSample } from '../terrain/waterSample'
 import type { AnimalAttractionSource } from '../world/animalAttractionSource'
 import type { GrassForageService } from '../world/createGrassForagePatches'
+import type { WildAnimalSex } from './animalDefs'
 import type { PlayerStealthState } from './playerAwareness'
 import {
   disposeObject3D,
@@ -95,6 +96,7 @@ import {
   CAVE_MIN_SLOPE_DROP,
   CAVE_SLOPE_SAMPLE_RADIUS,
   findWalkableNearSite,
+  PREDATOR_DEN_RING_OFFSET as HOME_DEN_RING,
   measureSlope,
   MIN_SPAWN_SEPARATION,
   type PlannedHabitatSpawner,
@@ -109,6 +111,16 @@ import {
   type SpawnProfile,
   SPAWNS,
 } from './settlementFaunaHabitats'
+import {
+  birthAnimalId,
+  ringAnimalId,
+  ringHabitatId,
+  type WildFaunaRecord,
+  WildFaunaRegistry,
+  wildRecordFrom,
+  type WildRecordOrigin,
+  wildSexFromRoll,
+} from './wildFaunaRecords'
 import {
   activateWolfDenProblem,
   canOfferSettlementTrip,
@@ -148,7 +160,16 @@ type HabitatGroupRecord = {
   ringAnimalIds: Set<string>
   /** Virtual bound counts from the lazy catch-up, consumed by the population fill. */
   virtualBounds: Map<string, number>
+  /** True when this group's initial ring/fill already exists as durable records (fauna-050 C2):
+   *  the build then replays nothing and dormant records are promoted instead. */
+  fromRecords: boolean
 }
+
+/** Identity of a generated wild individual (fauna-050 C1.2), kept per live agent. */
+type WildMeta = { habitatId: string, occupantKey: string, origin: WildRecordOrigin }
+
+/** Margin past the outer predator-den ring inside which a record is activated with its group (C1.8). */
+const ACTIVATION_MARGIN = 20
 
 export type Fauna = {
   update: (
@@ -783,6 +804,10 @@ export async function createFauna(
   let nextAnimalId = 0
   const occupantDecls = isSystemEnabled('animals') ? (persistentOccupantDecls ?? []) : []
   const occupantRegistry = createPersistentOccupantRegistry(initialPersistentOccupants)
+  /** Generated wild individuals (fauna-050 C2): an active agent is authoritative, a dormant record
+   *  is authoritative otherwise. Never two agents per record. */
+  const wildRegistry = new WildFaunaRegistry(initialPersistentOccupants?.wild)
+  const wildMeta = new Map<string, WildMeta>()
   occupantRegistry.registerDeclarations(occupantDecls)
   const reservedPersistentSlots = occupantRegistry.slotCountsByHabitatId()
   /** Fauna-owned cave habitat bindings (plan fauna-019), keyed by
@@ -809,6 +834,8 @@ export async function createFauna(
     cave?: AnimalCaveContext,
     /** Per-individual variant (plan fauna-022). Omitted → `normal`. */
     variant?: AnimalVariant,
+    /** Generated wild individual (fauna-050 C2): registers its durable identity. */
+    wild?: WildMeta & { sex?: WildAnimalSex, forceFemale?: boolean },
   ): AnimalAgent => {
     const tpl = templates[kind]
     let visual: Object3D | undefined
@@ -822,6 +849,10 @@ export async function createFauna(
     const animalId = explicitAnimalId ?? `${kind}-${nextAnimalId++}`
     if (spawnPointId) animalToSpawner.set(animalId, spawnPointId)
     const boundSpawner = spawnPointId ? spawnerById.get(spawnPointId) : undefined
+    const sex: WildAnimalSex | undefined = wild
+      ? (wild.sex ?? wildSexFromRoll(settlementFaunaSiteRandom(seed, `sex:${animalId}`)(), wild.forceFemale))
+      : undefined
+    if (wild) wildMeta.set(animalId, { habitatId: wild.habitatId, occupantKey: wild.occupantKey, origin: wild.origin })
     return new AnimalAgent({
       def: ANIMAL_DEFS[kind],
       animalId,
@@ -845,7 +876,44 @@ export async function createFauna(
       humanTaste: boundSpawner?.humanTaste ?? false,
       cave,
       variant,
+      ...(sex ? { sex } : {}),
     })
+  }
+
+  /** Creates the next durable `b<seq>` individual of a spawner (initial fill, respawn, birth). */
+  const spawnBirth = (
+    spawner: PreySpawner,
+    x: number,
+    z: number,
+    origin: WildRecordOrigin,
+    variant?: AnimalVariant,
+  ): AnimalAgent => {
+    const seq = spawner.nextBirthSeq ?? 0
+    spawner.nextBirthSeq = seq + 1
+    return spawnAgent(
+      spawner.kind, x, z, undefined, undefined, undefined, spawner.id,
+      birthAnimalId(spawner.id, seq), undefined, variant,
+      { habitatId: spawner.id, occupantKey: `b${seq}`, origin },
+    )
+  }
+
+  /** Record of a live generated individual (refresh on demote / save). */
+  const recordOf = (agent: AnimalAgent, nowDays: number): WildFaunaRecord | undefined => {
+    const meta = wildMeta.get(agent.animalId)
+    if (!meta) return undefined
+    return wildRecordFrom(
+      {
+        ...meta,
+        animalId: agent.animalId,
+        kind: agent.def.kind,
+        sex: agent.sex,
+        herdId: agent.herdId,
+        variant: agent.variant === 'normal' ? undefined : agent.variant,
+        humanTaste: agent.humanTaste || undefined,
+      },
+      agent.snapshot(),
+      nowDays,
+    )
   }
 
   const spawners: PreySpawner[] = []
@@ -895,12 +963,20 @@ export async function createFauna(
   /** Creates the planned ring individuals (planner hook, after the ring phase and
    *  before any spawner is placed/carved). */
   const spawnRing = (ring: readonly PlannedRingAnimal[], group: HabitatGroupRecord): void => {
+    // Initial population already exists as durable records: never replayed (removed = gone).
+    if (group.fromRecords) return
     bootMark('ringSpawns')
     try {
       const created: AnimalAgent[] = []
-      for (const planned of ring) {
+      const motherIndexes = new Set<number>()
+      for (const planned of ring) if (planned.motherIndex !== undefined) motherIndexes.add(planned.motherIndex)
+      for (const [index, planned] of ring.entries()) {
         const mother = planned.motherIndex === undefined ? undefined : created[planned.motherIndex]
-        const agent = spawnAgent(planned.kind, planned.x, planned.z, planned.herdId, planned.lifeStage, mother?.animalId)
+        const agent = spawnAgent(
+          planned.kind, planned.x, planned.z, planned.herdId, planned.lifeStage, mother?.animalId,
+          undefined, ringAnimalId(group.id, index), undefined, undefined,
+          { habitatId: ringHabitatId(group.id), occupantKey: `r${index}`, origin: 'ring', forceFemale: motherIndexes.has(index) },
+        )
         scene.add(agent.mesh)
         agents.push(agent)
         created.push(agent)
@@ -1027,18 +1103,7 @@ export async function createFauna(
     for (let i = 0; i < count; i++) {
       const spot = findWalkableNearSpawner(habitat, 0, 4) ?? habitat
       const variant = habitat.type === 'wolfDen' ? wolfDenInitialFillVariant(i) : undefined
-      const agent = spawnAgent(
-        habitat.kind,
-        spot.x,
-        spot.z,
-        undefined,
-        undefined,
-        undefined,
-        habitat.id,
-        undefined,
-        undefined,
-        variant,
-      )
+      const agent = spawnBirth(habitat, spot.x, spot.z, 'fill', variant)
       scene.add(agent.mesh)
       agents.push(agent)
       if (trackDenWolves && habitat.type === 'wolfDen') denWolfAnimalIds.add(agent.animalId)
@@ -1069,11 +1134,54 @@ export async function createFauna(
 
   /** Fills a freshly (re)materialized group's spawners from the carried/virtual state. */
   const fillGroupPopulation = (group: HabitatGroupRecord): void => {
+    // Records already exist: `restoreGroupFromRecords` consumes the caught-up bounds instead.
+    if (group.fromRecords) return
     for (const id of group.spawnerIds) {
       const habitat = spawnerById.get(id)
       if (!habitat) continue
       const count = materializedPopulation(habitat, group.virtualBounds.get(id), occupantRegistry.slotCountFor(id))
       spawnHabitatPopulation(habitat, count, group.pinned)
+    }
+    group.virtualBounds.clear()
+  }
+
+  /** Re-creates a dormant record's agent (fauna-050 C1.8): same durable id and constructor
+   *  inputs, then `hydrate`. The record stays in the registry; the live agent is authoritative. */
+  const promoteRecord = (record: WildFaunaRecord, group: HabitatGroupRecord): void => {
+    const boundSpawner = spawnerById.get(record.habitatId)
+    const isRing = record.origin === 'ring'
+    const agent = spawnAgent(
+      record.kind, record.state.x, record.state.z, record.herdId, undefined, undefined,
+      isRing || !boundSpawner ? undefined : boundSpawner.id,
+      record.animalId, undefined, record.variant,
+      { habitatId: record.habitatId, occupantKey: record.occupantKey, origin: record.origin, sex: record.sex },
+    )
+    agent.hydrate(record.state)
+    scene.add(agent.mesh)
+    agents.push(agent)
+    if (isRing) group.ringAnimalIds.add(agent.animalId)
+  }
+
+  /** Promotes every dormant record inside the group's activation disk, then tops a carried
+   *  spawner up to its caught-up population with new births (interim until C3 `advance`). */
+  const restoreGroupFromRecords = (group: HabitatGroupRecord, denRing: readonly [number, number]): void => {
+    const live = new Set(agents.map((a) => a.animalId))
+    const radius = group.footprintRadius + denRing[1] + ACTIVATION_MARGIN
+    for (const record of wildRegistry.inDisk(group.center.x, group.center.z, radius, (id) => !live.has(id))) {
+      promoteRecord(record, group)
+    }
+    for (const id of group.spawnerIds) {
+      const habitat = spawnerById.get(id)
+      const virtual = group.virtualBounds.get(id)
+      if (!habitat || virtual === undefined) continue
+      const target = materializedPopulation(habitat, virtual, occupantRegistry.slotCountFor(id))
+      const alive = wildRegistry.forHabitat(id).filter((r) => !r.state.health.dead).length
+      for (let i = alive; i < target; i++) {
+        const spot = findWalkableNearSpawner(habitat, 0, 4) ?? habitat
+        const agent = spawnBirth(habitat, spot.x, spot.z, 'birth')
+        scene.add(agent.mesh)
+        agents.push(agent)
+      }
     }
     group.virtualBounds.clear()
   }
@@ -1092,6 +1200,7 @@ export async function createFauna(
         spawnerIds: new Set(),
         ringAnimalIds: new Set(),
         virtualBounds: new Map(),
+        fromRecords: wildRegistry.isGroupInitialized(input.groupId),
       }
       groups.set(input.groupId, group)
     }
@@ -1127,12 +1236,23 @@ export async function createFauna(
       for (const planned of target.plan.spawners) materializeSpawner(planned, target, nowDays)
     }
     fillGroupPopulation(target)
+    if (target.fromRecords) restoreGroupFromRecords(target, input.denRing ?? HOME_DEN_RING)
+    else {
+      wildRegistry.markGroupInitialized(target.id, nowDays)
+      target.fromRecords = true
+    }
   }
 
   const doDematerializeGroup = (group: HabitatGroupRecord, nowDays: number): void => {
     const members = groupAgents(group)
     // Persistent occupants (none are declared for non-home groups today) must not be lost with the group.
     occupantRegistry.capture(members.filter((a) => occupantRegistry.hasPersistentAnimalId(a.animalId)))
+    // Lossless demote (fauna-050 C2): every generated individual becomes a dormant record, corpses included.
+    for (const a of members) {
+      const record = recordOf(a, nowDays)
+      if (record) wildRegistry.set(record)
+      wildMeta.delete(a.animalId)
+    }
     for (const id of group.spawnerIds) {
       const spawner = spawnerById.get(id)
       if (!spawner) continue
@@ -1177,6 +1297,7 @@ export async function createFauna(
     spawnerIds: new Set(),
     ringAnimalIds: new Set(),
     virtualBounds: new Map(),
+    fromRecords: animalsOn && wildRegistry.isGroupInitialized(settlementId),
   }
   groups.set(settlementId, homeGroup)
   const plan = planSettlementFaunaHabitats({
@@ -1378,13 +1499,28 @@ export async function createFauna(
   // Ordinary habitat population (plan 139) — tagged with `spawnPointId` so
   // deaths count toward depletion. A restored depleted/disabled/recovering
   // point stays empty until `tickSpawnPointRecovery`.
-  for (const habitat of spawners) {
-    if (habitat.state !== 'active') continue
-    const ordinary = ordinaryHabitatCapacity(
-      habitat.maxPreyCount,
-      occupantRegistry.slotCountFor(habitat.id),
-    )
-    spawnHabitatPopulation(habitat, ordinary, true)
+  if (homeGroup.fromRecords) {
+    restoreGroupFromRecords(homeGroup, HOME_DEN_RING)
+    // `isWolfDenCleared()` stays derivable: the initial pack's ids are `b0..b(n-1)`; a removed
+    // record simply is not among the live agents (fauna-050 C1.2).
+    for (const habitat of spawners) {
+      if (habitat.type !== 'wolfDen') continue
+      const initial = ordinaryHabitatCapacity(habitat.maxPreyCount, occupantRegistry.slotCountFor(habitat.id))
+      for (let i = 0; i < initial; i++) denWolfAnimalIds.add(birthAnimalId(habitat.id, i))
+    }
+  } else {
+    for (const habitat of spawners) {
+      if (habitat.state !== 'active') continue
+      const ordinary = ordinaryHabitatCapacity(
+        habitat.maxPreyCount,
+        occupantRegistry.slotCountFor(habitat.id),
+      )
+      spawnHabitatPopulation(habitat, ordinary, true)
+    }
+    if (animalsOn) {
+      wildRegistry.markGroupInitialized(settlementId, 0)
+      homeGroup.fromRecords = true
+    }
   }
   } finally {
     bootMarkEnd('habitatSpawners')
@@ -1522,6 +1658,8 @@ export async function createFauna(
           if (a.readyToRemove()) {
             const slot = occupantRegistry.slotKeyForAnimalId(a.animalId)
             if (slot) occupantRegistry.markRemoved(slot)
+            // Removal deletes the durable record without a tombstone (fauna-050 C1.5).
+            if (wildMeta.delete(a.animalId)) wildRegistry.remove(a.animalId)
             disposeAgent(a)
           }
           else alive.push(a)
@@ -1547,7 +1685,7 @@ export async function createFauna(
           drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
         )
         if (!pos) return false
-        const agent = spawnAgent(spawner.kind, pos.x, pos.z, undefined, undefined, undefined, spawner.id)
+        const agent = spawnBirth(spawner, pos.x, pos.z, 'birth')
         scene.add(agent.mesh)
         agents.push(agent)
         boundOccupancyCounts.set(spawner.id, (boundOccupancyCounts.get(spawner.id) ?? 0) + 1)
@@ -1598,7 +1736,7 @@ export async function createFauna(
                   drySpawnSite(spawner.x, spawner.z, SPAWN_RIVER_CLEARANCE),
                 )
                 if (!spot) break
-                const agent = spawnAgent(spawner.kind, spot.x, spot.z, undefined, undefined, undefined, spawner.id)
+                const agent = spawnBirth(spawner, spot.x, spot.z, 'birth')
                 scene.add(agent.mesh)
                 agents.push(agent)
                 nearby++
@@ -1740,7 +1878,17 @@ export async function createFauna(
     },
     snapshotPersistentOccupants() {
       occupantRegistry.capture(agents.filter((a) => occupantRegistry.hasPersistentAnimalId(a.animalId)))
-      return occupantRegistry.serialize()
+      // Live agents are authoritative: refresh their records, then one serialize path for save and rebuild.
+      const nowDays = lastWorldDays ?? 0
+      for (const a of agents) {
+        const record = recordOf(a, nowDays)
+        if (record) wildRegistry.set(record)
+      }
+      const wild = wildRegistry.serialize()
+      return {
+        ...occupantRegistry.serialize(),
+        ...(wild.groups.length > 0 || wild.records.length > 0 ? { wild } : {}),
+      }
     },
     getHabitatPressure(spawnerId, nowDays) {
       return resolveHabitatPressure({

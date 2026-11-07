@@ -1,4 +1,5 @@
 import type { AnimalAgent, AnimalKind, AnimalSaveState } from './AnimalAgent'
+import type { WildFaunaSnapshot } from './wildFaunaRecords'
 
 /**
  * @domain fauna
@@ -26,6 +27,9 @@ export type PersistentOccupantSaveRecord = {
 export type PersistentOccupantSnapshot = {
   entries: PersistentOccupantSaveRecord[]
   removedSlots: string[]
+  /** Generated wild individuals + initialised-group markers (fauna-050 C2). Piggybacks on
+   *  the one fauna snapshot so rebuild carry and save/load share a single path. */
+  wild?: WildFaunaSnapshot
 }
 
 export const EMPTY_PERSISTENT_OCCUPANT_SNAPSHOT: PersistentOccupantSnapshot = {

@@ -862,6 +862,7 @@ export async function createApp(
       ? {
           entries: initialSave.persistentHabitatOccupants ?? [],
           removedSlots: initialSave.removedPersistentOccupantSlots ?? [],
+          wild: initialSave.wildFauna,
         }
       : undefined,
     initialSave?.transportOrders ?? [],
