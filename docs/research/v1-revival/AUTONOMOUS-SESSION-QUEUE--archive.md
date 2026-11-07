@@ -179,6 +179,8 @@
 
 - **OPEN 2026-11-05 · Q136-b uncertain-location labels:** [Q137 §7](./2026-11-06--q137-npc-rumour-line-script.md#7-player-topic-and-uncertain-map-labels--separate-approval) proposes a bounded English set such as “Rumoured lake”, separately from spoken-copy approval. Options: retain the current Polish kind labels; approve the proposed English rumour labels; request other wording. **Q137 recommendation:** approve the proposed set; no wider UI localization. Author approval remains pending.
 
+**Q128-a (063 V4, seed 1234) — otwarte, nie blokuje reszty kolejki.** Po wariancie B + filtrze „połączone z macierzystym lądem” seedy 42 / 415424794 mają 25/25 osad na jednej drodze, seed 7 ma 1 wyjątek (OK, limit 1), ale **seed 1234 ma 3 osady bez drogi** (`5_10`, `2_11`, `-2_12` — ten sam ląd, brak trasy w 1800 m). Twój limit to ≤ 1. Opcje: (a) Opus projektuje poprawkę po stronie układu (np. zamiana tych miejsc na brzeg połączony z domem) — **rekomendacja**; (b) akceptujesz 3 dla seedów pobocznych (referencyjne są czyste). Kod jest na `main`. **ODPOWIEDŹ (autor, 2026-11-07): (b) akceptuję 3 takie osady** (seed 1234 zostaje jako wyjątek poboczny; referencyjne czyste).
+
 ## 4. Closed A/B entries
 
 - `b2691195`, Track B Q5 — **Windows A/B done 2026-10-30: keep** ([result](../../performance/results/2026-10-30--win-q5-ca2-ab.md): storageContainer calls 58/20/28 → 18/6/8, draws −80…−115, timing neutral-to-positive, no guard regression). Only the author visual check (§2) remains.
